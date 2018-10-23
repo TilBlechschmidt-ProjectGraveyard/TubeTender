@@ -1,0 +1,5 @@
+binary "https://code.videolan.org/videolan/VLCKit/raw/master/Packaging/MobileVLCKit.json" ~> 3.1.5
+github "themegatb/YoutubeKit" "master"
+github "Juanpe/SkeletonView"
+github "https://github.com/fabio914/GoogleSignIn-iOS" ~> 4.2
+github "onevcat/Kingfisher" ~> 4.0
