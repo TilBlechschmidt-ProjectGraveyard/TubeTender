@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import AVKit
 
 class MainViewController: UIViewController {
     let interactor = Interactor()
@@ -54,11 +55,24 @@ class MainViewController: UIViewController {
     }
 
     @objc func openVideoTapped() {
-        presentVideoDetailView(withID: "ycFTxCoNAQk")
+        let viewController = PlayerViewController()
+        let playbackManager = PlaybackManager.shared
+
+        viewController.playbackManager = playbackManager
+
+        playbackManager.enqueue(videoID: "1La4QzGeaaQ")
+        playbackManager.enqueue(videoID: "_zeFohwlYtI")
+        playbackManager.preferQuality = .hd1080
+
+        present(viewController, animated: true) {
+            playbackManager.next().startWithFailed { error in
+                print("Failed: \(error)")
+            }
+        }
     }
 
     @objc func subscriptionsTapped() {
-        present(SubscriptionFeedViewController(), animated: true, completion: nil)
+//        present(SubscriptionFeedViewController(), animated: true, completion: nil)
     }
 
     @objc func signInTapped() {

@@ -21,12 +21,19 @@ class SubscriptionFeedViewTableCell: UITableViewCell {
     let videoSubtitleView = UILabel()
     let channelIconView = UIImageView()
 
+    let durationView = UIView()
+    let durationLabelView = UILabel()
+
     var _entry: Entry!
     var entry: Entry {
         get {
             return _entry
         }
         set {
+            // Video duration
+            // TODO Add a duration label
+//            durationLabelView.text = newValue
+
             // Video title
             videoTitleView.text = newValue.title
 
@@ -77,6 +84,8 @@ class SubscriptionFeedViewTableCell: UITableViewCell {
 
         backgroundColor = nil
         selectedBackgroundView = nil
+
+        // TODO Set the selected color
 
         thumbnailView.contentMode = .scaleAspectFill
         thumbnailView.clipsToBounds = true

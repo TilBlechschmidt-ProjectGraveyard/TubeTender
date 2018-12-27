@@ -10,13 +10,21 @@ import UIKit
 import YoutubeKit
 import SkeletonView
 import GoogleSignIn
+import AVKit
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        let audioSession = AVAudioSession.sharedInstance()
+        do {
+            try audioSession.setCategory(AVAudioSession.Category.playback, mode: AVAudioSession.Mode.moviePlayback, options: [])
+        } catch {
+            print("Setting category to AVAudioSessionCategoryPlayback failed.")
+        }
+
         // Override point for customization after application launch.
         YoutubeKit.shared.setAPIKey("AIzaSyDEN6U1W9vvrV5CDgRizZRfd6nHnZZDydU")
 
@@ -30,33 +38,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
 
         GIDSignIn.sharedInstance()?.signInSilently()
 
+        let splitViewController = window!.rootViewController as! UISplitViewController
+        splitViewController.delegate = self
+
         return true
-    }
-
-    func sign(_ signIn: GIDSignIn!, didSignInFor user: GIDGoogleUser!, withError error: Error!) {
-        if let error = error {
-            print("\(error.localizedDescription)")
-        } else {
-//            // Perform any operations on signed in user here.
-//            let userId = user.userID                  // For client-side use only!
-//            let idToken = user.authentication.idToken // Safe to send to the server
-//            let fullName = user.profile.name
-//            let givenName = user.profile.givenName
-//            let familyName = user.profile.familyName
-//            let email = user.profile.email
-//            // ...
-//            print(fullName, email)
-
-            if let accessToken = user.authentication.accessToken {
-                YoutubeKit.shared.setAccessToken(accessToken)
-            }
-        }
-    }
-
-    func sign(_ signIn: GIDSignIn!, didDisconnectWith user: GIDGoogleUser!,
-              withError error: Error!) {
-        // Perform any operations when the user disconnects from app here.
-        // ...
     }
 
     func application(_ app: UIApplication, handleOpen url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
@@ -86,7 +71,43 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
     func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
-
-
 }
 
+extension AppDelegate: UISplitViewControllerDelegate {
+    func splitViewController(_ splitViewController: UISplitViewController, collapseSecondary secondaryViewController:UIViewController, onto primaryViewController:UIViewController) -> Bool {
+        return true
+    }
+}
+
+extension AppDelegate: GIDSignInDelegate {
+    func sign(_ signIn: GIDSignIn!, didSignInFor user: GIDGoogleUser!, withError error: Error!) {
+        if let error = error {
+            print("\(error.localizedDescription)")
+        } else {
+            //            // Perform any operations on signed in user here.
+            //            let userId = user.userID                  // For client-side use only!
+            //            let idToken = user.authentication.idToken // Safe to send to the server
+            //            let fullName = user.profile.name
+            //            let givenName = user.profile.givenName
+            //            let familyName = user.profile.familyName
+            //            let email = user.profile.email
+            //            // ...
+            //            print(fullName, email)
+            print("logged in")
+
+            if let accessToken = user.authentication.accessToken {
+                YoutubeKit.shared.setAccessToken(accessToken)
+
+                NotificationCenter.default.post(name: NSNotification.Name("AppDelegate.authentication.loggedIn"),
+                                                object: nil,
+                                                userInfo: nil)
+            }
+        }
+    }
+
+    func sign(_ signIn: GIDSignIn!, didDisconnectWith user: GIDGoogleUser!,
+              withError error: Error!) {
+        // Perform any operations when the user disconnects from app here.
+        // ...
+    }
+}

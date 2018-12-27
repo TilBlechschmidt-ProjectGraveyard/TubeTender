@@ -8,17 +8,27 @@
 
 import UIKit
 
+protocol SubscriptionFeedViewControllerDelegate: class {
+    func didSelectVideo(_ subscriptionFeedViewController: SubscriptionFeedViewController, withID: String)
+}
+
 class SubscriptionFeedViewController: UIViewController {
-    let viewTransition = DraggableViewTransition()
-    var tableView = UITableView()
+    private let viewTransition = DraggableViewTransition()
+    private var tableView = UITableView()
 
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return UIStatusBarStyle.lightContent
     }
 
-    var items: [Entry] = []
+    weak var delegate: SubscriptionFeedViewControllerDelegate?
 
-    let feed = SubscriptionFeed()
+    private var items: [Entry] = []
+    private let feed = SubscriptionFeed()
+
+    override func viewDidLayoutSubviews() {
+        // TODO This produces bogus view widths
+        tableView.rowHeight = view.frame.width * 0.5625 + 75
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,7 +39,6 @@ class SubscriptionFeedViewController: UIViewController {
         tableView.register(SubscriptionFeedViewTableCell.self, forCellReuseIdentifier: "Cell")
         tableView.dataSource = self
         tableView.delegate = self
-        tableView.rowHeight = view.frame.width * 0.5625 + 75
         tableView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(tableView)
         view.addConstraints([
@@ -64,6 +73,13 @@ class SubscriptionFeedViewController: UIViewController {
 //            })
 //        }
 
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(self.refresh),
+                                               name: NSNotification.Name("AppDelegate.authentication.loggedIn"),
+                                               object: nil)
+    }
+
+    @objc func refresh() {
         tableView.am.pullToRefreshView?.trigger()
     }
 
@@ -107,8 +123,22 @@ extension SubscriptionFeedViewController: UITableViewDataSource {
 extension SubscriptionFeedViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
         if let videoID = items[indexPath.row].videoID {
-            let videoDetailView = viewTransition.createVideoDetailViewController(withID: videoID)
-            present(videoDetailView, animated: true, completion: nil)
+            self.delegate?.didSelectVideo(self, withID: videoID)
+            
+            // TODO Show error if required
+            PlaybackManager.shared.playNow(videoID: videoID).startWithResult { _ in
+                DispatchQueue.main.async {
+                    self.performSegue(withIdentifier: "showDetail", sender: self)
+                }
+            }
+//            if let splitViewController = splitViewController {
+//                let detailViewController = splitViewController.viewControllers.last ?? DetailViewController()
+//                splitViewController.showDetailViewController(detailViewController, sender: nil)
+//            }
+
+//            window?.rootViewController as? UISplitViewController
+//            let videoDetailView = viewTransition.createVideoDetailViewController(withID: videoID)
+//            present(videoDetailView, animated: true, completion: nil)
         }
         return nil
     }

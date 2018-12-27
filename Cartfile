@@ -3,3 +3,4 @@ github "themegatb/YoutubeKit" "master"
 github "Juanpe/SkeletonView"
 github "https://github.com/fabio914/GoogleSignIn-iOS" ~> 4.2
 github "onevcat/Kingfisher" ~> 4.0
+github "ReactiveCocoa/ReactiveSwift" ~> 3.0
