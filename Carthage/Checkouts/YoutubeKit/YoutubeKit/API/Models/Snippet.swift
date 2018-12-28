@@ -41,7 +41,7 @@ extension Snippet {
         public let publishedAt: String
         public let channelTitle: String
         public let channelID: String
-        public let description: String
+        public let description: String?
         public let title: String?
         public let thumbnails: Thumbnails.ActivityList
         public let type: String

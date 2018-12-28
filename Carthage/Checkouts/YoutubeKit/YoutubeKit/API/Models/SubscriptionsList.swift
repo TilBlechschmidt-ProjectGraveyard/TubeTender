@@ -12,6 +12,7 @@ public struct SubscriptionsList: Codable {
     public let items: [Subscription]
     public let kind: String
     public let pageInfo: PageInfo
+    public let nextPageToken: String?
 }
 
 public struct Subscription: Codable {
