@@ -10,6 +10,7 @@
 		3005DC64219B767D0002F6A1 /* PlayerControlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3005DC63219B767D0002F6A1 /* PlayerControlView.swift */; };
 		300F296721D59F2900C9B0B0 /* Video.swift in Sources */ = {isa = PBXBuildFile; fileRef = 300F296621D59F2900C9B0B0 /* Video.swift */; };
 		300F296921D6C80600C9B0B0 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 300F296821D6C80600C9B0B0 /* Default-568h@2x.png */; };
+		301628BA21DEA7F00049203F /* ChannelMetadataAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301628B921DEA7F00049203F /* ChannelMetadataAPI.swift */; };
 		302D03FF216E197A009FC2E5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 302D03FE216E197A009FC2E5 /* AppDelegate.swift */; };
 		302D0404216E197A009FC2E5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 302D0402216E197A009FC2E5 /* Main.storyboard */; };
 		302D0406216E197C009FC2E5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 302D0405216E197C009FC2E5 /* Assets.xcassets */; };
@@ -43,6 +44,12 @@
 		30370F5F21776D3400B35ACF /* UIImageView+URL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30370F5E21776D3400B35ACF /* UIImageView+URL.swift */; };
 		30370F612177769800B35ACF /* String+FancyFormatting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30370F602177769800B35ACF /* String+FancyFormatting.swift */; };
 		30370F632177D75100B35ACF /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30370F622177D75100B35ACF /* MainViewController.swift */; };
+		3067715121DA32BC009AA051 /* PlayerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3067715021DA32BC009AA051 /* PlayerProtocol.swift */; };
+		3067715321DA32E4009AA051 /* VLCPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3067715221DA32E4009AA051 /* VLCPlayer.swift */; };
+		3067715521DA4CD9009AA051 /* NativePlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3067715421DA4CD9009AA051 /* NativePlayer.swift */; };
+		30988C1F21DEBF5C0070D14A /* TubeTender.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 30988C1D21DEBF5C0070D14A /* TubeTender.xcdatamodeld */; };
+		30988C2121DEC0BD0070D14A /* CoreStore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 30988C2021DEC0BC0070D14A /* CoreStore.framework */; };
+		30988C2221DEC0C70070D14A /* CoreStore.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 30988C2021DEC0BC0070D14A /* CoreStore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		30A81A3721D539F600FBE8EE /* VideoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30A81A3621D539F600FBE8EE /* VideoViewController.swift */; };
 		30A81A3A21D53A7D00FBE8EE /* VideoMetadataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30A81A3921D53A7D00FBE8EE /* VideoMetadataViewController.swift */; };
 		30A81A3E21D53E9500FBE8EE /* VideoMetadataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30A81A3D21D53E9500FBE8EE /* VideoMetadataView.swift */; };
@@ -53,6 +60,8 @@
 		30ABE21D21905D8900E4FEA4 /* PlaybackManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30ABE21C21905D8900E4FEA4 /* PlaybackManager.swift */; };
 		30ABE21F21905F5800E4FEA4 /* Queue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30ABE21E21905F5800E4FEA4 /* Queue.swift */; };
 		30ABE2212190B48E00E4FEA4 /* PlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30ABE2202190B48E00E4FEA4 /* PlayerViewController.swift */; };
+		30B1EB4B21DC0E9800B16CA2 /* DownloadButton.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B1EB4A21DC0E9800B16CA2 /* DownloadButton.framework */; };
+		30B1EB4C21DC0EA300B16CA2 /* DownloadButton.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 30B1EB4A21DC0E9800B16CA2 /* DownloadButton.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		30BAB76021787D0D00B01953 /* GoogleSignIn.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 30BAB75F21787D0D00B01953 /* GoogleSignIn.framework */; };
 		30BAB76121787D1700B01953 /* GoogleSignIn.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 30BAB75F21787D0D00B01953 /* GoogleSignIn.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		30BAB76321787EB100B01953 /* SignInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30BAB76221787EB100B01953 /* SignInViewController.swift */; };
@@ -70,7 +79,12 @@
 		30D91B71218F6C810020C814 /* Result.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 30D91B6F218F6C810020C814 /* Result.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		30D91B72218F6CB40020C814 /* ReactiveSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 30D91B6E218F6C810020C814 /* ReactiveSwift.framework */; };
 		30D91B73218F6CB40020C814 /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 30D91B6F218F6C810020C814 /* Result.framework */; };
+		30F2E38721DCFAF9005EFCA9 /* DownloadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30F2E38621DCFAF9005EFCA9 /* DownloadManager.swift */; };
+		30F2E38921DD059D005EFCA9 /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 30F2E38821DD059D005EFCA9 /* Alamofire.framework */; };
+		30F2E38A21DD05A5005EFCA9 /* Alamofire.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 30F2E38821DD059D005EFCA9 /* Alamofire.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		30F2E38C21DD4D14005EFCA9 /* Alamofire+ReactiveSwift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30F2E38B21DD4D14005EFCA9 /* Alamofire+ReactiveSwift.swift */; };
 		30F48900219CD3E1002FAE36 /* SplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30F488FF219CD3E0002FAE36 /* SplitViewController.swift */; };
+		30F66C7021DF78E300BBBBD8 /* VideoDownloadButtonViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30F66C6F21DF78E300BBBBD8 /* VideoDownloadButtonViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -80,6 +94,9 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				30988C2221DEC0C70070D14A /* CoreStore.framework in CopyFiles */,
+				30F2E38A21DD05A5005EFCA9 /* Alamofire.framework in CopyFiles */,
+				30B1EB4C21DC0EA300B16CA2 /* DownloadButton.framework in CopyFiles */,
 				30D91B70218F6C810020C814 /* ReactiveSwift.framework in CopyFiles */,
 				30D91B71218F6C810020C814 /* Result.framework in CopyFiles */,
 				30BAB7782178C96C00B01953 /* Kingfisher.framework in CopyFiles */,
@@ -95,6 +112,7 @@
 		3005DC63219B767D0002F6A1 /* PlayerControlView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerControlView.swift; sourceTree = "<group>"; };
 		300F296621D59F2900C9B0B0 /* Video.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Video.swift; sourceTree = "<group>"; };
 		300F296821D6C80600C9B0B0 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+		301628B921DEA7F00049203F /* ChannelMetadataAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelMetadataAPI.swift; sourceTree = "<group>"; };
 		302D03FB216E197A009FC2E5 /* TubeTender.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TubeTender.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		302D03FE216E197A009FC2E5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		302D0403216E197A009FC2E5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -129,6 +147,11 @@
 		30370F5E21776D3400B35ACF /* UIImageView+URL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+URL.swift"; sourceTree = "<group>"; };
 		30370F602177769800B35ACF /* String+FancyFormatting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+FancyFormatting.swift"; sourceTree = "<group>"; };
 		30370F622177D75100B35ACF /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
+		3067715021DA32BC009AA051 /* PlayerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerProtocol.swift; sourceTree = "<group>"; };
+		3067715221DA32E4009AA051 /* VLCPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VLCPlayer.swift; sourceTree = "<group>"; };
+		3067715421DA4CD9009AA051 /* NativePlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativePlayer.swift; sourceTree = "<group>"; };
+		30988C1E21DEBF5C0070D14A /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
+		30988C2021DEC0BC0070D14A /* CoreStore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreStore.framework; path = Carthage/Build/iOS/CoreStore.framework; sourceTree = "<group>"; };
 		30A81A3621D539F600FBE8EE /* VideoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoViewController.swift; sourceTree = "<group>"; };
 		30A81A3921D53A7D00FBE8EE /* VideoMetadataViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoMetadataViewController.swift; sourceTree = "<group>"; };
 		30A81A3D21D53E9500FBE8EE /* VideoMetadataView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoMetadataView.swift; sourceTree = "<group>"; };
@@ -139,6 +162,7 @@
 		30ABE21C21905D8900E4FEA4 /* PlaybackManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackManager.swift; sourceTree = "<group>"; };
 		30ABE21E21905F5800E4FEA4 /* Queue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Queue.swift; sourceTree = "<group>"; };
 		30ABE2202190B48E00E4FEA4 /* PlayerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerViewController.swift; sourceTree = "<group>"; };
+		30B1EB4A21DC0E9800B16CA2 /* DownloadButton.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DownloadButton.framework; path = Carthage/Build/iOS/DownloadButton.framework; sourceTree = "<group>"; };
 		30BAB75F21787D0D00B01953 /* GoogleSignIn.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GoogleSignIn.framework; path = Carthage/Build/iOS/GoogleSignIn.framework; sourceTree = "<group>"; };
 		30BAB76221787EB100B01953 /* SignInViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInViewController.swift; sourceTree = "<group>"; };
 		30BAB764217893E400B01953 /* SubscriptionFeedAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionFeedAPI.swift; sourceTree = "<group>"; };
@@ -152,7 +176,11 @@
 		30BE79BA216FF73F00E6B281 /* AnimatablePlayButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatablePlayButton.swift; sourceTree = "<group>"; };
 		30D91B6E218F6C810020C814 /* ReactiveSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReactiveSwift.framework; path = Carthage/Build/iOS/ReactiveSwift.framework; sourceTree = "<group>"; };
 		30D91B6F218F6C810020C814 /* Result.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Result.framework; path = Carthage/Build/iOS/Result.framework; sourceTree = "<group>"; };
+		30F2E38621DCFAF9005EFCA9 /* DownloadManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadManager.swift; sourceTree = "<group>"; };
+		30F2E38821DD059D005EFCA9 /* Alamofire.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Alamofire.framework; path = Carthage/Build/iOS/Alamofire.framework; sourceTree = "<group>"; };
+		30F2E38B21DD4D14005EFCA9 /* Alamofire+ReactiveSwift.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Alamofire+ReactiveSwift.swift"; sourceTree = "<group>"; };
 		30F488FF219CD3E0002FAE36 /* SplitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitViewController.swift; sourceTree = "<group>"; };
+		30F66C6F21DF78E300BBBBD8 /* VideoDownloadButtonViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoDownloadButtonViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -160,6 +188,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				30988C2121DEC0BD0070D14A /* CoreStore.framework in Frameworks */,
+				30F2E38921DD059D005EFCA9 /* Alamofire.framework in Frameworks */,
+				30B1EB4B21DC0E9800B16CA2 /* DownloadButton.framework in Frameworks */,
 				30D91B72218F6CB40020C814 /* ReactiveSwift.framework in Frameworks */,
 				30D91B73218F6CB40020C814 /* Result.framework in Frameworks */,
 				30BAB7772178C96300B01953 /* Kingfisher.framework in Frameworks */,
@@ -226,6 +257,7 @@
 				302D041A216E76B7009FC2E5 /* Extensions */,
 				30370F662177E05D00B35ACF /* Helpers */,
 				30A81A3B21D53AF800FBE8EE /* DataSources */,
+				3067715621DA5681009AA051 /* Playback */,
 				30BAB7692178B44400B01953 /* Views */,
 				30BE79BA216FF73F00E6B281 /* AnimatablePlayButton.swift */,
 			);
@@ -239,6 +271,7 @@
 				302D0407216E197C009FC2E5 /* LaunchScreen.storyboard */,
 				302D040A216E197C009FC2E5 /* Info.plist */,
 				302D0427216F3DD0009FC2E5 /* Bridging-Header.h */,
+				30988C1D21DEBF5C0070D14A /* TubeTender.xcdatamodeld */,
 			);
 			path = "Support Files";
 			sourceTree = "<group>";
@@ -255,6 +288,7 @@
 				30BAB76C2178B4F800B01953 /* AMRefresher */,
 				30ABE213218F928A00E4FEA4 /* ArrayComparable.swift */,
 				300F296621D59F2900C9B0B0 /* Video.swift */,
+				30F2E38B21DD4D14005EFCA9 /* Alamofire+ReactiveSwift.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -262,6 +296,9 @@
 		302D0423216F3D98009FC2E5 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				30988C2021DEC0BC0070D14A /* CoreStore.framework */,
+				30F2E38821DD059D005EFCA9 /* Alamofire.framework */,
+				30B1EB4A21DC0E9800B16CA2 /* DownloadButton.framework */,
 				30D91B6E218F6C810020C814 /* ReactiveSwift.framework */,
 				30D91B6F218F6C810020C814 /* Result.framework */,
 				30BAB7762178C96300B01953 /* Kingfisher.framework */,
@@ -294,9 +331,27 @@
 			isa = PBXGroup;
 			children = (
 				30ABE21E21905F5800E4FEA4 /* Queue.swift */,
-				30ABE21C21905D8900E4FEA4 /* PlaybackManager.swift */,
 			);
 			path = Helpers;
+			sourceTree = "<group>";
+		};
+		3067714F21DA32B0009AA051 /* Player */ = {
+			isa = PBXGroup;
+			children = (
+				3067715021DA32BC009AA051 /* PlayerProtocol.swift */,
+				3067715221DA32E4009AA051 /* VLCPlayer.swift */,
+				3067715421DA4CD9009AA051 /* NativePlayer.swift */,
+			);
+			path = Player;
+			sourceTree = "<group>";
+		};
+		3067715621DA5681009AA051 /* Playback */ = {
+			isa = PBXGroup;
+			children = (
+				30ABE21C21905D8900E4FEA4 /* PlaybackManager.swift */,
+				3067714F21DA32B0009AA051 /* Player */,
+			);
+			path = Playback;
 			sourceTree = "<group>";
 		};
 		30A81A3821D53A5F00FBE8EE /* VideoView */ = {
@@ -305,6 +360,7 @@
 				30A81A3621D539F600FBE8EE /* VideoViewController.swift */,
 				30A81A3921D53A7D00FBE8EE /* VideoMetadataViewController.swift */,
 				30A81A3D21D53E9500FBE8EE /* VideoMetadataView.swift */,
+				30F66C6F21DF78E300BBBBD8 /* VideoDownloadButtonViewController.swift */,
 			);
 			path = VideoView;
 			sourceTree = "<group>";
@@ -314,6 +370,8 @@
 			children = (
 				30BAB764217893E400B01953 /* SubscriptionFeedAPI.swift */,
 				302FB83F21D58A8A00A82363 /* VideoMetadataAPI.swift */,
+				301628B921DEA7F00049203F /* ChannelMetadataAPI.swift */,
+				30F2E38621DCFAF9005EFCA9 /* DownloadManager.swift */,
 				30A81A3C21D53C4400FBE8EE /* VideoStreams */,
 			);
 			path = DataSources;
@@ -447,25 +505,33 @@
 				30A81A3E21D53E9500FBE8EE /* VideoMetadataView.swift in Sources */,
 				300F296721D59F2900C9B0B0 /* Video.swift in Sources */,
 				30370F612177769800B35ACF /* String+FancyFormatting.swift in Sources */,
+				3067715121DA32BC009AA051 /* PlayerProtocol.swift in Sources */,
+				3067715321DA32E4009AA051 /* VLCPlayer.swift in Sources */,
 				30ABE2212190B48E00E4FEA4 /* PlayerViewController.swift in Sources */,
 				30ABE214218F928A00E4FEA4 /* ArrayComparable.swift in Sources */,
 				302D0417216E7535009FC2E5 /* SimpleRegexMatcher.swift in Sources */,
 				302FB83E21D5886B00A82363 /* DateFormatter+ISO8601Full.swift in Sources */,
+				30F66C7021DF78E300BBBBD8 /* VideoDownloadButtonViewController.swift in Sources */,
 				30ABE219218F965500E4FEA4 /* VideoStreamAPIResponse.swift in Sources */,
 				30370F632177D75100B35ACF /* MainViewController.swift in Sources */,
 				30ABE21B218F9D3500E4FEA4 /* VideoStreamManager.swift in Sources */,
 				30BAB7712178B4F800B01953 /* AMPullToRefresh.swift in Sources */,
 				30A81A3A21D53A7D00FBE8EE /* VideoMetadataViewController.swift in Sources */,
+				30988C1F21DEBF5C0070D14A /* TubeTender.xcdatamodeld in Sources */,
+				301628BA21DEA7F00049203F /* ChannelMetadataAPI.swift in Sources */,
 				302FB84021D58A8A00A82363 /* VideoMetadataAPI.swift in Sources */,
+				30F2E38C21DD4D14005EFCA9 /* Alamofire+ReactiveSwift.swift in Sources */,
 				30A81A3721D539F600FBE8EE /* VideoViewController.swift in Sources */,
 				30F48900219CD3E1002FAE36 /* SplitViewController.swift in Sources */,
 				30370F5521763F6000B35ACF /* VLCTime+Float.swift in Sources */,
 				302D03FF216E197A009FC2E5 /* AppDelegate.swift in Sources */,
 				30BAB76321787EB100B01953 /* SignInViewController.swift in Sources */,
+				30F2E38721DCFAF9005EFCA9 /* DownloadManager.swift in Sources */,
 				30BAB765217893E400B01953 /* SubscriptionFeedAPI.swift in Sources */,
 				3005DC64219B767D0002F6A1 /* PlayerControlView.swift in Sources */,
 				30BE79BB216FF73F00E6B281 /* AnimatablePlayButton.swift in Sources */,
 				30BAB7702178B4F800B01953 /* AMInfiniteScrolling.swift in Sources */,
+				3067715521DA4CD9009AA051 /* NativePlayer.swift in Sources */,
 				30ABE21F21905F5800E4FEA4 /* Queue.swift in Sources */,
 				30BAB7752178BBC500B01953 /* SubscriptionFeedTableCell.swift in Sources */,
 				30BAB77A2178CDFF00B01953 /* Date+Since.swift in Sources */,
@@ -682,6 +748,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		30988C1D21DEBF5C0070D14A /* TubeTender.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				30988C1E21DEBF5C0070D14A /* Model.xcdatamodel */,
+			);
+			currentVersion = 30988C1E21DEBF5C0070D14A /* Model.xcdatamodel */;
+			path = TubeTender.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 302D03F3216E197A009FC2E5 /* Project object */;
 }

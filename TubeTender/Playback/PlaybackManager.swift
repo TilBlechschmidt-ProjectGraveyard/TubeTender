@@ -312,6 +312,7 @@ class PlaybackManager: NSObject {
 
     private func updatePlayer() {
         // TODO Handle if we are in PiP mode
+        // TODO Handle if we were playing previously and resume
         if let selectedSource = selectedSource, let videoUrl = URL(string: selectedSource.video.url) {
             vlcMediaPlayer.media = VLCMedia(url: videoUrl)
 
@@ -331,7 +332,7 @@ extension PlaybackManager: VLCMediaPlayerDelegate {
     }
 
     func mediaPlayerStateChanged(_ aNotification: Notification!) {
-        let currentState: VLCMediaPlayerState  = vlcMediaPlayer.state;
+        let currentState: VLCMediaPlayerState  = vlcMediaPlayer.state
 
         // TODO Take a look at isPlaying and willPlay
 
@@ -372,6 +373,8 @@ extension PlaybackManager: VLCMediaPlayerDelegate {
         default:
             break;
         }
+
+        print(currentState.rawValue, vlcMediaPlayer.isPlaying, vlcMediaPlayer.media?.state.rawValue)
 
         previousState = currentState
     }

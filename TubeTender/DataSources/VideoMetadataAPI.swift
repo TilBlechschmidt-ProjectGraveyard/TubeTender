@@ -6,7 +6,6 @@
 //  Copyright © 2018 Til Blechschmidt. All rights reserved.
 //
 
-import Foundation
 import YoutubeKit
 import ReactiveSwift
 
@@ -25,6 +24,17 @@ class VideoMetadataAPI {
         return SignalProducer(videoIDs).flatMap(.concurrent(limit: 25)) {
             self.fetchMetadata(forVideo: $0)
         }.collect()
+    }
+
+    func thumbnailURL(forVideo videoID: VideoID) -> SignalProducer<URL, VideoMetadataAPIError> {
+        // TODO If we are offline ask the DownloadManager instead.
+        return fetchMetadata(forVideo: videoID, withParts: [.snippet]).attemptMap { videoMetadata in
+            if let urlString = videoMetadata.snippet?.thumbnails.high.url, let url = URL(string: urlString) {
+                return .success(url)
+            } else {
+                return .failure(VideoMetadataAPIError.notFound)
+            }
+        }
     }
 
     func fetchMetadata(forVideo videoID: VideoID, withParts parts: [Part.VideoList] = VideoMetadataAPI.defaultVideoListParts) -> SignalProducer<Video, VideoMetadataAPIError> {

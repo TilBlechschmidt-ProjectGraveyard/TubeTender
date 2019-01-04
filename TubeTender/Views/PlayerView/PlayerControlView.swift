@@ -36,10 +36,13 @@ class PlayerControlView: UIView {
             if isFullscreenActive {
                 regularConstraints.forEach { $0.isActive = false }
                 fullscreenConstraints.forEach { $0.isActive = true }
+                fullscreenButton.setImage(UIImage(named: "compact"), for: .normal)
             } else {
                 fullscreenConstraints.forEach { $0.isActive = false }
                 regularConstraints.forEach { $0.isActive = true }
+                fullscreenButton.setImage(UIImage(named: "enlarge"), for: .normal)
             }
+
             // Hide/show the progress bar
             UIView.animate(withDuration: 0.4, animations: {
                 self.layoutIfNeeded()
@@ -157,7 +160,7 @@ class PlayerControlView: UIView {
         ])
 
         // Add blur to TLCV
-        let blurEffect = UIBlurEffect(style: UIBlurEffect.Style.dark)
+        let blurEffect = UIBlurEffect(style: UIBlurEffect.Style.regular)
         let blurEffectView = UIVisualEffectView(effect: blurEffect)
         blurEffectView.frame = topLeftControlView.bounds
         blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
@@ -189,10 +192,7 @@ class PlayerControlView: UIView {
 
         let fullscreenButtonLeftAnchor = pipSupported ? pictureInPictureButton.rightAnchor : topLeftControlView.leftAnchor
         fullscreenButton = UIButton(type: .roundedRect)
-        fullscreenButton.setImage(
-            AVPictureInPictureController.pictureInPictureButtonStartImage(compatibleWith: nil),
-            for: .normal
-        )
+        fullscreenButton.setImage(UIImage(named: "enlarge"), for: .normal)
         fullscreenButton.tintColor = UIColor.white
         fullscreenButton.translatesAutoresizingMaskIntoConstraints = false
         topLeftControlView.addSubview(fullscreenButton)
@@ -200,11 +200,29 @@ class PlayerControlView: UIView {
             fullscreenButton.topAnchor.constraint(equalTo: topLeftControlView.topAnchor, constant: 10),
             fullscreenButton.bottomAnchor.constraint(equalTo: topLeftControlView.bottomAnchor, constant: -10),
             fullscreenButton.leftAnchor.constraint(equalTo: fullscreenButtonLeftAnchor, constant: 10),
-            fullscreenButton.rightAnchor.constraint(equalTo: topLeftControlView.rightAnchor, constant: -10)
+            fullscreenButton.rightAnchor.constraint(equalTo: topLeftControlView.rightAnchor, constant: -10),
+            fullscreenButton.heightAnchor.constraint(lessThanOrEqualToConstant: 22),
+            fullscreenButton.widthAnchor.constraint(equalTo: fullscreenButton.heightAnchor)
         ])
 
         // Activate the regular constraints
         regularConstraints.forEach { $0.isActive = true }
+
+        // Random experiments with blurs
+//        let testBlurEffect = UIBlurEffect(style: UIBlurEffect.Style.regular)
+//        let testBlurEffectView = UIVisualEffectView(effect: testBlurEffect)
+//        testBlurEffectView.frame = controlView.bounds
+//        testBlurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+//        testBlurEffectView.isUserInteractionEnabled = false
+//        testBlurEffectView.clipsToBounds = true
+//        controlView.addSubview(testBlurEffectView)
+//        controlView.sendSubviewToBack(testBlurEffectView)
+//
+//        let gradient = CAGradientLayer()
+//        gradient.colors = [UIColor.clear.cgColor, UIColor.black.cgColor, UIColor.black.cgColor, UIColor.clear.cgColor]
+//        gradient.locations = [0, 0.1, 0.9, 1]
+//        gradient.frame = blurEffectView.bounds
+//        blurEffectView.layer.mask = gradient
     }
 
     required init?(coder aDecoder: NSCoder) {

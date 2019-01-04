@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="wgw-QZ-Rcy">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
     <dependencies>
+        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -11,58 +15,74 @@
             <objects>
                 <viewController id="Crc-1h-dJJ" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="2GI-AA-4xe">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <color key="backgroundColor" red="0.14117647058823529" green="0.14117647058823529" blue="0.14117647058823529" alpha="1" colorSpace="calibratedRGB"/>
                         <viewLayoutGuide key="safeArea" id="2SB-Ft-sRP"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Search" id="oH3-9Y-pmO"/>
+                    <tabBarItem key="tabBarItem" title="Search" image="search" id="oH3-9Y-pmO"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="2J0-hm-YNN" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3626" y="615"/>
+            <point key="canvasLocation" x="3326" y="618"/>
         </scene>
         <!--Subscriptions-->
         <scene sceneID="9jB-X1-DHM">
             <objects>
-                <viewController id="ihM-VG-5Ms" customClass="SubscriptionFeedViewController" customModule="Pivo" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="ihM-VG-5Ms" customClass="SubscriptionFeedViewController" customModule="TubeTender" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="jtb-h1-but">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <color key="backgroundColor" red="0.14117647059999999" green="0.14117647059999999" blue="0.14117647059999999" alpha="1" colorSpace="calibratedRGB"/>
                         <viewLayoutGuide key="safeArea" id="nI9-qP-D2B"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Subscriptions" id="eFG-mM-XXH"/>
+                    <tabBarItem key="tabBarItem" title="Subscriptions" image="movie" id="eFG-mM-XXH"/>
                     <connections>
                         <segue destination="Whn-VZ-uqs" kind="showDetail" identifier="showDetail" id="Mgp-de-dtp"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Rrj-0c-TLI" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2967" y="613"/>
+            <point key="canvasLocation" x="2694" y="618"/>
         </scene>
         <!--Settings-->
         <scene sceneID="8BZ-6F-4Jj">
             <objects>
-                <viewController id="XAp-jf-fdy" customClass="SignInViewController" customModule="Pivo" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="XAp-jf-fdy" customClass="SignInViewController" customModule="TubeTender" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="ai2-ws-rWg">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <color key="backgroundColor" red="0.14117647059999999" green="0.14117647059999999" blue="0.14117647059999999" alpha="1" colorSpace="calibratedRGB"/>
                         <viewLayoutGuide key="safeArea" id="OCo-Fn-LRS"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Settings" id="Jwz-Ny-EDx"/>
+                    <tabBarItem key="tabBarItem" title="Settings" image="settings" id="Jwz-Ny-EDx"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="eau-5X-NvD" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="4303" y="614"/>
+            <point key="canvasLocation" x="4578" y="618"/>
+        </scene>
+        <!--Downloads-->
+        <scene sceneID="H8B-xX-Qzq">
+            <objects>
+                <viewController title="Downloads" id="nrn-FA-1v5" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="ktG-Xr-0fT">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" red="0.14117647059999999" green="0.14117647059999999" blue="0.14117647059999999" alpha="1" colorSpace="calibratedRGB"/>
+                        <viewLayoutGuide key="safeArea" id="nMR-QY-Cxu"/>
+                    </view>
+                    <tabBarItem key="tabBarItem" title="Downloads" image="download" id="kB8-jc-aTx"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dKv-Vf-Dnr" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3954" y="618"/>
         </scene>
         <!--Video View Controller-->
         <scene sceneID="K6y-lr-Pht">
             <objects>
-                <viewController storyboardIdentifier="detailViewController" modalTransitionStyle="crossDissolve" id="Whn-VZ-uqs" customClass="VideoViewController" customModule="Pivo" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="detailViewController" modalTransitionStyle="crossDissolve" id="Whn-VZ-uqs" customClass="VideoViewController" customModule="TubeTender" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="nLV-qp-fTI">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <viewLayoutGuide key="safeArea" id="KfY-Wh-mpD"/>
@@ -76,6 +96,7 @@
         <scene sceneID="TBL-Ye-qwE">
             <objects>
                 <tabBarController id="AhQ-g6-vGm" sceneMemberID="viewController">
+                    <extendedEdge key="edgesForExtendedLayout" top="YES"/>
                     <navigationItem key="navigationItem" id="CFL-of-zi4"/>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics" barStyle="black"/>
                     <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" barStyle="black" id="u9T-Ko-3tp">
@@ -86,6 +107,7 @@
                     <connections>
                         <segue destination="ihM-VG-5Ms" kind="relationship" relationship="viewControllers" id="Fjm-VO-8bJ"/>
                         <segue destination="Crc-1h-dJJ" kind="relationship" relationship="viewControllers" id="sOS-Eu-PsC"/>
+                        <segue destination="nrn-FA-1v5" kind="relationship" relationship="viewControllers" id="Srg-JQ-3tX"/>
                         <segue destination="XAp-jf-fdy" kind="relationship" relationship="viewControllers" id="sTY-nU-Tma"/>
                     </connections>
                 </tabBarController>
@@ -112,7 +134,7 @@
         <!--Split View Controller-->
         <scene sceneID="1OY-nQ-okK">
             <objects>
-                <splitViewController definesPresentationContext="YES" modalTransitionStyle="crossDissolve" id="wgw-QZ-Rcy" customClass="SplitViewController" customModule="Pivo" customModuleProvider="target" sceneMemberID="viewController">
+                <splitViewController definesPresentationContext="YES" modalTransitionStyle="crossDissolve" id="wgw-QZ-Rcy" customClass="SplitViewController" customModule="TubeTender" customModuleProvider="target" sceneMemberID="viewController">
                     <connections>
                         <segue destination="paK-Vb-wfy" kind="relationship" relationship="masterViewController" id="IUB-TI-6Xc"/>
                         <segue destination="Whn-VZ-uqs" kind="relationship" relationship="detailViewController" id="WwH-60-ddM"/>
@@ -123,7 +145,13 @@
             <point key="canvasLocation" x="733" y="176"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="download" width="30" height="30"/>
+        <image name="movie" width="30" height="30"/>
+        <image name="search" width="30" height="30"/>
+        <image name="settings" width="30" height="30"/>
+    </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="WwH-60-ddM"/>
+        <segue reference="Mgp-de-dtp"/>
     </inferredMetricsTieBreakers>
 </document>

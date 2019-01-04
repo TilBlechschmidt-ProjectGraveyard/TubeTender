@@ -8,15 +8,21 @@
 
 import UIKit
 import YoutubeKit
+import ReactiveSwift
 
 class VideoMetadataViewController: UIViewController {
     let videoMetadataView = VideoMetadataView()
 
     var videoID: String! {
         didSet {
-            fetchVideoDetails()
+            if oldValue != videoID {
+                downloadButtonViewController.videoID = videoID
+                fetchVideoDetails()
+            }
         }
     }
+
+    private let downloadButtonViewController = VideoDownloadButtonViewController()
 
     private static let numberFormatter: NumberFormatter = {
         let formatter = NumberFormatter()
@@ -28,6 +34,7 @@ class VideoMetadataViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        videoMetadataView.downloadButtonView = downloadButtonViewController.view
         videoMetadataView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(videoMetadataView)
         view.addConstraints([
@@ -38,13 +45,15 @@ class VideoMetadataViewController: UIViewController {
         ])
     }
 
-    func fetchVideoDetails() {
-        let request = VideoListRequest(part: [.snippet, .statistics], filter: .id(videoID))
 
-        ApiSession.shared.send(request) { result in
-            switch result {
-            case .success(let response):
-                if let snippet = response.items.first?.snippet, let stats = response.items.first?.statistics {
+    func fetchVideoDetails() {
+        VideoMetadataAPI.shared.fetchMetadata(forVideo: videoID!, withParts: [.snippet, .statistics])
+            .startWithResult() { result in
+                switch result {
+                case .success(let videoMetadata):
+                    let snippet = videoMetadata.snippet!
+                    let stats = videoMetadata.statistics!
+
                     DispatchQueue.main.async {
                         self.videoMetadataView.videoTitle.text = snippet.title
 
@@ -54,39 +63,38 @@ class VideoMetadataViewController: UIViewController {
                         }
 
                         self.videoMetadataView.videoDescriptionView.text = snippet.description
-                    }
 
-                    self.fetchChannelDetails(forID: snippet.channelID)
+                        self.fetchChannelDetails(forID: snippet.channelID)
+                    }
+                case .failure(let error):
+                    print(error)
                 }
-            case .failed(let error):
-                // TODO Show error message
-                print(error)
             }
-        }
     }
 
     func fetchChannelDetails(forID channelID: String) {
-        let request = ChannelListRequest(part: [.snippet, .statistics, .topicDetails], filter: .id(channelID))
-
-        ApiSession.shared.send(request) { result in
+        ChannelMetadataAPI.shared.fetchMetadata(forChannel: channelID, withParts: [.snippet, .statistics]).startWithResult() { result in
             switch result {
-            case .success(let response):
-                if let snippet = response.items.first?.snippet, let stats = response.items.first?.statistics {
-                    DispatchQueue.main.async {
-                        self.videoMetadataView.channelTitle.text = snippet.title
+            case .success(let channelMetadata):
+                let snippet = channelMetadata.snippet!
+                let stats = channelMetadata.statistics!
 
-                        if let subscriberCount = Int(stats.subscriberCount) {
-                            self.videoMetadataView.channelSubscriberCount.text = "\(subscriberCount.unitFormatted) subscribers"
-                        }
+                DispatchQueue.main.async {
+                    self.videoMetadataView.channelTitle.text = snippet.title
 
-                        if let thumbnailURL = snippet.thumbnails.default.url {
-                            self.videoMetadataView.channelThumbnail.downloaded(from: thumbnailURL)
-                        }
+                    if let subscriberCount = Int(stats.subscriberCount) {
+                        self.videoMetadataView.channelSubscriberCount.text = "\(subscriberCount.unitFormatted) subscribers"
                     }
                 }
-            case .failed(let error):
-                // TODO Show error message
+            case .failure(let error):
                 print(error)
+            }
+        }
+
+        ChannelMetadataAPI.shared.thumbnailURL(forChannel: channelID).startWithResult {
+            if let iconURL = $0.value {
+                self.videoMetadataView.channelThumbnail.kf.indicatorType = .activity
+                self.videoMetadataView.channelThumbnail.kf.setImage(with: iconURL, options: [.transition(.fade(0.5))])
             }
         }
     }

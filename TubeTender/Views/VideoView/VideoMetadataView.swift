@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import DownloadButton
 
 class VideoMetadataView: UIView {
     let uiPadding: CGFloat = 15.0
@@ -20,6 +21,19 @@ class VideoMetadataView: UIView {
     private let detailView = UIView()
     let videoTitle = UILabel()
     let viewCount = UILabel()
+
+    // Video detail buttons
+    let detailButtonView = UIView()
+    var downloadButtonView: UIView! {
+        didSet {
+            downloadButtonView.translatesAutoresizingMaskIntoConstraints = false
+            detailButtonView.addSubview(downloadButtonView)
+            detailButtonView.addConstraints([
+                downloadButtonView.rightAnchor.constraint(equalTo: detailButtonView.rightAnchor),
+                downloadButtonView.centerYAnchor.constraint(equalTo: detailButtonView.centerYAnchor)
+            ])
+        }
+    }
 
     // Channel
     private let channelView = UIView()
@@ -89,8 +103,7 @@ class VideoMetadataView: UIView {
         videoTitle.translatesAutoresizingMaskIntoConstraints = false
         detailView.addConstraints([
             videoTitle.topAnchor.constraint(equalTo: detailView.topAnchor, constant: uiPadding),
-            videoTitle.leftAnchor.constraint(equalTo: detailView.leftAnchor, constant: uiPadding),
-            videoTitle.rightAnchor.constraint(equalTo: detailView.rightAnchor, constant: -uiPadding)
+            videoTitle.leftAnchor.constraint(equalTo: detailView.leftAnchor, constant: uiPadding)
         ])
 
         viewCount.font = viewCount.font.withSize(11)
@@ -102,6 +115,15 @@ class VideoMetadataView: UIView {
             viewCount.leftAnchor.constraint(equalTo: videoTitle.leftAnchor),
             viewCount.rightAnchor.constraint(equalTo: videoTitle.rightAnchor),
             viewCount.bottomAnchor.constraint(equalTo: detailView.bottomAnchor, constant: -uiPadding),
+        ])
+
+        detailButtonView.translatesAutoresizingMaskIntoConstraints = false
+        detailView.addSubview(detailButtonView)
+        detailView.addConstraints([
+            detailButtonView.topAnchor.constraint(equalTo: detailView.topAnchor, constant: uiPadding),
+            detailButtonView.leftAnchor.constraint(equalTo: videoTitle.rightAnchor, constant: uiPadding),
+            detailButtonView.rightAnchor.constraint(equalTo: detailView.rightAnchor, constant: -uiPadding),
+            detailButtonView.bottomAnchor.constraint(equalTo: detailView.bottomAnchor, constant: -uiPadding)
         ])
     }
 

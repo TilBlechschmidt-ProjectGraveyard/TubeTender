@@ -9,7 +9,7 @@
 import UIKit
 
 class VideoViewController: UIViewController {
-    private let logoView = UIImageView()
+    private let emptyView = UIView() // UIImageView()
     private let videoView = UIView()
     private let playerViewController = PlayerViewController()
     private let videoDetailViewController = VideoMetadataViewController()
@@ -24,23 +24,42 @@ class VideoViewController: UIViewController {
         // PlayerViewController setup
         playerViewController.delegate = self
         playerViewController.playbackManager = PlaybackManager.shared
-        //        playerViewController.playbackManager.enqueue(videoID: "1La4QzGeaaQ")
-        //        playerViewController.playbackManager.enqueue(videoID: "_zeFohwlYtI")
-        playerViewController.playbackManager.preferQuality = .hd1080
-        //        PlaybackManager.shared.next().start()
+        playerViewController.playbackManager.preferQuality = StreamQuality.hd1080
 
         // Logo view setup
-        logoView.alpha = 1
-        logoView.image = UIImage(named: "logo_grey")
-        logoView.contentMode = .scaleAspectFit
-        view.addSubview(logoView)
-        logoView.translatesAutoresizingMaskIntoConstraints = false
+        emptyView.alpha = 1
+        emptyView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(emptyView)
         view.addConstraints([
-            logoView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            logoView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            logoView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.20),
-            logoView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.20)
-            ])
+            emptyView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            emptyView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            emptyView.heightAnchor.constraint(equalTo: view.heightAnchor),
+            emptyView.widthAnchor.constraint(equalTo: view.widthAnchor)
+        ])
+
+        let emptyLabel = UILabel()
+        emptyLabel.textColor = UIColor(red: 0.3, green: 0.3, blue: 0.3, alpha: 1)
+        emptyLabel.font = emptyLabel.font.withSize(25)
+        emptyLabel.text = "No video selected."
+        emptyLabel.textAlignment = .center
+        emptyLabel.translatesAutoresizingMaskIntoConstraints = false
+        emptyView.addSubview(emptyLabel)
+        emptyView.addConstraints([
+            emptyLabel.centerXAnchor.constraint(equalTo: emptyView.centerXAnchor),
+            emptyLabel.topAnchor.constraint(equalTo: emptyView.centerYAnchor, constant: 8)
+        ])
+
+        let emptyIcon = UIImageView()
+        emptyIcon.image = UIImage(named: "camera")
+        emptyIcon.tintColor = UIColor(red: 0.3, green: 0.3, blue: 0.3, alpha: 1)
+        emptyIcon.contentMode = .scaleAspectFit
+        emptyIcon.translatesAutoresizingMaskIntoConstraints = false
+        emptyView.addSubview(emptyIcon)
+        emptyView.addConstraints([
+            emptyIcon.centerXAnchor.constraint(equalTo: emptyView.centerXAnchor),
+            emptyIcon.bottomAnchor.constraint(equalTo: emptyView.centerYAnchor, constant: -8),
+            emptyIcon.heightAnchor.constraint(equalToConstant: 50)
+        ])
 
         // Video view setup
         videoView.alpha = 0
@@ -52,7 +71,7 @@ class VideoViewController: UIViewController {
             videoView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             videoView.leftAnchor.constraint(equalTo: view.leftAnchor),
             videoView.rightAnchor.constraint(equalTo: view.rightAnchor)
-            ])
+        ])
 
         if let playerView = playerViewController.view, let videoDetailView = videoDetailViewController.view {
             // Add the player
@@ -62,7 +81,7 @@ class VideoViewController: UIViewController {
                 playerView.topAnchor.constraint(equalTo: videoView.safeAreaLayoutGuide.topAnchor),
                 playerView.leftAnchor.constraint(equalTo: videoView.safeAreaLayoutGuide.leftAnchor),
                 playerView.rightAnchor.constraint(equalTo: videoView.safeAreaLayoutGuide.rightAnchor)
-                ])
+            ])
             regularConstraints.append(
                 playerView.heightAnchor.constraint(equalTo: videoView.safeAreaLayoutGuide.widthAnchor, multiplier: 0.5625)
             )
@@ -81,7 +100,7 @@ class VideoViewController: UIViewController {
                 blackBar.bottomAnchor.constraint(equalTo: playerView.topAnchor),
                 blackBar.leftAnchor.constraint(equalTo: videoView.safeAreaLayoutGuide.leftAnchor),
                 blackBar.rightAnchor.constraint(equalTo: videoView.safeAreaLayoutGuide.rightAnchor)
-                ])
+            ])
 
             // Add the video details
             videoView.addSubview(videoDetailView)
@@ -91,12 +110,11 @@ class VideoViewController: UIViewController {
                 videoDetailView.bottomAnchor.constraint(equalTo: videoView.bottomAnchor),
                 videoDetailView.leftAnchor.constraint(equalTo: videoView.safeAreaLayoutGuide.leftAnchor),
                 videoDetailView.rightAnchor.constraint(equalTo: videoView.safeAreaLayoutGuide.rightAnchor)
-                ])
+            ])
             videoView.sendSubviewToBack(videoDetailView)
         }
 
-        if let playbackManager = playerViewController.playbackManager,
-            let currentlyPlaying = playbackManager.currentlyPlaying {
+        if let playbackManager = playerViewController.playbackManager, let currentlyPlaying = playbackManager.currentlyPlaying {
             willLoadVideo(withID: currentlyPlaying.id, animate: false)
         }
 
@@ -108,7 +126,7 @@ class VideoViewController: UIViewController {
             if self.videoView.alpha < 1 {
                 UIView.animate(withDuration: animate ? 0.5 : 0) {
                     self.videoView.alpha = 1
-                    self.logoView.alpha = 0
+                    self.emptyView.alpha = 0
                 }
             }
             self.videoDetailViewController.videoID = videoID
@@ -138,7 +156,7 @@ extension VideoViewController: PlayerViewControllerDelegate {
         DispatchQueue.main.async {
             UIView.animate(withDuration: 0.5) {
                 self.videoView.alpha = 0
-                self.logoView.alpha = 1
+                self.emptyView.alpha = 1
             }
         }
     }

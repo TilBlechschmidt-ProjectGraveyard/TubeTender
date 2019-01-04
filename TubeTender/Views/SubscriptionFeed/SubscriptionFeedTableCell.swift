@@ -45,30 +45,19 @@ class SubscriptionFeedViewTableCell: UITableViewCell {
             }
 
             // Thumbnail
-            if let thumbnailString = video.snippet?.thumbnails.high.url, let thumbnailURL = URL(string: thumbnailString) {
-                thumbnailView.kf.indicatorType = .activity
-                let processor = RoundCornerImageProcessor(cornerRadius: 20)
-                thumbnailView.kf.setImage(with: thumbnailURL, options: [.processor(processor), .transition(.fade(0.5))])
+            VideoMetadataAPI.shared.thumbnailURL(forVideo: video.id).startWithResult {
+                if let thumbnailURL = $0.value {
+                    let processor = RoundCornerImageProcessor(cornerRadius: 20)
+                    self.thumbnailView.kf.setImage(with: thumbnailURL, options: [.processor(processor), .transition(.fade(0.5))])
+                }
             }
 
             // Channel icon
-            // TODO Cache the URL (not only the image)
             if let channelID = video.snippet?.channelID {
-                // TODO Replace this with a DataSource
-                let channelMetadataRequest = ChannelListRequest(part: [.snippet], filter: .id(channelID))
-
-                ApiSession.shared.send(channelMetadataRequest) { result in
-                    switch result {
-                    case .success(let response):
-                        if let iconURLString = response.items.first?.snippet?.thumbnails.default.url,
-                            let iconURL = URL(string: iconURLString)
-                        {
-                            self.channelIconView.kf.indicatorType = .activity
-                            self.channelIconView.kf.setImage(with: iconURL, options: [.transition(.fade(0.5))])
-                        }
-                    case .failed(let error):
-                        // TODO Show error message
-                        print(error)
+                ChannelMetadataAPI.shared.thumbnailURL(forChannel: channelID).startWithResult {
+                    if let iconURL = $0.value {
+                        self.channelIconView.kf.indicatorType = .activity
+                        self.channelIconView.kf.setImage(with: iconURL, options: [.transition(.fade(0.5))])
                     }
                 }
             }
