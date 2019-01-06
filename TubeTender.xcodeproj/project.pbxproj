@@ -62,6 +62,10 @@
 		30ABE2212190B48E00E4FEA4 /* PlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30ABE2202190B48E00E4FEA4 /* PlayerViewController.swift */; };
 		30B1EB4B21DC0E9800B16CA2 /* DownloadButton.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B1EB4A21DC0E9800B16CA2 /* DownloadButton.framework */; };
 		30B1EB4C21DC0EA300B16CA2 /* DownloadButton.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 30B1EB4A21DC0E9800B16CA2 /* DownloadButton.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		30B338B521E27F66001FC825 /* ReactiveCocoa.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 30B338B421E27F65001FC825 /* ReactiveCocoa.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		30B338B621E27F7D001FC825 /* ReactiveCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B338B421E27F65001FC825 /* ReactiveCocoa.framework */; };
+		30B338B821E28021001FC825 /* SnapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B338B721E28021001FC825 /* SnapKit.framework */; };
+		30B338B921E28033001FC825 /* SnapKit.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 30B338B721E28021001FC825 /* SnapKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		30BAB76021787D0D00B01953 /* GoogleSignIn.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 30BAB75F21787D0D00B01953 /* GoogleSignIn.framework */; };
 		30BAB76121787D1700B01953 /* GoogleSignIn.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 30BAB75F21787D0D00B01953 /* GoogleSignIn.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		30BAB76321787EB100B01953 /* SignInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30BAB76221787EB100B01953 /* SignInViewController.swift */; };
@@ -94,6 +98,8 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				30B338B921E28033001FC825 /* SnapKit.framework in CopyFiles */,
+				30B338B521E27F66001FC825 /* ReactiveCocoa.framework in CopyFiles */,
 				30988C2221DEC0C70070D14A /* CoreStore.framework in CopyFiles */,
 				30F2E38A21DD05A5005EFCA9 /* Alamofire.framework in CopyFiles */,
 				30B1EB4C21DC0EA300B16CA2 /* DownloadButton.framework in CopyFiles */,
@@ -163,6 +169,8 @@
 		30ABE21E21905F5800E4FEA4 /* Queue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Queue.swift; sourceTree = "<group>"; };
 		30ABE2202190B48E00E4FEA4 /* PlayerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerViewController.swift; sourceTree = "<group>"; };
 		30B1EB4A21DC0E9800B16CA2 /* DownloadButton.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DownloadButton.framework; path = Carthage/Build/iOS/DownloadButton.framework; sourceTree = "<group>"; };
+		30B338B421E27F65001FC825 /* ReactiveCocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReactiveCocoa.framework; path = Carthage/Build/iOS/ReactiveCocoa.framework; sourceTree = "<group>"; };
+		30B338B721E28021001FC825 /* SnapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SnapKit.framework; path = Carthage/Build/iOS/SnapKit.framework; sourceTree = "<group>"; };
 		30BAB75F21787D0D00B01953 /* GoogleSignIn.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GoogleSignIn.framework; path = Carthage/Build/iOS/GoogleSignIn.framework; sourceTree = "<group>"; };
 		30BAB76221787EB100B01953 /* SignInViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInViewController.swift; sourceTree = "<group>"; };
 		30BAB764217893E400B01953 /* SubscriptionFeedAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionFeedAPI.swift; sourceTree = "<group>"; };
@@ -188,6 +196,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				30B338B821E28021001FC825 /* SnapKit.framework in Frameworks */,
+				30B338B621E27F7D001FC825 /* ReactiveCocoa.framework in Frameworks */,
 				30988C2121DEC0BD0070D14A /* CoreStore.framework in Frameworks */,
 				30F2E38921DD059D005EFCA9 /* Alamofire.framework in Frameworks */,
 				30B1EB4B21DC0E9800B16CA2 /* DownloadButton.framework in Frameworks */,
@@ -233,6 +243,7 @@
 		302D03F2216E197A009FC2E5 = {
 			isa = PBXGroup;
 			children = (
+				30B338B421E27F65001FC825 /* ReactiveCocoa.framework */,
 				300F296821D6C80600C9B0B0 /* Default-568h@2x.png */,
 				302D03FD216E197A009FC2E5 /* TubeTender */,
 				302D03FC216E197A009FC2E5 /* Products */,
@@ -296,6 +307,7 @@
 		302D0423216F3D98009FC2E5 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				30B338B721E28021001FC825 /* SnapKit.framework */,
 				30988C2021DEC0BC0070D14A /* CoreStore.framework */,
 				30F2E38821DD059D005EFCA9 /* Alamofire.framework */,
 				30B1EB4A21DC0E9800B16CA2 /* DownloadButton.framework */,
@@ -703,7 +715,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = LQWS3ZT7UK;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -719,7 +731,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = de.blechschmidt.TubeTender;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE_SPECIFIER = "TubeTender Debug";
 				SWIFT_OBJC_BRIDGING_HEADER = "TubeTender/Support Files/Bridging-Header.h";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -730,8 +742,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = LQWS3ZT7UK;
 				ENABLE_BITCODE = NO;
@@ -748,7 +760,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = de.blechschmidt.TubeTender;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE_SPECIFIER = "TubeTender Release";
 				SWIFT_OBJC_BRIDGING_HEADER = "TubeTender/Support Files/Bridging-Header.h";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";

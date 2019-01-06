@@ -37,7 +37,7 @@ class VideoMetadataView: UIView {
 
     // Channel
     private let channelView = UIView()
-    let channelThumbnail = UIImageView()
+    var channelThumbnail = UIImageView()
     let channelTitle = UILabel()
     let channelSubscriberCount = UILabel()
 

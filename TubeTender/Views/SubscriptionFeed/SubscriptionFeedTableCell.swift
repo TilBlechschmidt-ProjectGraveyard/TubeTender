@@ -19,7 +19,7 @@ class SubscriptionFeedViewTableCell: UITableViewCell {
     let videoMetaTitleView = UIView()
     let videoTitleView = UILabel()
     let videoSubtitleView = UILabel()
-    let channelIconView = UIImageView()
+    var channelIconView = UIImageView()
 
     let durationView = UIView()
     let durationLabelView = UILabel()
