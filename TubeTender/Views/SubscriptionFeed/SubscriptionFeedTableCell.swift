@@ -37,7 +37,7 @@ class SubscriptionFeedViewTableCell: UITableViewCell {
             if let channelName = video.snippet?.channelTitle {
                 videoSubtitleView.text?.append("\(channelName) ∙ ")
             }
-            if let viewCountString = video.statistics?.viewCount, let viewCount = Int(viewCountString) {
+            if let viewCount = Int(video.statistics?.viewCount ?? "0") {
                 videoSubtitleView.text?.append("\(viewCount.withThousandSeparators) views ∙ ")
             }
             if let published = video.snippet?.published {

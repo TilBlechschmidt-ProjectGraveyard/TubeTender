@@ -66,8 +66,14 @@ class SubscriptionFeedViewController: UIViewController {
                     DispatchQueue.main.async {
                         switch result {
                         case .success(let (videos, endDate)):
-                            print("Feed fetched! \(videos.count) entries.")
-                            self.items = videos.sorted {
+                            let nonLicensedVideos = videos.filter { video in
+                                guard let statistics = video.statistics else {
+                                    return true
+                                }
+                                return statistics.viewCount != nil
+                            }
+                            print("Feed fetched! \(nonLicensedVideos.count) entries.")
+                            self.items = nonLicensedVideos.sorted {
                                 // TODO Get rid of force unwraps.
                                 $0.snippet!.published! > $1.snippet!.published!
                             }

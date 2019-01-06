@@ -9,6 +9,7 @@
 import Foundation
 import AVKit
 import ReactiveSwift
+import MediaPlayer
 
 typealias VideoID = String
 typealias ChannelID = String
@@ -138,7 +139,7 @@ class PlaybackManager: NSObject {
     }
 
     // MARK: - Playback control
-    func play() {
+    @objc func play() {
         if isPictureInPictureActive {
             nativeMediaPlayer?.play()
         } else {
@@ -148,7 +149,7 @@ class PlaybackManager: NSObject {
         delegate?.playbackManagerDidStartPlayback(self)
     }
 
-    func pause() {
+    @objc func pause() {
         if isPictureInPictureActive {
             nativeMediaPlayer?.pause()
         } else {
@@ -356,6 +357,48 @@ extension PlaybackManager: VLCMediaPlayerDelegate {
 
             vlcMediaPlayer.media.flatMap { delegate?.playbackManagerDidLoadMedia(self, withDuration: $0.length.intValue) }
             delegate?.playbackManagerDidStartPlayback(self)
+
+            // MPNowPlayingInfoCenter
+            let duration = vlcMediaPlayer.media.flatMap { Double($0.length.intValue) / 1000 } ?? 0
+
+            VideoMetadataAPI.shared.thumbnailURL(forVideo: currentlyPlaying!.id).startWithResult { result in
+                if let thumbnailURL = result.value {
+                    UIApplication.shared.beginReceivingRemoteControlEvents()
+
+                    let data = try? Data(contentsOf: thumbnailURL)
+
+                    if let imageData = data {
+                        let image = UIImage(data: imageData)!
+                        let artwork = MPMediaItemArtwork(boundsSize: image.size, requestHandler: { (size) -> UIImage in
+                            return image
+                        })
+
+                        let songInfo: [String : Any] = [
+                            MPMediaItemPropertyTitle: "Random test video",
+                            MPMediaItemPropertyPlaybackDuration: NSNumber(value: duration),
+                            MPMediaItemPropertyArtwork: artwork
+                        ]
+
+                        MPNowPlayingInfoCenter.default().nowPlayingInfo = songInfo
+
+                        let commandCenter = MPRemoteCommandCenter.shared()
+                        commandCenter.playCommand.isEnabled = true
+                        commandCenter.pauseCommand.isEnabled = true
+                        commandCenter.playCommand.addTarget(self, action: #selector(self.play))
+                        commandCenter.pauseCommand.addTarget(self, action: #selector(self.pause))
+                    }
+                }
+            }
+
+//            commandCenter.nextTrackCommand.isEnabled = true
+//            commandCenter.nextTrackCommand.addTarget(self, action:#selector(nextTrackCommandSelector))
+
+//            var nowPlayingInfo = [String : Any]()
+//            nowPlayingInfo[MPMediaItemPropertyTitle] = NSString(string: "Test video")
+//            nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = NSNumber(value: elapsedTime)
+//            nowPlayingInfo[MPMediaItemPropertyPlaybackDuration] = NSNumber(value: duration)
+//            nowPlayingInfo[MPMediaItemPropertyMediaType] = MPMediaType.anyVideo
+//            MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
         }
 
         // Handle specific states that can appear by themselves

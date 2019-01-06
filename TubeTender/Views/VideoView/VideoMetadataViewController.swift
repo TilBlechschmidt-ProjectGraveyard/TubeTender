@@ -57,7 +57,7 @@ class VideoMetadataViewController: UIViewController {
                     DispatchQueue.main.async {
                         self.videoMetadataView.videoTitle.text = snippet.title
 
-                        if let views = Int(stats.viewCount),
+                        if let views = Int(stats.viewCount ?? "0"),
                             let viewsString = VideoMetadataViewController.numberFormatter.string(from: NSNumber(value: views)) {
                             self.videoMetadataView.viewCount.text = "\(viewsString) views"
                         }
