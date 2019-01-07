@@ -21,6 +21,10 @@ class YoutubeClient {
     }
 }
 
+enum YoutubeClientObjectError: Swift.Error {
+    case invalidAPIResponse
+}
+
 public class YoutubeClientObject<Request: Requestable, DataType> {
     typealias ResponseMapper = (APISignalProducer<Request.Response>) -> APISignalProducer<DataType>
 
@@ -35,6 +39,10 @@ public class YoutubeClientObject<Request: Requestable, DataType> {
             .cached(lifetime: Constants.cacheLifetime)
 
         response = mapResponse(cachedResponse)
+    }
+
+    func makeProperty<T>(_ mapper: @escaping (DataType) -> T?) -> APISignalProducer<T> {
+        return response.tryMap(YoutubeClientObjectError.invalidAPIResponse, mapper)
     }
 }
 

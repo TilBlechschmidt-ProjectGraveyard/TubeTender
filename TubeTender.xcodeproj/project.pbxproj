@@ -34,7 +34,7 @@
 		302D0447216F3F85009FC2E5 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 302D0446216F3F85009FC2E5 /* UIKit.framework */; };
 		302D0449216F51F5009FC2E5 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 302D0448216F51F4009FC2E5 /* libc++.tbd */; settings = {ATTRIBUTES = (Required, ); }; };
 		302FB83E21D5886B00A82363 /* DateFormatter+ISO8601Full.swift in Sources */ = {isa = PBXBuildFile; fileRef = 302FB83D21D5886B00A82363 /* DateFormatter+ISO8601Full.swift */; };
-		302FB84021D58A8A00A82363 /* VideoMetadataAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 302FB83F21D58A8A00A82363 /* VideoMetadataAPI.swift */; };
+		302FB84021D58A8A00A82363 /* VideoAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 302FB83F21D58A8A00A82363 /* VideoAPI.swift */; };
 		30370F5521763F6000B35ACF /* VLCTime+Float.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30370F5421763F6000B35ACF /* VLCTime+Float.swift */; };
 		30370F57217735A200B35ACF /* YoutubeKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 30370F56217735A200B35ACF /* YoutubeKit.framework */; };
 		30370F59217735FB00B35ACF /* YoutubeKit.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 30370F56217735A200B35ACF /* YoutubeKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -150,7 +150,7 @@
 		302D0446216F3F85009FC2E5 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		302D0448216F51F4009FC2E5 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
 		302FB83D21D5886B00A82363 /* DateFormatter+ISO8601Full.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DateFormatter+ISO8601Full.swift"; sourceTree = "<group>"; };
-		302FB83F21D58A8A00A82363 /* VideoMetadataAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoMetadataAPI.swift; sourceTree = "<group>"; };
+		302FB83F21D58A8A00A82363 /* VideoAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoAPI.swift; sourceTree = "<group>"; };
 		30370F5421763F6000B35ACF /* VLCTime+Float.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VLCTime+Float.swift"; sourceTree = "<group>"; };
 		30370F56217735A200B35ACF /* YoutubeKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = YoutubeKit.framework; path = Carthage/Build/iOS/YoutubeKit.framework; sourceTree = "<group>"; };
 		30370F5A217739C500B35ACF /* SkeletonView.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SkeletonView.framework; path = Carthage/Build/iOS/SkeletonView.framework; sourceTree = "<group>"; };
@@ -389,7 +389,7 @@
 			children = (
 				40E2E1F221E292D5007EA359 /* YoutubeClient.swift */,
 				30BAB764217893E400B01953 /* SubscriptionFeedAPI.swift */,
-				302FB83F21D58A8A00A82363 /* VideoMetadataAPI.swift */,
+				302FB83F21D58A8A00A82363 /* VideoAPI.swift */,
 				40E2E1F421E29383007EA359 /* ChannelAPI.swift */,
 				30F2E38621DCFAF9005EFCA9 /* DownloadManager.swift */,
 				30A81A3C21D53C4400FBE8EE /* VideoStreams */,
@@ -601,7 +601,7 @@
 				30BAB7712178B4F800B01953 /* AMPullToRefresh.swift in Sources */,
 				30A81A3A21D53A7D00FBE8EE /* VideoMetadataViewController.swift in Sources */,
 				30988C1F21DEBF5C0070D14A /* TubeTender.xcdatamodeld in Sources */,
-				302FB84021D58A8A00A82363 /* VideoMetadataAPI.swift in Sources */,
+				302FB84021D58A8A00A82363 /* VideoAPI.swift in Sources */,
 				30F2E38C21DD4D14005EFCA9 /* Alamofire+Reactive.swift in Sources */,
 				30A81A3721D539F600FBE8EE /* VideoViewController.swift in Sources */,
 				30F48900219CD3E1002FAE36 /* SplitViewController.swift in Sources */,

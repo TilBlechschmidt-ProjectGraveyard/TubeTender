@@ -74,7 +74,7 @@ enum DownloadManagerError: Error {
     case failedToDelete(fileManagerError: Error)
     case database(error: CoreStoreError)
     case videoStreamAPI(error: VideoStreamAPIError)
-    case videoMetadataAPI(error: VideoMetadataAPIError)
+    case videoMetadataAPI(error: VideoError)
     case channelMetadataAPI(error: ChannelError)
     case notImplemented
 }

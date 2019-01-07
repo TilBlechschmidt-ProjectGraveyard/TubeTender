@@ -9,6 +9,7 @@
 import UIKit
 import YoutubeKit
 import ReactiveSwift
+import Result
 
 class VideoMetadataViewController: UIViewController {
     let videoMetadataView = VideoMetadataView()
@@ -47,29 +48,27 @@ class VideoMetadataViewController: UIViewController {
 
 
     func fetchVideoDetails() {
-        VideoMetadataAPI.shared.fetchMetadata(forVideo: videoID!, withParts: [.snippet, .statistics])
-            .startWithResult() { result in
-                switch result {
-                case .success(let videoMetadata):
-                    let snippet = videoMetadata.snippet!
-                    let stats = videoMetadata.statistics!
+        let video = YoutubeClient.shared.video(withID: videoID)
 
-                    DispatchQueue.main.async {
-                        self.videoMetadataView.videoTitle.text = snippet.title
-
-                        if let views = Int(stats.viewCount ?? "0"),
-                            let viewsString = VideoMetadataViewController.numberFormatter.string(from: NSNumber(value: views)) {
-                            self.videoMetadataView.viewCount.text = "\(viewsString) views"
-                        }
-
-                        self.videoMetadataView.videoDescriptionView.text = snippet.description
-
-                        self.fetchChannelDetails(forID: snippet.channelID)
-                    }
-                case .failure(let error):
-                    print(error)
-                }
+        videoMetadataView.videoTitle.reactive.text <~ video.title.map { $0.value ?? "Loading..." }
+        videoMetadataView.videoDescriptionView.reactive.text <~ video.description.map { $0.value ?? "Loading..." }
+        videoMetadataView.viewCount.reactive.text <~ video.viewCount.map { result -> String? in
+            if let viewCount = result.value, let viewsString = VideoMetadataViewController.numberFormatter.string(from: NSNumber(value: viewCount)) {
+                return "\(viewsString) views"
+            } else {
+                return nil
             }
+        }
+
+        let channel = video.channel
+
+
+
+        videoMetadataView.channelThumbnail.reactive.setImage(options: [.transition(.fade(0.5))]) <~ channel.flatMap(.latest, { $0.value?.thumbnailURL.map { $0.value } })
+        videoMetadataView.channelTitle.reactive.text <~ channel.title.map { $0.value ?? "Failed!!!!" }
+        videoMetadataView.channelSubscriberCount.reactive.text <~ channel.subscriptionCount.map {
+            "\($0.value?.unitFormatted ?? "??") subscribers"
+        }
     }
 
     func fetchChannelDetails(forID channelID: Channel.ID) {

@@ -12,9 +12,8 @@ import Result
 import ReactiveSwift
 import ReactiveCocoa
 
-enum ChannelError: Error {
+enum ChannelError: Swift.Error {
     case notFound
-    case invalidAPIResponse
 }
 
 public class Channel: YoutubeClientObject<YoutubeKit.ChannelListRequest, YoutubeKit.Channel> {
@@ -27,34 +26,20 @@ public class Channel: YoutubeClientObject<YoutubeKit.ChannelListRequest, Youtube
 
         self.id = id
         super.init(client: client, request: channelRequest) { response in
-            return response.map {
-                $0.tryMap {
-                    if $0.items.count == 1 {
-                        return $0.items[0]
-                    } else {
-                        throw AnyError(ChannelError.notFound)
-                    }
-                }
-            }
+            return response.tryMap(ChannelError.notFound) { $0.items.count == 1 ? $0.items[0] : nil }
         }
     }
 
     var thumbnailURL: APISignalProducer<URL> {
-        return response.tryMap(ChannelError.invalidAPIResponse) {
-            $0.snippet?.thumbnails.high.url.flatMap { URL(string: $0) }
-        }
+        return makeProperty { $0.snippet?.thumbnails.high.url.flatMap { URL(string: $0) } }
     }
 
     var title: APISignalProducer<String> {
-        return response.tryMap(ChannelError.invalidAPIResponse) {
-            $0.snippet?.title
-        }
+        return makeProperty { $0.snippet?.title }
     }
 
     var subscriptionCount: APISignalProducer<Int> {
-        return response.tryMap(ChannelError.invalidAPIResponse) {
-            return ($0.statistics?.subscriberCount).flatMap { Int($0) }
-        }
+        return makeProperty { ($0.statistics?.subscriberCount).flatMap { Int($0) } }
     }
 }
 
