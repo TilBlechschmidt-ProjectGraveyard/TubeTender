@@ -12,7 +12,6 @@ import ReactiveSwift
 import MediaPlayer
 
 typealias VideoID = String
-typealias ChannelID = String
 
 struct PlayingItem {
     let id: VideoID

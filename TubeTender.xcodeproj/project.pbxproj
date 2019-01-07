@@ -10,7 +10,6 @@
 		3005DC64219B767D0002F6A1 /* PlayerControlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3005DC63219B767D0002F6A1 /* PlayerControlView.swift */; };
 		300F296721D59F2900C9B0B0 /* Video.swift in Sources */ = {isa = PBXBuildFile; fileRef = 300F296621D59F2900C9B0B0 /* Video.swift */; };
 		300F296921D6C80600C9B0B0 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 300F296821D6C80600C9B0B0 /* Default-568h@2x.png */; };
-		301628BA21DEA7F00049203F /* ChannelMetadataAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301628B921DEA7F00049203F /* ChannelMetadataAPI.swift */; };
 		302D03FF216E197A009FC2E5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 302D03FE216E197A009FC2E5 /* AppDelegate.swift */; };
 		302D0404216E197A009FC2E5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 302D0402216E197A009FC2E5 /* Main.storyboard */; };
 		302D0406216E197C009FC2E5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 302D0405216E197C009FC2E5 /* Assets.xcassets */; };
@@ -89,6 +88,9 @@
 		30F2E38C21DD4D14005EFCA9 /* Alamofire+ReactiveSwift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30F2E38B21DD4D14005EFCA9 /* Alamofire+ReactiveSwift.swift */; };
 		30F48900219CD3E1002FAE36 /* SplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30F488FF219CD3E0002FAE36 /* SplitViewController.swift */; };
 		30F66C7021DF78E300BBBBD8 /* VideoDownloadButtonViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30F66C6F21DF78E300BBBBD8 /* VideoDownloadButtonViewController.swift */; };
+		40E2E1EF21E28D21007EA359 /* ApiSession+Reactive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40E2E1EE21E28D21007EA359 /* ApiSession+Reactive.swift */; };
+		40E2E1F321E292D5007EA359 /* YoutubeClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40E2E1F221E292D5007EA359 /* YoutubeClient.swift */; };
+		40E2E1F521E29383007EA359 /* ChannelAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40E2E1F421E29383007EA359 /* ChannelAPI.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -118,7 +120,6 @@
 		3005DC63219B767D0002F6A1 /* PlayerControlView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerControlView.swift; sourceTree = "<group>"; };
 		300F296621D59F2900C9B0B0 /* Video.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Video.swift; sourceTree = "<group>"; };
 		300F296821D6C80600C9B0B0 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
-		301628B921DEA7F00049203F /* ChannelMetadataAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelMetadataAPI.swift; sourceTree = "<group>"; };
 		302D03FB216E197A009FC2E5 /* TubeTender.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TubeTender.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		302D03FE216E197A009FC2E5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		302D0403216E197A009FC2E5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -189,6 +190,9 @@
 		30F2E38B21DD4D14005EFCA9 /* Alamofire+ReactiveSwift.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Alamofire+ReactiveSwift.swift"; sourceTree = "<group>"; };
 		30F488FF219CD3E0002FAE36 /* SplitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitViewController.swift; sourceTree = "<group>"; };
 		30F66C6F21DF78E300BBBBD8 /* VideoDownloadButtonViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoDownloadButtonViewController.swift; sourceTree = "<group>"; };
+		40E2E1EE21E28D21007EA359 /* ApiSession+Reactive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ApiSession+Reactive.swift"; sourceTree = "<group>"; };
+		40E2E1F221E292D5007EA359 /* YoutubeClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YoutubeClient.swift; sourceTree = "<group>"; };
+		40E2E1F421E29383007EA359 /* ChannelAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChannelAPI.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -380,11 +384,13 @@
 		30A81A3B21D53AF800FBE8EE /* DataSources */ = {
 			isa = PBXGroup;
 			children = (
+				40E2E1F221E292D5007EA359 /* YoutubeClient.swift */,
 				30BAB764217893E400B01953 /* SubscriptionFeedAPI.swift */,
 				302FB83F21D58A8A00A82363 /* VideoMetadataAPI.swift */,
-				301628B921DEA7F00049203F /* ChannelMetadataAPI.swift */,
+				40E2E1F421E29383007EA359 /* ChannelAPI.swift */,
 				30F2E38621DCFAF9005EFCA9 /* DownloadManager.swift */,
 				30A81A3C21D53C4400FBE8EE /* VideoStreams */,
+				40E2E1EE21E28D21007EA359 /* ApiSession+Reactive.swift */,
 			);
 			path = DataSources;
 			sourceTree = "<group>";
@@ -538,6 +544,7 @@
 				30BAB7722178B4F800B01953 /* AMRefresher.swift in Sources */,
 				30A81A3E21D53E9500FBE8EE /* VideoMetadataView.swift in Sources */,
 				300F296721D59F2900C9B0B0 /* Video.swift in Sources */,
+				40E2E1F521E29383007EA359 /* ChannelAPI.swift in Sources */,
 				30370F612177769800B35ACF /* String+FancyFormatting.swift in Sources */,
 				3067715121DA32BC009AA051 /* PlayerProtocol.swift in Sources */,
 				3067715321DA32E4009AA051 /* VLCPlayer.swift in Sources */,
@@ -552,11 +559,11 @@
 				30BAB7712178B4F800B01953 /* AMPullToRefresh.swift in Sources */,
 				30A81A3A21D53A7D00FBE8EE /* VideoMetadataViewController.swift in Sources */,
 				30988C1F21DEBF5C0070D14A /* TubeTender.xcdatamodeld in Sources */,
-				301628BA21DEA7F00049203F /* ChannelMetadataAPI.swift in Sources */,
 				302FB84021D58A8A00A82363 /* VideoMetadataAPI.swift in Sources */,
 				30F2E38C21DD4D14005EFCA9 /* Alamofire+ReactiveSwift.swift in Sources */,
 				30A81A3721D539F600FBE8EE /* VideoViewController.swift in Sources */,
 				30F48900219CD3E1002FAE36 /* SplitViewController.swift in Sources */,
+				40E2E1F321E292D5007EA359 /* YoutubeClient.swift in Sources */,
 				30370F5521763F6000B35ACF /* VLCTime+Float.swift in Sources */,
 				302D03FF216E197A009FC2E5 /* AppDelegate.swift in Sources */,
 				30BAB76321787EB100B01953 /* SignInViewController.swift in Sources */,
@@ -567,6 +574,7 @@
 				30BAB7702178B4F800B01953 /* AMInfiniteScrolling.swift in Sources */,
 				3067715521DA4CD9009AA051 /* NativePlayer.swift in Sources */,
 				30ABE21F21905F5800E4FEA4 /* Queue.swift in Sources */,
+				40E2E1EF21E28D21007EA359 /* ApiSession+Reactive.swift in Sources */,
 				30BAB7752178BBC500B01953 /* SubscriptionFeedTableCell.swift in Sources */,
 				30BAB77A2178CDFF00B01953 /* Date+Since.swift in Sources */,
 			);
