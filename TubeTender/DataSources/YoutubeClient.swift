@@ -8,70 +8,49 @@
 
 import Foundation
 import YoutubeKit
+import Result
 import ReactiveSwift
 
 class YoutubeClient {
-    let apiSession = ApiSession.shared
-}
+    static let shared = YoutubeClient()
 
-enum TestError: Error {
-    case test
-}
+    let apiSession: ApiSession
 
-public class YoutubeClientObject<APIResponse> {
-    typealias FetchSignalProducer = SignalProducer<APIResponse, TestError>
-    typealias FetchSignal = Signal<APIResponse, TestError>
-
-    enum FetchStatus {
-        case completed(value: APIResponse)
-        case running(signal: FetchSignal)
-        case notRunning
+    init(apiSession: ApiSession = ApiSession.shared) {
+        self.apiSession = apiSession
     }
+}
+
+public class YoutubeClientObject<Request: Requestable, DataType> {
+    typealias ResponseMapper = (SignalProducer<Request.Response, AnyError>) -> SignalProducer<DataType, AnyError>
 
     let client: YoutubeClient
+    let response: SignalProducer<DataType, NoError>
 
-//    private var fetchStatus = FetchStatus.notRunning
-    private var apiResponse: Property<APIResponse>
+    private let _error: MutableProperty<AnyError?>
+    let error: Property<AnyError?>
 
-    func fetchData<T: Requestable>(request: T) -> FetchSignalProducer {
-
-
-        switch fetchStatus {
-        case let .completed(value):
-            return SignalProducer(value: value)
-        case let .running(signal):
-            return signal.producer
-        case .notRunning:
-            let producer = ApiSession.shared.reactive.send(request)
-            self.fetchStatus = Signal(producer)
-            return producer
-        }
-
-
-        if let apiResponse = apiResponse.value {
-            return SignalProducer(value: apiResponse)
-        }
-
-        if isFetching {
-            return apiResponse.producer.promoteError()
-        }
-
-
-
-
-
-        return SignalProducer(error: TestError.test)
-
-//
-//        return SignalProducer() { observable, disposable in
-//
-//            let a =  ApiSession.shared.reactive.send(request)
-//
-//            observable.send(a.start)
-//        }
-    }
-
-    init(client: YoutubeClient) {
+    init(client: YoutubeClient, request: Request, mapResponse: ResponseMapper) {
         self.client = client
+
+        let _error = MutableProperty<AnyError?>(nil)
+        self._error = _error
+        error = Property(_error)
+
+        let cachedResponse = client.apiSession.reactive
+            .send(request)
+            .cached(lifetime: Constants.cacheLifetime)
+            .on(value: { _ in _error.value = nil })
+
+        response = mapResponse(cachedResponse).flatMapError {
+            _error.value = $0
+            return .empty
+        }
+    }
+}
+
+extension YoutubeClientObject where Request.Response == DataType {
+    convenience init(client: YoutubeClient, request: Request) {
+        self.init(client: client, request: request, mapResponse: { $0 })
     }
 }

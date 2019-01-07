@@ -82,6 +82,8 @@
 		30D91B71218F6C810020C814 /* Result.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 30D91B6F218F6C810020C814 /* Result.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		30D91B72218F6CB40020C814 /* ReactiveSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 30D91B6E218F6C810020C814 /* ReactiveSwift.framework */; };
 		30D91B73218F6CB40020C814 /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 30D91B6F218F6C810020C814 /* Result.framework */; };
+		30DA13E721E3C593000B2638 /* SignalProducer+Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DA13E621E3C593000B2638 /* SignalProducer+Cache.swift */; };
+		30DA13E921E3C6EB000B2638 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DA13E821E3C6EB000B2638 /* Constants.swift */; };
 		30F2E38721DCFAF9005EFCA9 /* DownloadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30F2E38621DCFAF9005EFCA9 /* DownloadManager.swift */; };
 		30F2E38921DD059D005EFCA9 /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 30F2E38821DD059D005EFCA9 /* Alamofire.framework */; };
 		30F2E38A21DD05A5005EFCA9 /* Alamofire.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 30F2E38821DD059D005EFCA9 /* Alamofire.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -185,6 +187,8 @@
 		30BE79BA216FF73F00E6B281 /* AnimatablePlayButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatablePlayButton.swift; sourceTree = "<group>"; };
 		30D91B6E218F6C810020C814 /* ReactiveSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReactiveSwift.framework; path = Carthage/Build/iOS/ReactiveSwift.framework; sourceTree = "<group>"; };
 		30D91B6F218F6C810020C814 /* Result.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Result.framework; path = Carthage/Build/iOS/Result.framework; sourceTree = "<group>"; };
+		30DA13E621E3C593000B2638 /* SignalProducer+Cache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SignalProducer+Cache.swift"; sourceTree = "<group>"; };
+		30DA13E821E3C6EB000B2638 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		30F2E38621DCFAF9005EFCA9 /* DownloadManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadManager.swift; sourceTree = "<group>"; };
 		30F2E38821DD059D005EFCA9 /* Alamofire.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Alamofire.framework; path = Carthage/Build/iOS/Alamofire.framework; sourceTree = "<group>"; };
 		30F2E38B21DD4D14005EFCA9 /* Alamofire+ReactiveSwift.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Alamofire+ReactiveSwift.swift"; sourceTree = "<group>"; };
@@ -275,6 +279,7 @@
 				3067715621DA5681009AA051 /* Playback */,
 				30BAB7692178B44400B01953 /* Views */,
 				30BE79BA216FF73F00E6B281 /* AnimatablePlayButton.swift */,
+				30DA13E821E3C6EB000B2638 /* Constants.swift */,
 			);
 			path = TubeTender;
 			sourceTree = "<group>";
@@ -304,6 +309,8 @@
 				30ABE213218F928A00E4FEA4 /* ArrayComparable.swift */,
 				300F296621D59F2900C9B0B0 /* Video.swift */,
 				30F2E38B21DD4D14005EFCA9 /* Alamofire+ReactiveSwift.swift */,
+				30DA13E621E3C593000B2638 /* SignalProducer+Cache.swift */,
+				40E2E1EE21E28D21007EA359 /* ApiSession+Reactive.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -390,7 +397,6 @@
 				40E2E1F421E29383007EA359 /* ChannelAPI.swift */,
 				30F2E38621DCFAF9005EFCA9 /* DownloadManager.swift */,
 				30A81A3C21D53C4400FBE8EE /* VideoStreams */,
-				40E2E1EE21E28D21007EA359 /* ApiSession+Reactive.swift */,
 			);
 			path = DataSources;
 			sourceTree = "<group>";
@@ -547,6 +553,8 @@
 				40E2E1F521E29383007EA359 /* ChannelAPI.swift in Sources */,
 				30370F612177769800B35ACF /* String+FancyFormatting.swift in Sources */,
 				3067715121DA32BC009AA051 /* PlayerProtocol.swift in Sources */,
+				30DA13E721E3C593000B2638 /* SignalProducer+Cache.swift in Sources */,
+				30DA13E921E3C6EB000B2638 /* Constants.swift in Sources */,
 				3067715321DA32E4009AA051 /* VLCPlayer.swift in Sources */,
 				30ABE2212190B48E00E4FEA4 /* PlayerViewController.swift in Sources */,
 				30ABE214218F928A00E4FEA4 /* ArrayComparable.swift in Sources */,
@@ -737,7 +745,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				OTHER_SWIFT_FLAGS = "-Xfrontend -debug-time-function-bodies";
+				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = de.blechschmidt.TubeTender;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "TubeTender Debug";
@@ -767,7 +775,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				OTHER_SWIFT_FLAGS = "-Xfrontend -debug-time-function-bodies";
+				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = de.blechschmidt.TubeTender;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "TubeTender Release";

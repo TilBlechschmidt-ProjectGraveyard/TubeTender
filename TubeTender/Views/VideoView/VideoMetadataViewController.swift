@@ -72,7 +72,16 @@ class VideoMetadataViewController: UIViewController {
             }
     }
 
-    func fetchChannelDetails(forID channelID: String) {
+    func fetchChannelDetails(forID channelID: Channel.ID) {
+        let channel = YoutubeClient.shared.channel(withID: channelID)
+
+        channel.thumbnailURL.startWithResult { result in
+            if let thumbnailURL = thumbnailURL.value {
+                self.videoMetadataView.channelThumbnail.kf.indicatorType = .activity
+                self.videoMetadataView.channelThumbnail.kf.setImage(with: thumbnailURL, options: [.transition(.fade(0.5))])
+            }
+        }
+
         ChannelMetadataAPI.shared.fetchMetadata(forChannel: channelID, withParts: [.snippet, .statistics]).startWithResult() { result in
             switch result {
             case .success(let channelMetadata):
@@ -88,13 +97,6 @@ class VideoMetadataViewController: UIViewController {
                 }
             case .failure(let error):
                 print(error)
-            }
-        }
-
-        ChannelMetadataAPI.shared.thumbnailURL(forChannel: channelID).startWithResult {
-            if let iconURL = $0.value {
-                self.videoMetadataView.channelThumbnail.kf.indicatorType = .activity
-                self.videoMetadataView.channelThumbnail.kf.setImage(with: iconURL, options: [.transition(.fade(0.5))])
             }
         }
     }

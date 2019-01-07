@@ -6,27 +6,42 @@
 //  Copyright © 2019 Til Blechschmidt. All rights reserved.
 //
 
-import YoutubeKit
+import struct YoutubeKit.Channel
+import struct YoutubeKit.ChannelListRequest
+import Result
 import ReactiveSwift
 import ReactiveCocoa
 
 enum ChannelError: Error {
-    case requestFailed(error: Error)
     case notFound
 }
 
-public class Channel: YoutubeClientObject {
+public class Channel: YoutubeClientObject<YoutubeKit.ChannelListRequest, YoutubeKit.Channel> {
     public typealias ID = String
 
     public let id: ID
 
     fileprivate init(id: ID, client: YoutubeClient) {
+        let channelRequest = ChannelListRequest(part: [.contentDetails, .statistics, .snippet], filter: .id(id))
+
         self.id = id
-        super.init(client: client)
+        super.init(client: client,
+                   request: channelRequest,
+                   mapResponse: { response in
+                        return response.attemptMap { response in
+                            if response.items.count == 1 {
+                                return response.items[0]
+                            } else {
+                                throw AnyError(ChannelError.notFound)
+                            }
+                        }
+                    })
     }
 
-    public var thumbnailURL: SignalProducer<URL, ChannelError> {
-
+    var thumbnailURL: SignalProducer<URL?, NoError> {
+        return response.map {
+            $0.snippet?.thumbnails.high.url.flatMap { URL(string: $0) }
+        }
     }
 }
 
@@ -35,37 +50,3 @@ extension YoutubeClient {
         return Channel(id: id, client: self)
     }
 }
-
-//class ChannelMetadataAPI {
-//    static let shared = ChannelMetadataAPI()
-//    private init() {}
-//
-//    private static let defaultChannelListParts: [Part.ChannelList] = [.contentDetails, .statistics, .snippet]
-//
-//    func thumbnailURL(forChannel channelID: ChannelID) -> SignalProducer<URL, ChannelMetadataAPIError> {
-//        // TODO If we are offline ask the DownloadManager instead.
-//        return fetchMetadata(forChannel: channelID, withParts: [.snippet]).attemptMap { channelMetadata in
-//            if let urlString = channelMetadata.snippet?.thumbnails.high.url, let url = URL(string: urlString) {
-//                return .success(url)
-//            } else {
-//                return .failure(ChannelMetadataAPIError.notFound)
-//            }
-//        }
-//    }
-//
-//    func fetchMetadata(forChannel channelID: ChannelID, withParts parts: [Part.ChannelList] = ChannelMetadataAPI.defaultChannelListParts) -> SignalProducer<Channel, ChannelMetadataAPIError> {
-//        let channelRequest = ChannelListRequest(part: parts, filter: .id(channelID))
-//
-//        return ApiSession.shared.reactive.send(channelRequest)
-//            .mapError { ChannelMetadataAPIError.requestFailed(error: $0.error) }
-//            .attemptMap { response in
-//                if response.items.count == 1 {
-//                    return .success(response.items[0])
-//                } else {
-//                    return .failure(ChannelMetadataAPIError.notFound)
-//                }
-//            }
-//    }
-//}
-//
-//
