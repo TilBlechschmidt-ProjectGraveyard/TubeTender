@@ -13,7 +13,7 @@ public class ApiSession {
     
     private init() {}
     
-    public func send<T: Requestable>(_ request: T, closure: @escaping (Result<T.Response, Error>) -> Void) {
+    public func send<T: Requestable>(_ request: T, closure: @escaping (Result<T.Response, Error>) -> Void) -> URLSessionDataTask {
         
         let urlRequest = request.makeURLRequest()
         
@@ -102,5 +102,7 @@ public class ApiSession {
         }
         
         task.resume()
+        
+        return task
     }
 }
