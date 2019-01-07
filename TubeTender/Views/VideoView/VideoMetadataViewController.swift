@@ -62,21 +62,9 @@ class VideoMetadataViewController: UIViewController {
 
         let channel = video.channel
 
-
-
-        videoMetadataView.channelThumbnail.reactive.setImage(options: [.transition(.fade(0.5))]) <~ channel.flatMap(.latest, { $0.value?.thumbnailURL.map { $0.value } })
-        videoMetadataView.channelTitle.reactive.text <~ channel.title.map { $0.value ?? "Failed!!!!" }
-        videoMetadataView.channelSubscriberCount.reactive.text <~ channel.subscriptionCount.map {
-            "\($0.value?.unitFormatted ?? "??") subscribers"
-        }
-    }
-
-    func fetchChannelDetails(forID channelID: Channel.ID) {
-        let channel = YoutubeClient.shared.channel(withID: channelID)
-
-        videoMetadataView.channelThumbnail.reactive.setImage(options: [.transition(.fade(0.5))]) <~ channel.thumbnailURL.map { $0.value }
-        videoMetadataView.channelTitle.reactive.text <~ channel.title.map { $0.value ?? "Failed!!!!" }
-        videoMetadataView.channelSubscriberCount.reactive.text <~ channel.subscriptionCount.map {
+        videoMetadataView.channelThumbnail.reactive.setImage(options: [.transition(.fade(0.5))]) <~ channel.get(\.thumbnailURL).map { $0.value }
+        videoMetadataView.channelTitle.reactive.text <~ channel.get(\.title).map { $0.value ?? "Failed!!!!" }
+        videoMetadataView.channelSubscriberCount.reactive.text <~ channel.get(\.subscriptionCount).map {
             "\($0.value?.unitFormatted ?? "??") subscribers"
         }
     }

@@ -7,6 +7,7 @@
 //
 
 import struct YoutubeKit.Video
+//import struct YoutubeKit.VideoList
 import struct YoutubeKit.VideoListRequest
 import Result
 import ReactiveSwift
@@ -16,15 +17,20 @@ enum VideoError: Swift.Error {
     case notFound
 }
 
+//public class VideoList: YoutubeClientObject<YoutubeKit.VideoListRequest, YoutubeKit.VideoList> {
+//    fileprivate init(ids: [Video.ID], client: YoutubeClient) {
+//        let channelRequest = VideoListRequest(part: [.contentDetails, .statistics, .snippet], filter: .id(ids.joined(separator: ",")))
+//
+//        super.init(client: client, request: channelRequest, mapResponse: { $0 })
+//    }
+//}
+
 public class Video: YoutubeClientObject<YoutubeKit.VideoListRequest, YoutubeKit.Video> {
     public typealias ID = String
-
-    public let id: ID
 
     fileprivate init(id: ID, client: YoutubeClient) {
         let channelRequest = VideoListRequest(part: [.contentDetails, .statistics, .snippet], filter: .id(id))
 
-        self.id = id
         super.init(client: client, request: channelRequest) { response in
             return response.tryMap(VideoError.notFound) { $0.items.count == 1 ? $0.items[0] : nil }
         }
@@ -42,6 +48,10 @@ public class Video: YoutubeClientObject<YoutubeKit.VideoListRequest, YoutubeKit.
         return makeProperty { $0.snippet?.description }
     }
 
+    var published: APISignalProducer<Date> {
+        return makeProperty { ($0.snippet?.publishedAt).flatMap { DateFormatter.iso8601Full.date(from: $0) } }
+    }
+
     var viewCount: APISignalProducer<Int> {
         return makeProperty { ($0.statistics?.viewCount).flatMap { Int($0) } }
     }
@@ -54,5 +64,9 @@ public class Video: YoutubeClientObject<YoutubeKit.VideoListRequest, YoutubeKit.
 extension YoutubeClient {
     func video(withID id: Video.ID) -> Video {
         return cacheOrCreate(id, &videoCache, Video(id: id, client: self))
+    }
+
+    func videos(withIDs ids: [Video.ID]) -> [Video] {
+        return ids.map { video(withID: $0) }
     }
 }

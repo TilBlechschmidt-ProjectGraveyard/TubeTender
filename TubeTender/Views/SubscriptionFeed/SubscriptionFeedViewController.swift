@@ -9,10 +9,7 @@
 import UIKit
 import YoutubeKit
 import ReactiveSwift
-
-protocol SubscriptionFeedViewControllerDelegate: class {
-    func didSelectVideo(_ subscriptionFeedViewController: SubscriptionFeedViewController, withID: String)
-}
+import Result
 
 class SubscriptionFeedViewController: UIViewController {
     private var tableView = UITableView()
@@ -20,8 +17,6 @@ class SubscriptionFeedViewController: UIViewController {
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return UIStatusBarStyle.lightContent
     }
-
-    weak var delegate: SubscriptionFeedViewControllerDelegate?
 
     private var items: [Video] = []
 
@@ -55,34 +50,31 @@ class SubscriptionFeedViewController: UIViewController {
             DispatchQueue.global(qos: .userInitiated).async {
                 let subscriptionFeed = SubscriptionFeedAPI.shared.fetchSubscriptionFeed()
 
-                let metaFeed = subscriptionFeed.flatMap(FlattenStrategy.merge) { (videoIDs, endDate) -> SignalProducer<([Video], Date), SubscriptionFeedAPIError> in
-                    let endDateProducer = SignalProducer<Date, SubscriptionFeedAPIError>(value: endDate)
-                    let metadataProducer = VideoMetadataAPI.shared.fetchMetadata(forVideos: videoIDs)
-                        .mapError { SubscriptionFeedAPIError.requestFailed(error: $0) }
-                    return metadataProducer.zip(with: endDateProducer)
+                let metaFeed = subscriptionFeed.flatMap(FlattenStrategy.merge) { (videoIDs, endDate) -> SignalProducer<([Video], Date), NoError> in
+                    let endDateProducer = SignalProducer<Date, NoError>(value: endDate)
+                    let videoProducer = SignalProducer(YoutubeClient.shared.videos(withIDs: videoIDs))
+                        .map { SignalProducer(value: $0).zip(with: $0.published).zip(with: $0.viewCount) }
+                        .flatten(.latest)
+                        .filterMap { $0.1.value != nil ? $0.0 : nil }
+                        .collect()
+                        .map { (videoList: [(Video, APIResult<Date>)]) -> [Video] in
+                            videoList.sorted { $0.1.value ?? Date() > $1.1.value ?? Date() }.map { data -> Video in data.0 }
+                        }
+                    return videoProducer.zip(with: endDateProducer)
                 }
 
                 metaFeed.startWithResult { result in
                     DispatchQueue.main.async {
                         switch result {
                         case .success(let (videos, endDate)):
-                            let nonLicensedVideos = videos.filter { video in
-                                guard let statistics = video.statistics else {
-                                    return true
-                                }
-                                return statistics.viewCount != nil
-                            }
-                            print("Feed fetched! \(nonLicensedVideos.count) entries.")
-                            self.items = nonLicensedVideos.sorted {
-                                // TODO Get rid of force unwraps.
-                                $0.snippet!.published! > $1.snippet!.published!
-                            }
+                            print("Feed fetched! \(videos.count) entries.")
+                            self.items = videos
                             self.tableView.reloadData()
-                            self.tableView.am.pullToRefreshView?.stopRefreshing()
                         case .failure(let error):
                             print("Failed to fetch feed!", error)
                             // TODO Show this to the user.
                         }
+                        self.tableView.am.pullToRefreshView?.stopRefreshing()
                     }
                 }
             }
@@ -149,13 +141,12 @@ extension SubscriptionFeedViewController: UITableViewDataSource {
 
 extension SubscriptionFeedViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
-        let videoID = items[indexPath.row].id
-
-        self.delegate?.didSelectVideo(self, withID: videoID)
+        let videoID = items[indexPath.row]
 
         // TODO Show error if required
         PlaybackManager.shared.playNow(videoID: videoID).startWithResult { _ in
             DispatchQueue.main.async {
+                // TODO replace segue with self.showDetailViewController(, sender: )
                 self.performSegue(withIdentifier: "showDetail", sender: self)
             }
         }

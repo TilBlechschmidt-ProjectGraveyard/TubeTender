@@ -8,12 +8,6 @@
 
 import YoutubeKit
 
-extension Snippet.VideoList {
-    var published: Date? {
-        return DateFormatter.iso8601Full.date(from: self.publishedAt)
-    }
-}
-
 extension ContentDetails.VideoList {
     var durationPretty: String {
         guard let match = SimpleRegexMatcher.firstMatch(forPattern: "P(?:([0-9]+)Y)?(?:([0-9]+)M)?(?:([0-9]+)D)?T(?:([0-9]+)H)?(?:([0-9]+)M)?([0-9]+(.[0-9]+)?S)?", in: self.duration) else {

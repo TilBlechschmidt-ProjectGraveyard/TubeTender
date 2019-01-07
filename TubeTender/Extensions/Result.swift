@@ -21,4 +21,21 @@ extension SignalProducer where Error == NoError {
             }
         })
     }
+
+    func chain<T, U>(_ mapper: @escaping (T) -> APISignalProducer<U>) -> APISignalProducer<U> where Value == APIResult<T> {
+        return self.flatMap(FlattenStrategy.latest) { result in
+            switch result {
+            case let .success(value):
+                return mapper(value)
+            case let .failure(error):
+                return APISignalProducer(value: APIResult(error: error))
+            }
+        }
+    }
+
+    func get<T, U>(_ path: KeyPath<T, APISignalProducer<U>>) -> APISignalProducer<U> where Value == APIResult<T> {
+        return self.chain { object in
+            object[keyPath: path]
+        }
+    }
 }
