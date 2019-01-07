@@ -19,7 +19,7 @@ class SubscriptionFeedAPI {
     static let shared = SubscriptionFeedAPI()
     private init() {}
 
-    func fetchSubscribedChannels(pageToken: String? = nil) -> SignalProducer<[ChannelID], SubscriptionFeedAPIError> {
+    func fetchSubscribedChannels(pageToken: String? = nil) -> SignalProducer<[Channel.ID], SubscriptionFeedAPIError> {
         return SignalProducer { observer, _ in
             let subscriptionRequest = SubscriptionsListRequest(part: [.snippet],
                                                                filter: .mine(true),
@@ -62,7 +62,7 @@ class SubscriptionFeedAPI {
         return fetchSubscribedChannels().flatMap(.latest) { self.fetchSubscriptionFeed(forChannels: $0) }
     }
 
-    func fetchSubscriptionFeed(forChannels channelIDs: [ChannelID]) -> SignalProducer<(videoIDs: [VideoID], endDate: Date), SubscriptionFeedAPIError> {
+    func fetchSubscriptionFeed(forChannels channelIDs: [Channel.ID]) -> SignalProducer<(videoIDs: [VideoID], endDate: Date), SubscriptionFeedAPIError> {
         return SignalProducer(channelIDs).flatMap(.concurrent(limit: 25)) {
             self.fetchSubscriptionFeed(forChannel: $0)
         }.collect().map { videoSets in
@@ -78,7 +78,7 @@ class SubscriptionFeedAPI {
         }
     }
 
-    func fetchSubscriptionFeed(forChannel channelID: ChannelID) -> SignalProducer<[(videoID: VideoID, publishedAt: Date)], SubscriptionFeedAPIError> {
+    func fetchSubscriptionFeed(forChannel channelID: Channel.ID) -> SignalProducer<[(videoID: VideoID, publishedAt: Date)], SubscriptionFeedAPIError> {
         return SignalProducer { observer, _ in
             let activityFeedRequest = ActivityListRequest(part: [.contentDetails, .snippet],
                                                           filter: .channelID(channelID),

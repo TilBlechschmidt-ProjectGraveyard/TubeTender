@@ -22,30 +22,19 @@ class YoutubeClient {
 }
 
 public class YoutubeClientObject<Request: Requestable, DataType> {
-    typealias ResponseMapper = (SignalProducer<Request.Response, AnyError>) -> SignalProducer<DataType, AnyError>
+    typealias ResponseMapper = (APISignalProducer<Request.Response>) -> APISignalProducer<DataType>
 
     let client: YoutubeClient
-    let response: SignalProducer<DataType, NoError>
-
-    private let _error: MutableProperty<AnyError?>
-    let error: Property<AnyError?>
+    let response: APISignalProducer<DataType>
 
     init(client: YoutubeClient, request: Request, mapResponse: ResponseMapper) {
         self.client = client
 
-        let _error = MutableProperty<AnyError?>(nil)
-        self._error = _error
-        error = Property(_error)
-
         let cachedResponse = client.apiSession.reactive
             .send(request)
             .cached(lifetime: Constants.cacheLifetime)
-            .on(value: { _ in _error.value = nil })
 
-        response = mapResponse(cachedResponse).flatMapError {
-            _error.value = $0
-            return .empty
-        }
+        response = mapResponse(cachedResponse)
     }
 }
 

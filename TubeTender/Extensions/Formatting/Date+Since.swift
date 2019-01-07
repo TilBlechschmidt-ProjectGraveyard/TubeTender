@@ -10,7 +10,7 @@ import Foundation
 
 extension Date {
     func since() -> String {
-        let seconds = abs(NSDate().timeIntervalSince1970 - self.timeIntervalSince1970)
+        let seconds =  -self.timeIntervalSinceNow
         if seconds <= 120 {
             return "just now"
         }

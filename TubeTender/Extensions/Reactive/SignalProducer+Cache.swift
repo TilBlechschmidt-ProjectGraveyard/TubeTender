@@ -22,9 +22,17 @@ class SignalProducerCache<Value, ErrorType: Error> {
         self.signalProducerClosure = signalProducerClosure
     }
 
-    func fetch() -> SignalProducer<Value, ErrorType> {
-        // Value is not available and not fetching
-        if !currentlyFetching && (mutableProperty.value == nil || Date() > expirationDate) {
+    func fetch() -> SignalProducer<Result<Value, ErrorType>, NoError> {
+        // Value is not available and or cache is outdated
+        if mutableProperty.value == nil || Date() > expirationDate {
+            refresh()
+        }
+
+        return mutableProperty.producer.filterMap { $0 }
+    }
+
+    func refresh() {
+        if !currentlyFetching {
             mutableProperty.value = nil
             currentlyFetching = true
 
@@ -34,17 +42,15 @@ class SignalProducerCache<Value, ErrorType: Error> {
                 self.expirationDate = Date(timeIntervalSinceNow: self.lifetime)
             }
         }
-
-        return mutableProperty.producer.filterMap { $0 }.promoteError().attemptMap { $0 }
     }
 }
 
 extension SignalProducer {
-    func cached(lifetime: TimeInterval) -> SignalProducer<Value, Error> {
+    func cached(lifetime: TimeInterval) -> SignalProducer<Result<Value, Error>, NoError> {
         let cache = SignalProducerCache(lifetime: lifetime, self)
 
-        return SignalProducer<SignalProducer<Value, Error>, NoError>() { observable, _ in
+        return SignalProducer<SignalProducer<Result<Value, Error>, NoError>, NoError>() { observable, _ in
             observable.send(value: cache.fetch())
-            }.flatten(.latest)
+        }.flatten(.latest)
     }
 }

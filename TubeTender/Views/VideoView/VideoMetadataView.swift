@@ -162,6 +162,7 @@ class VideoMetadataView: UIView {
         channelThumbnail.layer.cornerRadius = channelIconSize / 2
         channelThumbnail.layer.masksToBounds = false
         channelThumbnail.clipsToBounds = true
+        channelThumbnail.kf.indicatorType = .activity
         channelThumbnail.translatesAutoresizingMaskIntoConstraints = false
         channelView.addSubview(channelThumbnail)
         channelView.addConstraints([

@@ -9,6 +9,7 @@
 import UIKit
 import Kingfisher
 import YoutubeKit
+import ReactiveSwift
 
 class SubscriptionFeedViewTableCell: UITableViewCell {
     let uiPadding: CGFloat = 15.0
@@ -54,12 +55,8 @@ class SubscriptionFeedViewTableCell: UITableViewCell {
 
             // Channel icon
             if let channelID = video.snippet?.channelID {
-                ChannelMetadataAPI.shared.thumbnailURL(forChannel: channelID).startWithResult {
-                    if let iconURL = $0.value {
-                        self.channelIconView.kf.indicatorType = .activity
-                        self.channelIconView.kf.setImage(with: iconURL, options: [.transition(.fade(0.5))])
-                    }
-                }
+                let channel = YoutubeClient.shared.channel(withID: channelID)
+                channelIconView.reactive.setImage(options: [.transition(.fade(0.5))]) <~ channel.thumbnailURL.map { $0.value }
             }
         }
     }
@@ -129,6 +126,7 @@ class SubscriptionFeedViewTableCell: UITableViewCell {
         channelIconView.layer.cornerRadius = channelIconSize / 2
         channelIconView.layer.masksToBounds = false
         channelIconView.clipsToBounds = true
+        channelIconView.kf.indicatorType = .activity
         channelIconView.translatesAutoresizingMaskIntoConstraints = false
         metadataView.addSubview(channelIconView)
         metadataView.addConstraints([

@@ -42,10 +42,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let splitViewController = window!.rootViewController as! UISplitViewController
         splitViewController.delegate = self
 
-        let button = UIButton()
-
-        button.reactive
-
         return true
     }
 
