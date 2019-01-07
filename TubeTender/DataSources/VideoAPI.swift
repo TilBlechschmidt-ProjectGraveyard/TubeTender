@@ -53,6 +53,6 @@ public class Video: YoutubeClientObject<YoutubeKit.VideoListRequest, YoutubeKit.
 
 extension YoutubeClient {
     func video(withID id: Video.ID) -> Video {
-        return Video(id: id, client: self)
+        return cacheOrCreate(id, &videoCache, Video(id: id, client: self))
     }
 }

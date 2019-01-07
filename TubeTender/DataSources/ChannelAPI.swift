@@ -45,6 +45,6 @@ public class Channel: YoutubeClientObject<YoutubeKit.ChannelListRequest, Youtube
 
 extension YoutubeClient {
     func channel(withID id: Channel.ID) -> Channel {
-        return Channel(id: id, client: self)
+        return cacheOrCreate(id, &channelCache, Channel(id: id, client: self))
     }
 }
