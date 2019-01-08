@@ -60,7 +60,7 @@ class SubscriptionFeedAPI {
             }
 
             // Sort the videos by publish date and strip the date
-            let sortedVideos = videos.sorted { $0.publishedAt < $1.publishedAt }.map { $0.video }
+            let sortedVideos = videos.sorted { $0.publishedAt > $1.publishedAt }.map { $0.video }
 
             return (videos: sortedVideos, endDate: cutoffDate)
         }

@@ -111,7 +111,6 @@ extension SubscriptionFeedViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = SubscriptionFeedViewTableCell(video: items.value[indexPath.row])
-        print("cell forRowAt \(indexPath.row)")
 
         // TODO Implement cell reusability
 //        var cell = tableView.dequeueReusableCell(withIdentifier: "Cell") as? SubscriptionFeedViewTableCell
@@ -134,7 +133,7 @@ extension SubscriptionFeedViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        if indexPath.row == items.value.count - 10 {
+        if indexPath.row > items.value.count - 10 {
             fetchNextSet()
         }
     }
