@@ -35,6 +35,7 @@
 		302D0449216F51F5009FC2E5 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 302D0448216F51F4009FC2E5 /* libc++.tbd */; settings = {ATTRIBUTES = (Required, ); }; };
 		302FB83E21D5886B00A82363 /* DateFormatter+ISO8601Full.swift in Sources */ = {isa = PBXBuildFile; fileRef = 302FB83D21D5886B00A82363 /* DateFormatter+ISO8601Full.swift */; };
 		302FB84021D58A8A00A82363 /* VideoAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 302FB83F21D58A8A00A82363 /* VideoAPI.swift */; };
+		3034ACC321E529C7000F06A9 /* YoutubeURLParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3034ACC221E529C7000F06A9 /* YoutubeURLParser.swift */; };
 		30370F5521763F6000B35ACF /* VLCTime+Float.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30370F5421763F6000B35ACF /* VLCTime+Float.swift */; };
 		30370F57217735A200B35ACF /* YoutubeKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 30370F56217735A200B35ACF /* YoutubeKit.framework */; };
 		30370F59217735FB00B35ACF /* YoutubeKit.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 30370F56217735A200B35ACF /* YoutubeKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -153,6 +154,7 @@
 		302D0448216F51F4009FC2E5 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
 		302FB83D21D5886B00A82363 /* DateFormatter+ISO8601Full.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DateFormatter+ISO8601Full.swift"; sourceTree = "<group>"; };
 		302FB83F21D58A8A00A82363 /* VideoAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoAPI.swift; sourceTree = "<group>"; };
+		3034ACC221E529C7000F06A9 /* YoutubeURLParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YoutubeURLParser.swift; sourceTree = "<group>"; };
 		30370F5421763F6000B35ACF /* VLCTime+Float.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VLCTime+Float.swift"; sourceTree = "<group>"; };
 		30370F56217735A200B35ACF /* YoutubeKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = YoutubeKit.framework; path = Carthage/Build/iOS/YoutubeKit.framework; sourceTree = "<group>"; };
 		30370F5A217739C500B35ACF /* SkeletonView.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SkeletonView.framework; path = Carthage/Build/iOS/SkeletonView.framework; sourceTree = "<group>"; };
@@ -472,6 +474,7 @@
 				302D0416216E7535009FC2E5 /* SimpleRegexMatcher.swift */,
 				30370F5421763F6000B35ACF /* VLCTime+Float.swift */,
 				30ABE213218F928A00E4FEA4 /* ArrayComparable.swift */,
+				3034ACC221E529C7000F06A9 /* YoutubeURLParser.swift */,
 			);
 			path = TypeHelper;
 			sourceTree = "<group>";
@@ -626,6 +629,7 @@
 				3067715521DA4CD9009AA051 /* NativePlayer.swift in Sources */,
 				30ABE21F21905F5800E4FEA4 /* Queue.swift in Sources */,
 				40E2E1EF21E28D21007EA359 /* ApiSession+Reactive.swift in Sources */,
+				3034ACC321E529C7000F06A9 /* YoutubeURLParser.swift in Sources */,
 				30BAB7752178BBC500B01953 /* SubscriptionFeedTableCell.swift in Sources */,
 				40E2E1F721E3E2FA007EA359 /* Result.swift in Sources */,
 				30BAB77A2178CDFF00B01953 /* Date+Since.swift in Sources */,
