@@ -19,7 +19,7 @@ class SubscriptionFeedViewTableCell: UITableViewCell {
     let videoMetaTitleView = UIView()
     let videoTitleView = UILabel()
     let videoSubtitleView = UILabel()
-    var channelIconView = UIImageView()
+    let channelIconView = UIImageView()
 
     let durationView = UIView()
     let durationLabelView = UILabel()
@@ -101,7 +101,6 @@ class SubscriptionFeedViewTableCell: UITableViewCell {
         channelIconView.layer.cornerRadius = channelIconSize / 2
         channelIconView.layer.masksToBounds = false
         channelIconView.clipsToBounds = true
-        channelIconView.kf.indicatorType = .activity
         channelIconView.translatesAutoresizingMaskIntoConstraints = false
         metadataView.addSubview(channelIconView)
         metadataView.addConstraints([
@@ -146,6 +145,8 @@ class SubscriptionFeedViewTableCell: UITableViewCell {
     }
 
     func populateData() {
+        // TODO If view count is empty show a "PREMIUM" content banner
+
         // Video duration
         durationLabelView.reactive.text <~ video.duration.map { $0.value ?? "--:--" }
 
@@ -168,7 +169,6 @@ class SubscriptionFeedViewTableCell: UITableViewCell {
 
         // Channel icon
         let channel = video.channel
-
         channelIconView.reactive.setImage(options: [.transition(.fade(0.5))]) <~ channel.get(\.thumbnailURL).map { $0.value }
     }
 

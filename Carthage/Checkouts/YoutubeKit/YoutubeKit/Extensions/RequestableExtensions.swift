@@ -61,11 +61,28 @@ public extension Requestable {
         }
         
         urlComponents.query = keyParams
-            .map { "\($0.key)=\($0.value)" }
+            .map {
+                if let date = $0.value as? Date {
+                    return "\($0.key)=\(DateFormatter.iso8601Full.string(from: date))"
+                } else {
+                    return "\($0.key)=\($0.value)"
+                }
+            }
             .joined(separator: "&")
         
         urlRequest.url = urlComponents.url
         
         return urlRequest
     }
+}
+
+extension DateFormatter {
+    fileprivate static let iso8601Full: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ"
+        formatter.calendar = Calendar(identifier: .iso8601)
+        formatter.timeZone = TimeZone(secondsFromGMT: 0)
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        return formatter
+    }()
 }

@@ -10,6 +10,7 @@ import UIKit
 import YoutubeKit
 import ReactiveSwift
 import Result
+import ReactiveCocoa
 
 class SubscriptionFeedViewController: UIViewController {
     private var tableView = UITableView()
@@ -18,12 +19,11 @@ class SubscriptionFeedViewController: UIViewController {
         return UIStatusBarStyle.lightContent
     }
 
-    private var items: [Video] = []
+    private var items = MutableProperty<[Video]>([])
+    private var cutoffDate: Date?
+    private var isFetching = false
 
-    override func viewDidLayoutSubviews() {
-        // TODO This produces bogus view widths
-        tableView.rowHeight = view.frame.width * 0.5625 + 75
-    }
+    private let placeholder = UILabel()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -46,89 +46,72 @@ class SubscriptionFeedViewController: UIViewController {
             tableView.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor)
         ])
 
-        tableView.am.addPullToRefresh { [unowned self] in
-            DispatchQueue.global(qos: .userInitiated).async {
-                let subscriptionFeed = SubscriptionFeedAPI.shared.fetchSubscriptionFeed()
-
-                let metaFeed = subscriptionFeed.flatMap(FlattenStrategy.merge) { (videoIDs, endDate) -> SignalProducer<([Video], Date), NoError> in
-                    let endDateProducer = SignalProducer<Date, NoError>(value: endDate)
-                    let videoProducer = SignalProducer(YoutubeClient.shared.videos(withIDs: videoIDs))
-                        .map { SignalProducer(value: $0).zip(with: $0.published).zip(with: $0.viewCount) }
-                        .flatten(.concat)
-                        .filterMap { $0.1.value != nil ? $0.0 : nil }
-                        .collect()
-                        .map { (videoList: [(Video, APIResult<Date>)]) -> [Video] in
-                            videoList.sorted { $0.1.value ?? Date() > $1.1.value ?? Date() }.map { data -> Video in data.0 }
-                        }
-                    return videoProducer.zip(with: endDateProducer)
-                }
-
-                metaFeed.startWithResult { result in
-                    DispatchQueue.main.async {
-                        switch result {
-                        case .success(let (videos, endDate)):
-                            print("Feed fetched! \(videos.count) entries.")
-                            self.items = videos
-                            self.tableView.reloadData()
-                        case .failure(let error):
-                            print("Failed to fetch feed!", error)
-                            // TODO Show this to the user.
-                        }
-                        self.tableView.am.pullToRefreshView?.stopRefreshing()
-                    }
-                }
-            }
-        }
-
-//        tableView.am.addInfiniteScrolling { [unowned self] in
-//            self.fetchMoreData(completion: { (fetchedItems) in
-//                self.items.append(contentsOf: fetchedItems)
-//                self.tableView.reloadData()
-//                self.tableView.am.infiniteScrollingView?.stopRefreshing()
-//                if fetchedItems.count == 0 {
-//                    //No more data is available
-//                    self.tableView.am.infiniteScrollingView?.hideInfiniteScrollingView()
-//                }
-//            })
-//        }
+        tableView.refreshControl = UIRefreshControl()
 
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(self.refresh),
                                                name: NSNotification.Name("AppDelegate.authentication.loggedIn"),
                                                object: nil)
+
+        tableView.refreshControl?.addTarget(self, action: #selector(self.refresh), for: .valueChanged)
+        tableView.rowHeight = CGFloat.greatestFiniteMagnitude
+
+        placeholder.text = "Loading ..."
+        placeholder.textColor = UIColor(red: 0.3, green: 0.3, blue: 0.3, alpha: 1)
+        placeholder.textAlignment = .center
+        placeholder.reactive.isHidden <~ items.map { $0.count > 0 }
+        tableView.backgroundView = placeholder
+    }
+
+    func fetchFeed(cutoffDate: Date?, onCompletion: @escaping ([Video], Date) -> Void) {
+        guard !isFetching else {
+            tableView.refreshControl?.endRefreshing()
+            return
+        }
+        isFetching = true
+        SubscriptionFeedAPI.shared.fetchSubscriptionFeed(publishedBefore: cutoffDate).startWithResult { result in
+            switch result {
+            case .success(let (videos, cutoffDate)):
+                onCompletion(videos, cutoffDate)
+            case .failure(let error):
+                print("Failed to fetch infinite feed!", error)
+                // TODO Show this to the user.
+            }
+            self.isFetching = false
+            self.tableView.refreshControl?.endRefreshing()
+        }
     }
 
     @objc func refresh() {
-        tableView.am.pullToRefreshView?.trigger()
+        tableView.refreshControl?.beginRefreshing()
+        fetchFeed(cutoffDate: nil) { videos, cutoffDate in
+            self.items.value = videos
+            self.cutoffDate = cutoffDate
+            self.tableView.reloadData()
+        }
     }
 
-//    func fetchDataFromStart(completion handler:@escaping (_ fetchedItems: [Int])->Void) {
-//        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-//            let fetchedItems = Array(0..<self.kPageLength)
-//            handler(fetchedItems)
-//        }
-//    }
-//
-//    func fetchMoreData(completion handler:@escaping (_ fetchedItems: [Int])->Void) {
-//        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-//            if self.items.count >= self.kMaxItemCount {
-//                handler([])
-//                return
-//            }
-//
-//            let fetchedItems = Array(self.items.count..<(self.items.count + self.kPageLength))
-//            handler(fetchedItems)
-//        }
-//    }
+    func fetchNextSet() {
+        fetchFeed(cutoffDate: cutoffDate) { videos, cutoffDate in
+            let previousLength = self.items.value.count
+
+            self.items.value.append(contentsOf: videos)
+            self.cutoffDate = cutoffDate
+
+            let indexPaths = (previousLength..<self.items.value.count).map { IndexPath(row: $0, section: 0) }
+            self.tableView.insertRows(at: indexPaths, with: .fade)
+        }
+    }
 }
 
 extension SubscriptionFeedViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return items.count
+        return items.value.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = SubscriptionFeedViewTableCell(video: items[indexPath.row])
+        let cell = SubscriptionFeedViewTableCell(video: items.value[indexPath.row])
+        print("cell forRowAt \(indexPath.row)")
 
         // TODO Implement cell reusability
 //        var cell = tableView.dequeueReusableCell(withIdentifier: "Cell") as? SubscriptionFeedViewTableCell
@@ -142,8 +125,22 @@ extension SubscriptionFeedViewController: UITableViewDataSource {
 }
 
 extension SubscriptionFeedViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        return tableView.frame.width * 0.5625 + 75
+    }
+
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return tableView.frame.width * 0.5625 + 75
+    }
+
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        if indexPath.row == items.value.count - 10 {
+            fetchNextSet()
+        }
+    }
+
     func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
-        let video = items[indexPath.row]
+        let video = items.value[indexPath.row]
 
         // TODO Snowball into playback manager and make it not use IDs but Video instead.
         video.id.startWithValues { result in
