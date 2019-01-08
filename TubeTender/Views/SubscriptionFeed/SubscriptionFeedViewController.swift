@@ -54,7 +54,7 @@ class SubscriptionFeedViewController: UIViewController {
                     let endDateProducer = SignalProducer<Date, NoError>(value: endDate)
                     let videoProducer = SignalProducer(YoutubeClient.shared.videos(withIDs: videoIDs))
                         .map { SignalProducer(value: $0).zip(with: $0.published).zip(with: $0.viewCount) }
-                        .flatten(.latest)
+                        .flatten(.concat)
                         .filterMap { $0.1.value != nil ? $0.0 : nil }
                         .collect()
                         .map { (videoList: [(Video, APIResult<Date>)]) -> [Video] in
@@ -128,26 +128,32 @@ extension SubscriptionFeedViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        var cell = tableView.dequeueReusableCell(withIdentifier: "Cell") as? SubscriptionFeedViewTableCell
-        if cell == nil {
-            cell = SubscriptionFeedViewTableCell(style: .default, reuseIdentifier: "Cell")
-        }
+        let cell = SubscriptionFeedViewTableCell(video: items[indexPath.row])
 
-        cell?.video = items[indexPath.row]
+        // TODO Implement cell reusability
+//        var cell = tableView.dequeueReusableCell(withIdentifier: "Cell") as? SubscriptionFeedViewTableCell
+//        if cell == nil {
+//            cell = SubscriptionFeedViewTableCell(style: .default, reuseIdentifier: "Cell")
+//        }
+//        cell?.video = items[indexPath.row]
 
-        return cell!
+        return cell
     }
 }
 
 extension SubscriptionFeedViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
-        let videoID = items[indexPath.row]
+        let video = items[indexPath.row]
 
-        // TODO Show error if required
-        PlaybackManager.shared.playNow(videoID: videoID).startWithResult { _ in
-            DispatchQueue.main.async {
-                // TODO replace segue with self.showDetailViewController(, sender: )
-                self.performSegue(withIdentifier: "showDetail", sender: self)
+        // TODO Snowball into playback manager and make it not use IDs but Video instead.
+        video.id.startWithValues { result in
+            if let id = result.value {
+                PlaybackManager.shared.playNow(videoID: id).startWithResult { _ in
+                    DispatchQueue.main.async {
+                        // TODO replace segue with self.showDetailViewController(vc, sender: self)
+                        self.performSegue(withIdentifier: "showDetail", sender: self)
+                    }
+                }
             }
         }
 

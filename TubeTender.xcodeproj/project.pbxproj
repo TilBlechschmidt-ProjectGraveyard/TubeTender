@@ -303,7 +303,6 @@
 				40822CB621E3FD7700903390 /* Reactive */,
 				40822CB721E3FDFC00903390 /* Formatting */,
 				40822CB821E3FEF000903390 /* TypeHelper */,
-				300F296621D59F2900C9B0B0 /* Video.swift */,
 				40E2E1F621E3E2FA007EA359 /* Result.swift */,
 				40E2E1F821E3E7AE007EA359 /* Optional+Error.swift */,
 			);
@@ -453,6 +452,7 @@
 		40822CB721E3FDFC00903390 /* Formatting */ = {
 			isa = PBXGroup;
 			children = (
+				300F296621D59F2900C9B0B0 /* Video.swift */,
 				30BAB7792178CDFF00B01953 /* Date+Since.swift */,
 				302FB83D21D5886B00A82363 /* DateFormatter+ISO8601Full.swift */,
 				30370F602177769800B35ACF /* String+FancyFormatting.swift */,

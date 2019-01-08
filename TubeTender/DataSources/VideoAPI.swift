@@ -36,6 +36,10 @@ public class Video: YoutubeClientObject<YoutubeKit.VideoListRequest, YoutubeKit.
         }
     }
 
+    var id: APISignalProducer<ID> {
+        return makeProperty { $0.id }
+    }
+
     var thumbnailURL: APISignalProducer<URL> {
         return makeProperty { $0.snippet?.thumbnails.high.url.flatMap { URL(string: $0) } }
     }
@@ -52,12 +56,21 @@ public class Video: YoutubeClientObject<YoutubeKit.VideoListRequest, YoutubeKit.
         return makeProperty { ($0.snippet?.publishedAt).flatMap { DateFormatter.iso8601Full.date(from: $0) } }
     }
 
+    // TODO Make this a TimeInterval
+    var duration: APISignalProducer<String> {
+        return makeProperty { $0.contentDetails?.durationPretty }
+    }
+
     var viewCount: APISignalProducer<Int> {
         return makeProperty { ($0.statistics?.viewCount).flatMap { Int($0) } }
     }
 
     var channel: APISignalProducer<Channel> {
         return makeProperty { ($0.snippet?.channelID).flatMap { self.client.channel(withID: $0) } }
+    }
+
+    var channelTitle: APISignalProducer<String> {
+        return makeProperty { $0.snippet?.channelTitle }
     }
 }
 

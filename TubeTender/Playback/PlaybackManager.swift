@@ -360,34 +360,36 @@ extension PlaybackManager: VLCMediaPlayerDelegate {
             // MPNowPlayingInfoCenter
             let duration = vlcMediaPlayer.media.flatMap { Double($0.length.intValue) / 1000 } ?? 0
 
-            VideoMetadataAPI.shared.thumbnailURL(forVideo: currentlyPlaying!.id).startWithResult { result in
-                if let thumbnailURL = result.value {
-                    UIApplication.shared.beginReceivingRemoteControlEvents()
+//            VideoMetadataAPI.shared.thumbnailURL(forVideo: currentlyPlaying!.id).startWithResult { result in
+//                if let thumbnailURL = result.value {
+//                    UIApplication.shared.beginReceivingRemoteControlEvents()
+//
+//                    let data = try? Data(contentsOf: thumbnailURL)
+//
+//                    if let imageData = data {
+//                        let image = UIImage(data: imageData)!
+//                        let artwork = MPMediaItemArtwork(boundsSize: image.size, requestHandler: { (size) -> UIImage in
+//                            return image
+//                        })
+//
+//                        let songInfo: [String : Any] = [
+//                            MPMediaItemPropertyTitle: "Random test video",
+//                            MPMediaItemPropertyPlaybackDuration: NSNumber(value: duration),
+//                            MPMediaItemPropertyArtwork: artwork
+//                        ]
+//
+//                        MPNowPlayingInfoCenter.default().nowPlayingInfo = songInfo
+//
+//                        let commandCenter = MPRemoteCommandCenter.shared()
+//                        commandCenter.playCommand.isEnabled = true
+//                        commandCenter.pauseCommand.isEnabled = true
+//                        commandCenter.playCommand.addTarget(self, action: #selector(self.play))
+//                        commandCenter.pauseCommand.addTarget(self, action: #selector(self.pause))
+//                    }
+//                }
+//            }
 
-                    let data = try? Data(contentsOf: thumbnailURL)
 
-                    if let imageData = data {
-                        let image = UIImage(data: imageData)!
-                        let artwork = MPMediaItemArtwork(boundsSize: image.size, requestHandler: { (size) -> UIImage in
-                            return image
-                        })
-
-                        let songInfo: [String : Any] = [
-                            MPMediaItemPropertyTitle: "Random test video",
-                            MPMediaItemPropertyPlaybackDuration: NSNumber(value: duration),
-                            MPMediaItemPropertyArtwork: artwork
-                        ]
-
-                        MPNowPlayingInfoCenter.default().nowPlayingInfo = songInfo
-
-                        let commandCenter = MPRemoteCommandCenter.shared()
-                        commandCenter.playCommand.isEnabled = true
-                        commandCenter.pauseCommand.isEnabled = true
-                        commandCenter.playCommand.addTarget(self, action: #selector(self.play))
-                        commandCenter.pauseCommand.addTarget(self, action: #selector(self.pause))
-                    }
-                }
-            }
 
 //            commandCenter.nextTrackCommand.isEnabled = true
 //            commandCenter.nextTrackCommand.addTarget(self, action:#selector(nextTrackCommandSelector))

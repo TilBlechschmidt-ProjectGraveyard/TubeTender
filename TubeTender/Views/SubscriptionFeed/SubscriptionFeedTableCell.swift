@@ -8,7 +8,6 @@
 
 import UIKit
 import Kingfisher
-import YoutubeKit
 import ReactiveSwift
 
 class SubscriptionFeedViewTableCell: UITableViewCell {
@@ -25,45 +24,21 @@ class SubscriptionFeedViewTableCell: UITableViewCell {
     let durationView = UIView()
     let durationLabelView = UILabel()
 
-    var video: Video! {
-        didSet {
-            // Video duration
-            durationLabelView.text = video.contentDetails?.durationPretty
+    let video: Video
 
-            // Video title
-            videoTitleView.text = video.snippet?.title
+    init(video: Video) {
+        self.video = video
+        super.init(style: .default, reuseIdentifier: nil)
 
-            // Video subtitle
-            videoSubtitleView.text = ""
-            if let channelName = video.snippet?.channelTitle {
-                videoSubtitleView.text?.append("\(channelName) ∙ ")
-            }
-            if let viewCount = Int(video.statistics?.viewCount ?? "0") {
-                videoSubtitleView.text?.append("\(viewCount.withThousandSeparators) views ∙ ")
-            }
-            if let published = video.snippet?.published {
-                videoSubtitleView.text?.append(published.since())
-            }
-
-            // Thumbnail
-            VideoMetadataAPI.shared.thumbnailURL(forVideo: video.id).startWithResult {
-                if let thumbnailURL = $0.value {
-                    let processor = RoundCornerImageProcessor(cornerRadius: 20)
-                    self.thumbnailView.kf.setImage(with: thumbnailURL, options: [.processor(processor), .transition(.fade(0.5))])
-                }
-            }
-
-            // Channel icon
-            if let channelID = video.snippet?.channelID {
-                let channel = YoutubeClient.shared.channel(withID: channelID)
-                channelIconView.reactive.setImage(options: [.transition(.fade(0.5))]) <~ channel.thumbnailURL.map { $0.value }
-            }
-        }
+        layoutCell()
+        populateData()
     }
 
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
+    func layoutCell() {
         backgroundColor = nil
         selectedBackgroundView = nil
 
@@ -169,8 +144,32 @@ class SubscriptionFeedViewTableCell: UITableViewCell {
             videoSubtitleView.bottomAnchor.constraint(equalTo: videoMetaTitleView.bottomAnchor)
         ])
     }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+
+    func populateData() {
+        // Video duration
+        durationLabelView.reactive.text <~ video.duration.map { $0.value ?? "--:--" }
+
+        // Video title
+        videoTitleView.reactive.text <~ video.title.map { $0.value ?? "Loading ..." }
+
+        // Video subtitle
+        let subtitle = video.channelTitle.zip(with: video.viewCount).zip(with: video.published).map { (res: ((APIResult<String>, APIResult<Int>), APIResult<Date>)) -> String in
+            let channelTitle = res.0.0.value ?? "Loading ..."
+            let viewCount = res.0.1.value ?? 0
+            let published = res.1.value ?? Date()
+
+            return "\(channelTitle) ∙ \(viewCount.withThousandSeparators) views ∙ \(published.since())"
+        }
+        videoSubtitleView.reactive.text <~ subtitle
+
+        // Thumbnail
+        let processor = RoundCornerImageProcessor(cornerRadius: 20)
+        thumbnailView.reactive.setImage(options: [.processor(processor), .transition(.fade(0.5))]) <~ video.thumbnailURL.map { $0.value }
+
+        // Channel icon
+        let channel = video.channel
+
+        channelIconView.reactive.setImage(options: [.transition(.fade(0.5))]) <~ channel.get(\.thumbnailURL).map { $0.value }
     }
+
 }
