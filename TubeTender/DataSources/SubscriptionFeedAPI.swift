@@ -56,7 +56,7 @@ class SubscriptionFeedAPI {
 
             // Remove videos after the cutoff date from each set and flatten the sets into one
             let videos = videoSets.flatMap { videoSet in
-                videoSet.filter { $0.publishedAt > cutoffDate }
+                videoSet.filter { $0.publishedAt >= cutoffDate }
             }
 
             // Sort the videos by publish date and strip the date

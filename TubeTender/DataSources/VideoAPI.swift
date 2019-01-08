@@ -72,6 +72,10 @@ public class Video: YoutubeClientObject<YoutubeKit.VideoListRequest, YoutubeKit.
     var channelTitle: APISignalProducer<String> {
         return makeProperty { $0.snippet?.channelTitle }
     }
+
+    var isPremium: APISignalProducer<Bool> {
+        return makeProperty { $0.statistics?.viewCount == nil }
+    }
 }
 
 extension YoutubeClient {

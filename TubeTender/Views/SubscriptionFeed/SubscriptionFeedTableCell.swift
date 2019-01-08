@@ -9,12 +9,15 @@
 import UIKit
 import Kingfisher
 import ReactiveSwift
+import Result
+import SnapKit
 
 class SubscriptionFeedViewTableCell: UITableViewCell {
     let uiPadding: CGFloat = 15.0
     let channelIconSize: CGFloat = 45.0
 
     let thumbnailView = UIImageView()
+    let lockView = UIImageView(image: #imageLiteral(resourceName: "lock"))
     let metadataView = UIView()
     let videoMetaTitleView = UIView()
     let videoTitleView = UILabel()
@@ -73,18 +76,19 @@ class SubscriptionFeedViewTableCell: UITableViewCell {
             durationLabelView.bottomAnchor.constraint(equalTo: durationView.bottomAnchor, constant: -(uiPadding / 3)),
         ])
 
-        let blurEffect = UIBlurEffect(style: UIBlurEffect.Style.dark)
-        let blurEffectView = UIVisualEffectView(effect: blurEffect)
-        blurEffectView.frame = durationView.bounds
-        blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        blurEffectView.isUserInteractionEnabled = false
-        blurEffectView.clipsToBounds = true
-        blurEffectView.layer.maskedCorners = [.layerMinXMinYCorner]
-        blurEffectView.layer.cornerRadius = 10
-        durationView.layer.cornerRadius = 10
-        durationView.layer.maskedCorners = [.layerMinXMinYCorner]
-        durationView.addSubview(blurEffectView)
-        durationView.sendSubviewToBack(blurEffectView)
+        durationView.blur(style: .dark, cornerRadius: 10, corners: [.layerMinXMinYCorner])
+
+        thumbnailView.addSubview(lockView)
+        lockView.snp.makeConstraints { make in
+            make.center.equalTo(thumbnailView)
+            make.height.equalTo(lockView.snp.width)
+            make.height.equalTo(thumbnailView).dividedBy(5)
+        }
+        lockView.contentMode = .scaleAspectFit
+        lockView.tintColor = Constants.backgroundColor
+        let thumbnailBlur = thumbnailView.blur(style: .light)
+        thumbnailBlur.isHidden = true
+        thumbnailBlur.reactive.isHidden <~ video.isPremium.map { !($0.value ?? false) }
 
         metadataView.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(metadataView)
@@ -145,8 +149,6 @@ class SubscriptionFeedViewTableCell: UITableViewCell {
     }
 
     func populateData() {
-        // TODO If view count is empty show a "PREMIUM" content banner
-
         // Video duration
         durationLabelView.reactive.text <~ video.duration.map { $0.value ?? "--:--" }
 
@@ -154,14 +156,28 @@ class SubscriptionFeedViewTableCell: UITableViewCell {
         videoTitleView.reactive.text <~ video.title.map { $0.value ?? "Loading ..." }
 
         // Video subtitle
-        let subtitle = video.channelTitle.zip(with: video.viewCount).zip(with: video.published).map { (res: ((APIResult<String>, APIResult<Int>), APIResult<Date>)) -> String in
-            let channelTitle = res.0.0.value ?? "Loading ..."
-            let viewCount = res.0.1.value ?? 0
-            let published = res.1.value ?? Date()
+        let subtitleData = SignalProducer.zip(
+            video.channelTitle.map { $0.value },
+            video.viewCount.map { $0.value },
+            video.published.map { $0.value },
+            video.isPremium.map { $0.value }
+        )
 
-            return "\(channelTitle) ∙ \(viewCount.withThousandSeparators) views ∙ \(published.since())"
+        let subtitle: SignalProducer<String, NoError> = subtitleData.map { data in
+            let (channelTitle, viewCount, published, isPremium) = data
+
+            let displayData = [
+                channelTitle ?? "Loading ...",
+                (isPremium ?? false) ? "Premium Content" : viewCount.map { "\($0.withThousandSeparators) views" },
+                published?.since()
+            ]
+
+            return displayData.compactMap({ $0 }).joined(separator: " ∙ ")
         }
         videoSubtitleView.reactive.text <~ subtitle
+
+        lockView.isHidden = true
+        lockView.reactive.isHidden <~ video.isPremium.map { !($0.value ?? false) }
 
         // Thumbnail
         let processor = RoundCornerImageProcessor(cornerRadius: 20)
