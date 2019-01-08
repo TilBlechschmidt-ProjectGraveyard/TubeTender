@@ -13,19 +13,14 @@ import Result
 import SnapKit
 
 class SubscriptionFeedViewTableCell: UITableViewCell {
-    let uiPadding: CGFloat = 15.0
-    let channelIconSize: CGFloat = 45.0
-
     let thumbnailView = UIImageView()
+    let durationView = DurationView()
     let lockView = UIImageView(image: #imageLiteral(resourceName: "lock"))
-    let metadataView = UIView()
-    let videoMetaTitleView = UIView()
-    let videoTitleView = UILabel()
-    let videoSubtitleView = UILabel()
-    let channelIconView = UIImageView()
 
-    let durationView = UIView()
-    let durationLabelView = UILabel()
+    let metadataView = UIView()
+    let titleLabel = UILabel()
+    let subtitleLabel = UILabel()
+    let channelIconView = UIImageView()
 
     let video: Video
 
@@ -33,129 +28,129 @@ class SubscriptionFeedViewTableCell: UITableViewCell {
         self.video = video
         super.init(style: .default, reuseIdentifier: nil)
 
-        layoutCell()
-        populateData()
+        setupUI()
     }
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func layoutCell() {
+    private func setupUI() {
         backgroundColor = nil
         selectedBackgroundView = nil
+        setupThumbnail()
+        setupMetadata()
+    }
 
-        // TODO Set the selected color
-
+    private func setupThumbnail() {
         thumbnailView.contentMode = .scaleAspectFill
         thumbnailView.clipsToBounds = true
-        thumbnailView.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(thumbnailView)
-        addConstraints([
-            thumbnailView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: uiPadding),
-            thumbnailView.leftAnchor.constraint(equalTo: contentView.leftAnchor, constant: uiPadding),
-            thumbnailView.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: -uiPadding),
-            thumbnailView.heightAnchor.constraint(lessThanOrEqualTo: contentView.widthAnchor, multiplier: 0.5625)
-        ])
+        thumbnailView.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(Constants.uiPadding)
+            make.left.equalToSuperview().offset(Constants.uiPadding)
+            make.right.equalToSuperview().offset(-Constants.uiPadding)
+            make.height.equalTo(thumbnailView.snp.width).multipliedBy(9.0/16.0)
+        }
 
-        durationView.translatesAutoresizingMaskIntoConstraints = false
-        contentView.addSubview(durationView)
-        addConstraints([
-            durationView.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: -uiPadding),
-            durationView.bottomAnchor.constraint(equalTo: thumbnailView.bottomAnchor),
-        ])
+        // Add blur and image
+        let thumbnailBlur = thumbnailView.blur(style: .light)
+        thumbnailBlur.isHidden = true
+        thumbnailBlur.reactive.isHidden <~ video.isPremium.map { !($0.value ?? false) }
+        thumbnailView.reactive.setImage(options: [.transition(.fade(0.5))]) <~ video.thumbnailURL.map { $0.value }
 
-        durationLabelView.font = durationLabelView.font.withSize(10)
-        durationLabelView.textColor = UIColor.white
-        durationLabelView.translatesAutoresizingMaskIntoConstraints = false
-        durationView.addSubview(durationLabelView)
-        addConstraints([
-            durationLabelView.leftAnchor.constraint(equalTo: durationView.leftAnchor, constant: uiPadding / 3),
-            durationLabelView.rightAnchor.constraint(equalTo: durationView.rightAnchor, constant: -(uiPadding / 3)),
-            durationLabelView.topAnchor.constraint(equalTo: durationView.topAnchor, constant: uiPadding / 3),
-            durationLabelView.bottomAnchor.constraint(equalTo: durationView.bottomAnchor, constant: -(uiPadding / 3)),
-        ])
+        // Setup subviews
+        setupLock()
+        setupDurationView()
+    }
 
-        durationView.blur(style: .dark, cornerRadius: 10, corners: [.layerMinXMinYCorner])
-
+    private func setupLock() {
+        lockView.contentMode = .scaleAspectFit
+        lockView.tintColor = Constants.backgroundColor
         thumbnailView.addSubview(lockView)
         lockView.snp.makeConstraints { make in
             make.center.equalTo(thumbnailView)
             make.height.equalTo(lockView.snp.width)
             make.height.equalTo(thumbnailView).dividedBy(5)
         }
-        lockView.contentMode = .scaleAspectFit
-        lockView.tintColor = Constants.backgroundColor
-        let thumbnailBlur = thumbnailView.blur(style: .light)
-        thumbnailBlur.isHidden = true
-        thumbnailBlur.reactive.isHidden <~ video.isPremium.map { !($0.value ?? false) }
 
-        metadataView.translatesAutoresizingMaskIntoConstraints = false
-        contentView.addSubview(metadataView)
-        addConstraints([
-            metadataView.topAnchor.constraint(equalTo: thumbnailView.bottomAnchor),
-            metadataView.leftAnchor.constraint(equalTo: contentView.leftAnchor),
-            metadataView.rightAnchor.constraint(equalTo: contentView.rightAnchor)
-        ])
-        let bottomClip = metadataView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
-        bottomClip.priority = .defaultHigh
-        bottomClip.isActive = true
-
-        channelIconView.backgroundColor = UIColor.lightGray
-        channelIconView.layer.cornerRadius = channelIconSize / 2
-        channelIconView.layer.masksToBounds = false
-        channelIconView.clipsToBounds = true
-        channelIconView.translatesAutoresizingMaskIntoConstraints = false
-        metadataView.addSubview(channelIconView)
-        metadataView.addConstraints([
-            channelIconView.topAnchor.constraint(equalTo: metadataView.topAnchor, constant: uiPadding),
-            channelIconView.bottomAnchor.constraint(equalTo: metadataView.bottomAnchor, constant: -uiPadding),
-            channelIconView.leftAnchor.constraint(equalTo: metadataView.leftAnchor, constant: uiPadding),
-            channelIconView.heightAnchor.constraint(equalToConstant: channelIconSize),
-            channelIconView.widthAnchor.constraint(equalToConstant: channelIconSize)
-        ])
-
-        videoMetaTitleView.translatesAutoresizingMaskIntoConstraints = false
-        metadataView.addSubview(videoMetaTitleView)
-        metadataView.addConstraints([
-            videoMetaTitleView.centerYAnchor.constraint(equalTo: channelIconView.centerYAnchor),
-            videoMetaTitleView.leftAnchor.constraint(equalTo: channelIconView.rightAnchor, constant: uiPadding),
-            videoMetaTitleView.rightAnchor.constraint(equalTo: metadataView.rightAnchor, constant: -uiPadding)
-        ])
-
-        videoTitleView.font = videoTitleView.font.withSize(13)
-        videoTitleView.textColor = UIColor.white
-        videoTitleView.lineBreakMode = .byTruncatingTail
-        videoTitleView.numberOfLines = 2
-        videoTitleView.translatesAutoresizingMaskIntoConstraints = false
-        videoMetaTitleView.addSubview(videoTitleView)
-        videoMetaTitleView.addConstraints([
-            videoTitleView.leftAnchor.constraint(equalTo: videoMetaTitleView.leftAnchor),
-            videoTitleView.rightAnchor.constraint(equalTo: videoMetaTitleView.rightAnchor),
-            videoTitleView.topAnchor.constraint(equalTo: videoMetaTitleView.topAnchor)
-        ])
-
-        videoSubtitleView.font = videoSubtitleView.font.withSize(11)
-        videoSubtitleView.textColor = UIColor.lightGray
-        videoSubtitleView.lineBreakMode = .byTruncatingTail
-        videoSubtitleView.translatesAutoresizingMaskIntoConstraints = false
-        videoMetaTitleView.addSubview(videoSubtitleView)
-        videoMetaTitleView.addConstraints([
-            videoSubtitleView.leftAnchor.constraint(equalTo: videoMetaTitleView.leftAnchor),
-            videoSubtitleView.rightAnchor.constraint(equalTo: videoMetaTitleView.rightAnchor),
-            videoSubtitleView.topAnchor.constraint(equalTo: videoTitleView.bottomAnchor, constant: uiPadding / 4),
-            videoSubtitleView.bottomAnchor.constraint(equalTo: videoMetaTitleView.bottomAnchor)
-        ])
+        // Setup hide/show
+        lockView.isHidden = true
+        lockView.reactive.isHidden <~ video.isPremium.map { !($0.value ?? false) }
     }
 
-    func populateData() {
-        // Video duration
-        durationLabelView.reactive.text <~ video.duration.map { $0.value ?? "--:--" }
+    private func setupDurationView() {
+        thumbnailView.addSubview(durationView)
+        durationView.snp.makeConstraints { make in
+            make.right.equalToSuperview()
+            make.bottom.equalToSuperview()
+        }
+        durationView.label.reactive.text <~ video.duration.map { $0.value ?? "--:--" }
+    }
 
-        // Video title
-        videoTitleView.reactive.text <~ video.title.map { $0.value ?? "Loading ..." }
+    private func setupMetadata() {
+        contentView.addSubview(metadataView)
+        metadataView.snp.makeConstraints { make in
+            make.top.equalTo(thumbnailView.snp.bottom)
+            make.left.equalToSuperview()
+            make.right.equalToSuperview()
+            make.bottom.equalToSuperview().priority(.high)
+        }
 
-        // Video subtitle
+        setupChannelIcon()
+        setupTitles()
+    }
+
+    private func setupChannelIcon() {
+        channelIconView.backgroundColor = UIColor.lightGray
+        channelIconView.layer.cornerRadius = Constants.channelIconSize / 2
+        channelIconView.layer.masksToBounds = false
+        channelIconView.clipsToBounds = true
+        metadataView.addSubview(channelIconView)
+        channelIconView.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(Constants.uiPadding)
+            make.bottom.equalToSuperview().offset(Constants.uiPadding)
+            make.left.equalToSuperview().offset(Constants.uiPadding)
+            make.height.equalTo(Constants.channelIconSize)
+            make.width.equalTo(Constants.channelIconSize)
+        }
+
+        // Add icon
+        let iconURL = video.channel.get(\.thumbnailURL)
+        channelIconView.reactive.setImage(options: [.transition(.fade(0.5))]) <~ iconURL.map { $0.value }
+    }
+
+    private func setupTitles() {
+        let titleStackView = UIStackView(arrangedSubviews: [titleLabel, subtitleLabel])
+        titleStackView.alignment = .fill
+        titleStackView.distribution = .equalSpacing
+        titleStackView.axis = .vertical
+
+        metadataView.addSubview(titleStackView)
+        titleStackView.snp.makeConstraints { make in
+            make.centerY.equalTo(channelIconView)
+            make.left.equalTo(channelIconView.snp.right).offset(Constants.uiPadding)
+            make.right.equalToSuperview()
+        }
+
+        setupTitle()
+        setupSubtitle()
+    }
+
+    private func setupTitle() {
+        titleLabel.font = UIFont.systemFont(ofSize: 13)
+        titleLabel.textColor = .white
+        titleLabel.lineBreakMode = .byTruncatingTail
+        titleLabel.numberOfLines = 2
+        titleLabel.reactive.text <~ video.title.map { $0.value ?? "Loading ..." }
+    }
+
+    private func setupSubtitle() {
+        subtitleLabel.font = UIFont.systemFont(ofSize: 11)
+        subtitleLabel.textColor = .lightGray
+        subtitleLabel.lineBreakMode = .byTruncatingTail
+
+        // Setup data
         let subtitleData = SignalProducer.zip(
             video.channelTitle.map { $0.value },
             video.viewCount.map { $0.value },
@@ -174,18 +169,7 @@ class SubscriptionFeedViewTableCell: UITableViewCell {
 
             return displayData.compactMap({ $0 }).joined(separator: " ∙ ")
         }
-        videoSubtitleView.reactive.text <~ subtitle
 
-        lockView.isHidden = true
-        lockView.reactive.isHidden <~ video.isPremium.map { !($0.value ?? false) }
-
-        // Thumbnail
-        let processor = RoundCornerImageProcessor(cornerRadius: 20)
-        thumbnailView.reactive.setImage(options: [.processor(processor), .transition(.fade(0.5))]) <~ video.thumbnailURL.map { $0.value }
-
-        // Channel icon
-        let channel = video.channel
-        channelIconView.reactive.setImage(options: [.transition(.fade(0.5))]) <~ channel.get(\.thumbnailURL).map { $0.value }
+        subtitleLabel.reactive.text <~ subtitle
     }
-
 }
