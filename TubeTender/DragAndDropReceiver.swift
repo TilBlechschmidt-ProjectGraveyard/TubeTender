@@ -9,13 +9,16 @@
 import UIKit
 
 class IncomingVideoReceiver: NSObject, UIDropInteractionDelegate {
+    public static let `default` = IncomingVideoReceiver()
+
+    private override init() {}
 
     func dropInteraction(_ interaction: UIDropInteraction, performDrop session: UIDropSession) {
         for dragItem in session.items {
             dragItem.itemProvider.loadObject(ofClass: NSString.self) { item, _ in
-                guard let receivedString = item as? NSString, let url = YoutubeURL(urlString: receivedString as String) else { return }
+                guard let receivedString = item as? NSString else { return }
 
-                self.handle(videoURL: url)
+                self.handle(string: receivedString as String)
             }
         }
     }
@@ -33,14 +36,24 @@ class IncomingVideoReceiver: NSObject, UIDropInteractionDelegate {
 
         self.pasteboardChangeCount = UIPasteboard.general.changeCount
 
-        guard UIPasteboard.general.hasStrings,
-            let urlString = UIPasteboard.general.string,
-            let url = YoutubeURL(urlString: urlString) else { return }
+        guard UIPasteboard.general.hasStrings, let urlString = UIPasteboard.general.string else { return }
 
-        handle(videoURL: url)
+        handle(string: urlString)
     }
 
-    private func handle(videoURL url: YoutubeURL) {
+    @discardableResult public func handle(url: URL) -> Bool {
+        return handle(string: url.absoluteString)
+    }
+
+    @discardableResult public func handle(string: String) -> Bool {
+        guard let url = YoutubeURL(urlString: string) else {
+            return false
+        }
+        handle(videoURL: url)
+        return true
+    }
+
+    public func handle(videoURL url: YoutubeURL) {
         PlaybackManager.shared.playNow(videoID: url.videoID).startWithResult {
             print($0)
         }

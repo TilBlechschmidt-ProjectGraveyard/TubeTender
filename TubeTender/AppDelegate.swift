@@ -17,8 +17,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
-    let videoReceiver = IncomingVideoReceiver()
-
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
         let audioSession = AVAudioSession.sharedInstance()
@@ -44,10 +42,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let splitViewController = window!.rootViewController as! UISplitViewController
         splitViewController.delegate = self
 
-        splitViewController.view.addInteraction(UIDropInteraction(delegate: videoReceiver))
+        splitViewController.view.addInteraction(UIDropInteraction(delegate: IncomingVideoReceiver.default))
 
         NotificationCenter.default.addObserver(self,
-                                               selector: #selector(videoReceiver.scanPasteboardForURL),
+                                               selector: #selector(IncomingVideoReceiver.default.scanPasteboardForURL),
                                                name: UIPasteboard.changedNotification,
                                                object: nil)
 
@@ -61,7 +59,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationDidBecomeActive(_ application: UIApplication) {
-        videoReceiver.scanPasteboardForURL()
+        IncomingVideoReceiver.default.scanPasteboardForURL()
     }
 }
 
