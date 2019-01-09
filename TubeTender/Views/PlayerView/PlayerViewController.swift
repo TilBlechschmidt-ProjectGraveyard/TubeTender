@@ -128,6 +128,10 @@ class PlayerViewController: UIViewController {
 
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.viewTapped))
         playerControlView.addGestureRecognizer(tapGestureRecognizer)
+        let doubleTapGesture = UITapGestureRecognizer(target: self, action: #selector(self.viewDoubleTapped(_:)))
+        doubleTapGesture.numberOfTapsRequired = 2
+        tapGestureRecognizer.require(toFail: doubleTapGesture)
+        playerControlView.addGestureRecognizer(doubleTapGesture)
 
         let pinchGestureRecognizer = UIPinchGestureRecognizer(target: self, action: #selector(self.viewPinched))
         playerControlView.addGestureRecognizer(pinchGestureRecognizer)
@@ -183,6 +187,17 @@ class PlayerViewController: UIViewController {
         controlsVisible = !controlsVisible && !controlsDisabled
         if controlsVisible {
             refreshControlHideTimer()
+        }
+    }
+
+    @objc func viewDoubleTapped(_ sender: UITapGestureRecognizer) {
+        // TODO Implement exponential growth after a few steps
+        // TODO Add animation to indicate seeking visually
+        let tapPoint = sender.location(in: self.view)
+        if tapPoint.x > self.view.bounds.width / 2 {
+            SwitchablePlayer.shared.seek(by: 10)
+        } else {
+            SwitchablePlayer.shared.seek(by: -10)
         }
     }
 
