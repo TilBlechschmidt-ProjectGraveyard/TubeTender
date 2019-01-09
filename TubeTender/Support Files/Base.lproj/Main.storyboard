@@ -10,10 +10,10 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Subscriptions-->
+        <!--Feed-->
         <scene sceneID="vYw-1A-DCa">
             <objects>
-                <tableViewController title="Subscriptions" id="zcC-a7-gDv" customClass="SubscriptionFeedViewController" customModule="TubeTender" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController id="zcC-a7-gDv" customClass="SubscriptionFeedViewController" customModule="TubeTender" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="nZ8-0x-FqO">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -23,7 +23,7 @@
                             <outlet property="delegate" destination="zcC-a7-gDv" id="z2N-Yp-Vf6"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Subscriptions" id="upZ-SC-6xb"/>
+                    <navigationItem key="navigationItem" title="Feed" id="upZ-SC-6xb"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="0uN-wV-WkH" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -131,11 +131,11 @@
             </objects>
             <point key="canvasLocation" x="2047" y="-851"/>
         </scene>
-        <!--Subscriptions-->
+        <!--Feed-->
         <scene sceneID="jqD-xk-eTR">
             <objects>
-                <navigationController title="Subscriptions" automaticallyAdjustsScrollViewInsets="NO" id="U2r-v9-Qwx" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Subscriptions" image="movie" selectedImage="movie" id="77v-9J-X1k"/>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="U2r-v9-Qwx" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Feed" image="movie" selectedImage="movie" id="77v-9J-X1k"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" barStyle="black" largeTitles="YES" id="peW-Ck-XeQ">
                         <rect key="frame" x="0.0" y="20" width="375" height="96"/>

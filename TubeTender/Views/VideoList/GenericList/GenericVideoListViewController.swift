@@ -70,8 +70,12 @@ class GenericVideoListViewController: UITableViewController {
 
     open func loadNextVideos() {}
 
-    var emptyStateView: EmptyStateView {
+    open var emptyStateView: EmptyStateView {
         return EmptyStateView(image: #imageLiteral(resourceName: "movie"), text: "No videos found")
+    }
+
+    open var hideThumbnails: Bool {
+        return false
     }
 }
 
@@ -81,23 +85,20 @@ extension GenericVideoListViewController {
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        var cell = tableView.dequeueReusableCell(withIdentifier: SubscriptionFeedViewTableCell.identifier) as? SubscriptionFeedViewTableCell
-        if cell == nil {
-            cell = SubscriptionFeedViewTableCell(style: .default, reuseIdentifier: SubscriptionFeedViewTableCell.identifier)
-        }
-        cell?.video = items.value[indexPath.row]
-
-        return cell!
+        let cell = tableView.dequeueReusableCell(withIdentifier: SubscriptionFeedViewTableCell.identifier) as! SubscriptionFeedViewTableCell
+        cell.video = items.value[indexPath.row]
+        cell.hideThumbnail = hideThumbnails
+        return cell
     }
 }
 
 extension GenericVideoListViewController {
     override func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-        return tableView.frame.width * 0.5625 + 75
+        return self.tableView(tableView, heightForRowAt: indexPath)
     }
 
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return tableView.frame.width * 0.5625 + 75
+        return (hideThumbnails ? 0 : tableView.frame.width * 0.5625) + Constants.channelIconSize + 2 * Constants.uiPadding
     }
 
     override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {

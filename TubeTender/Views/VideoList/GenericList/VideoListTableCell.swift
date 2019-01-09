@@ -33,6 +33,13 @@ class SubscriptionFeedViewTableCell: UIRebindableTableViewCell {
         }
     }
 
+    var hideThumbnail: Bool = false {
+        didSet {
+            thumbnailView.isHidden = hideThumbnail
+            makeBindings()
+        }
+    }
+
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupUI()
@@ -45,20 +52,24 @@ class SubscriptionFeedViewTableCell: UIRebindableTableViewCell {
     private func makeBindings() {
         let iconURL = video.channel.get(\.thumbnailURL)
 
+        let stringDuration = video.duration.map { $0.value ?? "--:--" }
+
         let subtitleData = SignalProducer.zip(
             video.channelTitle.map { $0.value },
             video.viewCount.map { $0.value },
             video.published.map { $0.value },
-            video.isPremium.map { $0.value }
+            video.isPremium.map { $0.value },
+            stringDuration
         )
 
-        let subtitle: SignalProducer<String, NoError> = subtitleData.map { data in
-            let (channelTitle, viewCount, published, isPremium) = data
+        let subtitle: SignalProducer<String, NoError> = subtitleData.map { [unowned self] data in
+            let (channelTitle, viewCount, published, isPremium, duration) = data
 
             let displayData = [
                 channelTitle ?? "Loading ...",
                 (isPremium ?? false) ? "Premium Content" : viewCount.map { "\($0.withThousandSeparators) views" },
-                published?.since()
+                published?.since(),
+                self.hideThumbnail ? duration : nil
             ]
 
             return displayData.compactMap({ $0 }).joined(separator: " ∙ ")
@@ -70,7 +81,7 @@ class SubscriptionFeedViewTableCell: UIRebindableTableViewCell {
 
             bindings += lockView.reactive.isHidden <~ video.isPremium.map { !($0.value ?? false) }
 
-            bindings += durationView.label.reactive.text <~ video.duration.map { $0.value ?? "--:--" }
+            bindings += durationView.label.reactive.text <~ stringDuration
 
             bindings += channelIconView.reactive.setImage(options: [.transition(.fade(0.5))]) <~ iconURL.map { $0.value }
 
@@ -111,15 +122,13 @@ class SubscriptionFeedViewTableCell: UIRebindableTableViewCell {
     private func setupLock() {
         lockView.contentMode = .scaleAspectFit
         lockView.tintColor = Constants.backgroundColor
+        lockView.isHidden = true
         thumbnailView.addSubview(lockView)
         lockView.snp.makeConstraints { make in
             make.center.equalTo(thumbnailView)
             make.height.equalTo(lockView.snp.width)
             make.height.equalTo(thumbnailView).dividedBy(5)
         }
-
-        // Setup hide/show
-        lockView.isHidden = true
     }
 
     private func setupDurationView() {
@@ -133,10 +142,9 @@ class SubscriptionFeedViewTableCell: UIRebindableTableViewCell {
     private func setupMetadata() {
         contentView.addSubview(metadataView)
         metadataView.snp.makeConstraints { make in
-            make.top.equalTo(thumbnailView.snp.bottom)
             make.left.equalToSuperview()
             make.right.equalToSuperview()
-            make.bottom.equalToSuperview().priority(.high)
+            make.bottom.equalToSuperview()
         }
 
         setupChannelIcon()
@@ -151,7 +159,7 @@ class SubscriptionFeedViewTableCell: UIRebindableTableViewCell {
         metadataView.addSubview(channelIconView)
         channelIconView.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(Constants.uiPadding)
-            make.bottom.equalToSuperview().offset(Constants.uiPadding)
+            make.bottom.equalToSuperview().offset(-Constants.uiPadding)
             make.left.equalToSuperview().offset(Constants.uiPadding)
             make.height.equalTo(Constants.channelIconSize)
             make.width.equalTo(Constants.channelIconSize)
