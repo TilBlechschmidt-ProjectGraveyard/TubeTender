@@ -160,7 +160,7 @@ class PlayerControlView: UIView {
         ])
 
         // Add blur to TLCV
-        let blurEffect = UIBlurEffect(style: UIBlurEffect.Style.regular)
+        let blurEffect = UIBlurEffect(style: UIBlurEffect.Style.dark)
         let blurEffectView = UIVisualEffectView(effect: blurEffect)
         blurEffectView.frame = topLeftControlView.bounds
         blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
