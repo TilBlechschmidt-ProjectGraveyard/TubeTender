@@ -240,7 +240,13 @@ class VideoMetadataView: UIView {
 extension VideoMetadataView: UITextViewDelegate {
     func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
         if interaction == .invokeDefaultAction {
-            return !IncomingVideoReceiver.default.handle(url: URL)
+
+            let beginning = textView.beginningOfDocument
+            guard let center = textView.position(from: beginning, offset: characterRange.location + characterRange.length / 2) else { return true }
+
+            let rect = textView.caretRect(for: center)
+
+            return !IncomingVideoReceiver.default.handle(url: URL, source: .rect(rect: rect, view: textView))
         }
         return true
     }

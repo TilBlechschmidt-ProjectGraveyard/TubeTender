@@ -90,9 +90,10 @@
 		30F2E38C21DD4D14005EFCA9 /* Alamofire+Reactive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30F2E38B21DD4D14005EFCA9 /* Alamofire+Reactive.swift */; };
 		30F48900219CD3E1002FAE36 /* SplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30F488FF219CD3E0002FAE36 /* SplitViewController.swift */; };
 		30F66C7021DF78E300BBBBD8 /* VideoDownloadButtonViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30F66C6F21DF78E300BBBBD8 /* VideoDownloadButtonViewController.swift */; };
+		4021444321E5F7FB00AAC670 /* UIAlertController+Reactive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4021444221E5F7FB00AAC670 /* UIAlertController+Reactive.swift */; };
 		40822CB521E3F8A900903390 /* Kingfisher+Reactive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40822CB421E3F8A900903390 /* Kingfisher+Reactive.swift */; };
 		40822CBB21E4FE8700903390 /* UIView+Blur.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40822CBA21E4FE8700903390 /* UIView+Blur.swift */; };
-		408C524C21E54554007B2DD2 /* DragAndDropReceiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 408C524B21E54554007B2DD2 /* DragAndDropReceiver.swift */; };
+		408C524C21E54554007B2DD2 /* IncomingVideoReceiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 408C524B21E54554007B2DD2 /* IncomingVideoReceiver.swift */; };
 		408C524E21E55903007B2DD2 /* DurationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 408C524D21E55903007B2DD2 /* DurationView.swift */; };
 		40E2E1EF21E28D21007EA359 /* ApiSession+Reactive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40E2E1EE21E28D21007EA359 /* ApiSession+Reactive.swift */; };
 		40E2E1F321E292D5007EA359 /* YoutubeClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40E2E1F221E292D5007EA359 /* YoutubeClient.swift */; };
@@ -200,9 +201,10 @@
 		30F2E38B21DD4D14005EFCA9 /* Alamofire+Reactive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Alamofire+Reactive.swift"; sourceTree = "<group>"; };
 		30F488FF219CD3E0002FAE36 /* SplitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitViewController.swift; sourceTree = "<group>"; };
 		30F66C6F21DF78E300BBBBD8 /* VideoDownloadButtonViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoDownloadButtonViewController.swift; sourceTree = "<group>"; };
+		4021444221E5F7FB00AAC670 /* UIAlertController+Reactive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIAlertController+Reactive.swift"; sourceTree = "<group>"; };
 		40822CB421E3F8A900903390 /* Kingfisher+Reactive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Kingfisher+Reactive.swift"; sourceTree = "<group>"; };
 		40822CBA21E4FE8700903390 /* UIView+Blur.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Blur.swift"; sourceTree = "<group>"; };
-		408C524B21E54554007B2DD2 /* DragAndDropReceiver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DragAndDropReceiver.swift; sourceTree = "<group>"; };
+		408C524B21E54554007B2DD2 /* IncomingVideoReceiver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncomingVideoReceiver.swift; sourceTree = "<group>"; };
 		408C524D21E55903007B2DD2 /* DurationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DurationView.swift; sourceTree = "<group>"; };
 		40E2E1EE21E28D21007EA359 /* ApiSession+Reactive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ApiSession+Reactive.swift"; sourceTree = "<group>"; };
 		40E2E1F221E292D5007EA359 /* YoutubeClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YoutubeClient.swift; sourceTree = "<group>"; };
@@ -282,7 +284,7 @@
 			children = (
 				302D03FE216E197A009FC2E5 /* AppDelegate.swift */,
 				30DA13E821E3C6EB000B2638 /* Constants.swift */,
-				408C524B21E54554007B2DD2 /* DragAndDropReceiver.swift */,
+				408C524B21E54554007B2DD2 /* IncomingVideoReceiver.swift */,
 				302D0419216E769C009FC2E5 /* Support Files */,
 				302D041A216E76B7009FC2E5 /* Extensions */,
 				30370F662177E05D00B35ACF /* Helpers */,
@@ -459,6 +461,7 @@
 				40E2E1EE21E28D21007EA359 /* ApiSession+Reactive.swift */,
 				40822CB421E3F8A900903390 /* Kingfisher+Reactive.swift */,
 				30B8BBCB21E4EB5F0044E592 /* CocoaAction+Closure.swift */,
+				4021444221E5F7FB00AAC670 /* UIAlertController+Reactive.swift */,
 			);
 			path = Reactive;
 			sourceTree = "<group>";
@@ -613,7 +616,7 @@
 				302FB83E21D5886B00A82363 /* DateFormatter+ISO8601Full.swift in Sources */,
 				40822CB521E3F8A900903390 /* Kingfisher+Reactive.swift in Sources */,
 				30F66C7021DF78E300BBBBD8 /* VideoDownloadButtonViewController.swift in Sources */,
-				408C524C21E54554007B2DD2 /* DragAndDropReceiver.swift in Sources */,
+				408C524C21E54554007B2DD2 /* IncomingVideoReceiver.swift in Sources */,
 				30ABE219218F965500E4FEA4 /* VideoStreamAPIResponse.swift in Sources */,
 				30ABE21B218F9D3500E4FEA4 /* VideoStreamManager.swift in Sources */,
 				30BAB7712178B4F800B01953 /* AMPullToRefresh.swift in Sources */,
@@ -631,6 +634,7 @@
 				30F2E38721DCFAF9005EFCA9 /* DownloadManager.swift in Sources */,
 				30BAB765217893E400B01953 /* SubscriptionFeedAPI.swift in Sources */,
 				3005DC64219B767D0002F6A1 /* PlayerControlView.swift in Sources */,
+				4021444321E5F7FB00AAC670 /* UIAlertController+Reactive.swift in Sources */,
 				30BE79BB216FF73F00E6B281 /* AnimatablePlayButton.swift in Sources */,
 				30BAB7702178B4F800B01953 /* AMInfiniteScrolling.swift in Sources */,
 				3067715521DA4CD9009AA051 /* NativePlayer.swift in Sources */,

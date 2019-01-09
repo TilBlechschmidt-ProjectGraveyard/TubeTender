@@ -49,6 +49,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                                                name: UIPasteboard.changedNotification,
                                                object: nil)
 
+        UIVisualEffectView.appearance().effect = UIBlurEffect(style: .dark)
+
         return true
     }
 
