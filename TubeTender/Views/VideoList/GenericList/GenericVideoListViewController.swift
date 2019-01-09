@@ -49,7 +49,7 @@ class GenericVideoListViewController: UITableViewController {
         guard let indexPath = tableView.indexPathForRow(at: pressLocation) else { return }
 
         IncomingVideoReceiver.default.handle(
-            video: self.videos[0][indexPath.row],
+            video: self.videos[indexPath.section][indexPath.row],
             source: .rect(rect: tableView.rectForRow(at: indexPath), view: tableView, permittedArrowDirections: .left))
     }
 

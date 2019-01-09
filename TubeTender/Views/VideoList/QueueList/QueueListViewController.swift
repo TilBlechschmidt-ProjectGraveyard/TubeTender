@@ -31,6 +31,11 @@ class QueueListViewController: GenericVideoListViewController {
     }
 
     override func headerTitle(forSection section: Int) -> String? {
-        return ["History", "Playing", "Play Next"][section]
+        return ["History", "Playing", "Up Next"][section]
+    }
+
+    override func scrollViewShouldScrollToTop(_ scrollView: UIScrollView) -> Bool {
+        tableView.scrollToRow(at: IndexPath(row: 0, section: 1), at: .top, animated: true)
+        return false
     }
 }
