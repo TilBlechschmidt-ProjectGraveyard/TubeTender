@@ -73,7 +73,7 @@
 		30BAB7702178B4F800B01953 /* AMInfiniteScrolling.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30BAB76D2178B4F800B01953 /* AMInfiniteScrolling.swift */; };
 		30BAB7712178B4F800B01953 /* AMPullToRefresh.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30BAB76E2178B4F800B01953 /* AMPullToRefresh.swift */; };
 		30BAB7722178B4F800B01953 /* AMRefresher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30BAB76F2178B4F800B01953 /* AMRefresher.swift */; };
-		30BAB7752178BBC500B01953 /* SubscriptionFeedTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30BAB7742178BBC500B01953 /* SubscriptionFeedTableCell.swift */; };
+		30BAB7752178BBC500B01953 /* VideoListTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30BAB7742178BBC500B01953 /* VideoListTableCell.swift */; };
 		30BAB7772178C96300B01953 /* Kingfisher.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 30BAB7762178C96300B01953 /* Kingfisher.framework */; };
 		30BAB7782178C96C00B01953 /* Kingfisher.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 30BAB7762178C96300B01953 /* Kingfisher.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		30BAB77A2178CDFF00B01953 /* Date+Since.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30BAB7792178CDFF00B01953 /* Date+Since.swift */; };
@@ -91,6 +91,9 @@
 		30F48900219CD3E1002FAE36 /* SplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30F488FF219CD3E0002FAE36 /* SplitViewController.swift */; };
 		30F66C7021DF78E300BBBBD8 /* VideoDownloadButtonViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30F66C6F21DF78E300BBBBD8 /* VideoDownloadButtonViewController.swift */; };
 		4021444321E5F7FB00AAC670 /* UIAlertController+Reactive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4021444221E5F7FB00AAC670 /* UIAlertController+Reactive.swift */; };
+		4021444721E625E300AAC670 /* GenericVideoListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4021444621E625E300AAC670 /* GenericVideoListViewController.swift */; };
+		4021444A21E631BB00AAC670 /* SearchListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4021444921E631BB00AAC670 /* SearchListViewController.swift */; };
+		4021444C21E63C8500AAC670 /* SearchAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4021444B21E63C8500AAC670 /* SearchAPI.swift */; };
 		40822CB521E3F8A900903390 /* Kingfisher+Reactive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40822CB421E3F8A900903390 /* Kingfisher+Reactive.swift */; };
 		40822CBB21E4FE8700903390 /* UIView+Blur.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40822CBA21E4FE8700903390 /* UIView+Blur.swift */; };
 		408C524C21E54554007B2DD2 /* IncomingVideoReceiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 408C524B21E54554007B2DD2 /* IncomingVideoReceiver.swift */; };
@@ -188,7 +191,7 @@
 		30BAB76D2178B4F800B01953 /* AMInfiniteScrolling.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AMInfiniteScrolling.swift; sourceTree = "<group>"; };
 		30BAB76E2178B4F800B01953 /* AMPullToRefresh.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AMPullToRefresh.swift; sourceTree = "<group>"; };
 		30BAB76F2178B4F800B01953 /* AMRefresher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AMRefresher.swift; sourceTree = "<group>"; };
-		30BAB7742178BBC500B01953 /* SubscriptionFeedTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionFeedTableCell.swift; sourceTree = "<group>"; };
+		30BAB7742178BBC500B01953 /* VideoListTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoListTableCell.swift; sourceTree = "<group>"; };
 		30BAB7762178C96300B01953 /* Kingfisher.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Kingfisher.framework; path = Carthage/Build/iOS/Kingfisher.framework; sourceTree = "<group>"; };
 		30BAB7792178CDFF00B01953 /* Date+Since.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Since.swift"; sourceTree = "<group>"; };
 		30BE79BA216FF73F00E6B281 /* AnimatablePlayButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatablePlayButton.swift; sourceTree = "<group>"; };
@@ -202,6 +205,9 @@
 		30F488FF219CD3E0002FAE36 /* SplitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitViewController.swift; sourceTree = "<group>"; };
 		30F66C6F21DF78E300BBBBD8 /* VideoDownloadButtonViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoDownloadButtonViewController.swift; sourceTree = "<group>"; };
 		4021444221E5F7FB00AAC670 /* UIAlertController+Reactive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIAlertController+Reactive.swift"; sourceTree = "<group>"; };
+		4021444621E625E300AAC670 /* GenericVideoListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericVideoListViewController.swift; sourceTree = "<group>"; };
+		4021444921E631BB00AAC670 /* SearchListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchListViewController.swift; sourceTree = "<group>"; };
+		4021444B21E63C8500AAC670 /* SearchAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchAPI.swift; sourceTree = "<group>"; };
 		40822CB421E3F8A900903390 /* Kingfisher+Reactive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Kingfisher+Reactive.swift"; sourceTree = "<group>"; };
 		40822CBA21E4FE8700903390 /* UIView+Blur.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Blur.swift"; sourceTree = "<group>"; };
 		408C524B21E54554007B2DD2 /* IncomingVideoReceiver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncomingVideoReceiver.swift; sourceTree = "<group>"; };
@@ -403,6 +409,7 @@
 				40E2E1F221E292D5007EA359 /* YoutubeClient.swift */,
 				302FB83F21D58A8A00A82363 /* VideoAPI.swift */,
 				40E2E1F421E29383007EA359 /* ChannelAPI.swift */,
+				4021444B21E63C8500AAC670 /* SearchAPI.swift */,
 				30BAB764217893E400B01953 /* SubscriptionFeedAPI.swift */,
 				30F2E38621DCFAF9005EFCA9 /* DownloadManager.swift */,
 				30A81A3C21D53C4400FBE8EE /* VideoStreams */,
@@ -426,7 +433,7 @@
 				30F488FF219CD3E0002FAE36 /* SplitViewController.swift */,
 				30BE79BA216FF73F00E6B281 /* AnimatablePlayButton.swift */,
 				40822CB921E3FFBB00903390 /* SignIn */,
-				30BAB7732178BB7400B01953 /* SubscriptionFeed */,
+				4021444421E623BF00AAC670 /* VideoList */,
 				3005DC62219B763D0002F6A1 /* PlayerView */,
 				30A81A3821D53A5F00FBE8EE /* VideoView */,
 			);
@@ -447,10 +454,36 @@
 			isa = PBXGroup;
 			children = (
 				30BAB76A2178B47A00B01953 /* SubscriptionFeedViewController.swift */,
-				30BAB7742178BBC500B01953 /* SubscriptionFeedTableCell.swift */,
-				408C524D21E55903007B2DD2 /* DurationView.swift */,
 			);
 			path = SubscriptionFeed;
+			sourceTree = "<group>";
+		};
+		4021444421E623BF00AAC670 /* VideoList */ = {
+			isa = PBXGroup;
+			children = (
+				4021444521E625CC00AAC670 /* GenericList */,
+				30BAB7732178BB7400B01953 /* SubscriptionFeed */,
+				4021444821E631A200AAC670 /* SearchList */,
+			);
+			path = VideoList;
+			sourceTree = "<group>";
+		};
+		4021444521E625CC00AAC670 /* GenericList */ = {
+			isa = PBXGroup;
+			children = (
+				4021444621E625E300AAC670 /* GenericVideoListViewController.swift */,
+				30BAB7742178BBC500B01953 /* VideoListTableCell.swift */,
+				408C524D21E55903007B2DD2 /* DurationView.swift */,
+			);
+			path = GenericList;
+			sourceTree = "<group>";
+		};
+		4021444821E631A200AAC670 /* SearchList */ = {
+			isa = PBXGroup;
+			children = (
+				4021444921E631BB00AAC670 /* SearchListViewController.swift */,
+			);
+			path = SearchList;
 			sourceTree = "<group>";
 		};
 		40822CB621E3FD7700903390 /* Reactive */ = {
@@ -610,6 +643,8 @@
 				30DA13E921E3C6EB000B2638 /* Constants.swift in Sources */,
 				3067715321DA32E4009AA051 /* VLCPlayer.swift in Sources */,
 				30ABE2212190B48E00E4FEA4 /* PlayerViewController.swift in Sources */,
+				4021444C21E63C8500AAC670 /* SearchAPI.swift in Sources */,
+				4021444721E625E300AAC670 /* GenericVideoListViewController.swift in Sources */,
 				30ABE214218F928A00E4FEA4 /* ArrayComparable.swift in Sources */,
 				302D0417216E7535009FC2E5 /* SimpleRegexMatcher.swift in Sources */,
 				30B8BBCC21E4EB5F0044E592 /* CocoaAction+Closure.swift in Sources */,
@@ -632,6 +667,7 @@
 				302D03FF216E197A009FC2E5 /* AppDelegate.swift in Sources */,
 				30BAB76321787EB100B01953 /* SignInViewController.swift in Sources */,
 				30F2E38721DCFAF9005EFCA9 /* DownloadManager.swift in Sources */,
+				4021444A21E631BB00AAC670 /* SearchListViewController.swift in Sources */,
 				30BAB765217893E400B01953 /* SubscriptionFeedAPI.swift in Sources */,
 				3005DC64219B767D0002F6A1 /* PlayerControlView.swift in Sources */,
 				4021444321E5F7FB00AAC670 /* UIAlertController+Reactive.swift in Sources */,
@@ -641,7 +677,7 @@
 				30ABE21F21905F5800E4FEA4 /* Queue.swift in Sources */,
 				40E2E1EF21E28D21007EA359 /* ApiSession+Reactive.swift in Sources */,
 				3034ACC321E529C7000F06A9 /* YoutubeURLParser.swift in Sources */,
-				30BAB7752178BBC500B01953 /* SubscriptionFeedTableCell.swift in Sources */,
+				30BAB7752178BBC500B01953 /* VideoListTableCell.swift in Sources */,
 				40E2E1F721E3E2FA007EA359 /* Result.swift in Sources */,
 				408C524E21E55903007B2DD2 /* DurationView.swift in Sources */,
 				30BAB77A2178CDFF00B01953 /* Date+Since.swift in Sources */,

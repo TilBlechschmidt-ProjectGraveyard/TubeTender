@@ -44,7 +44,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         splitViewController.view.addInteraction(UIDropInteraction(delegate: IncomingVideoReceiver.default))
 
-        NotificationCenter.default.addObserver(self,
+        NotificationCenter.default.addObserver(IncomingVideoReceiver.default,
                                                selector: #selector(IncomingVideoReceiver.default.scanPasteboardForURL),
                                                name: UIPasteboard.changedNotification,
                                                object: nil)
