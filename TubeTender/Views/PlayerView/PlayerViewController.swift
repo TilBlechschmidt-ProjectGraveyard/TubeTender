@@ -38,12 +38,7 @@ class PlayerViewController: UIViewController {
 
         let contentView = contentViewController.view!
 
-        contentView.backgroundColor = UIColor(red: 0.07, green: 0.07, blue: 0.07, alpha: 1)
-
-        // TODO Add the logo in the center of the video
-
-//        playbackManager.drawable = videoView
-//        playbackManager.delegate = self
+        contentView.backgroundColor = UIColor.black
 
         // Add video view
         videoView.removeFromSuperview()
@@ -64,6 +59,12 @@ class PlayerViewController: UIViewController {
         }
 
         let player = SwitchablePlayer.shared
+
+        player.status.combinePrevious(.noMediaLoaded).signal.observeValues { previous, current in
+            if previous != .playing && current == .playing {
+                self.refreshControlHideTimer()
+            }
+        }
 
         // Play button
         playerControlView.playButton.reactive.isPlaying <~ player.status.map { $0 == .playing }

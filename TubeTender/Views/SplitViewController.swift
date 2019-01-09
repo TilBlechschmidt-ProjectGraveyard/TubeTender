@@ -14,6 +14,6 @@ class SplitViewController: UISplitViewController, UISplitViewControllerDelegate 
     }
 
     override func viewDidLoad() {
-        view.backgroundColor = UIColor(red: 0.3, green: 0.3, blue: 0.3, alpha: 1)
+        view.backgroundColor = Constants.borderColor
     }
 }
