@@ -8,18 +8,18 @@
 
 import Foundation
 
-struct Queue<T> {
+class Queue<T> {
     var list = [T]()
     
     var isEmpty: Bool {
         return list.isEmpty
     }
 
-    mutating func enqueue(_ element: T) {
+    func enqueue(_ element: T) {
         list.append(element)
     }
 
-    mutating func dequeue() -> T? {
+    func dequeue() -> T? {
         if !list.isEmpty {
             return list.removeFirst()
         } else {
@@ -35,7 +35,7 @@ struct Queue<T> {
         }
     }
 
-    mutating func insert(_ element: T, at: Int) {
+    func insert(_ element: T, at: Int) {
         list.insert(element, at: at)
     }
 }
