@@ -26,10 +26,9 @@ class GenericVideoListViewController: UITableViewController {
         tableView.refreshControl?.addTarget(self, action: #selector(self.reloadVideos), for: .valueChanged)
         tableView.rowHeight = CGFloat.greatestFiniteMagnitude
 
-        let initialLoadingIndicator = UIActivityIndicatorView(style: .white)
-        initialLoadingIndicator.startAnimating()
-        initialLoadingIndicator.reactive.isHidden <~ items.map { $0.count > 0 }
-        tableView.backgroundView = initialLoadingIndicator
+        let emptyStateView = self.emptyStateView
+        emptyStateView.reactive.isHidden <~ items.map { $0.count > 0 }
+        tableView.backgroundView = emptyStateView
 
         let longPressGestureRecognizer = UILongPressGestureRecognizer(
             target: self,
@@ -63,9 +62,17 @@ class GenericVideoListViewController: UITableViewController {
         self.tableView.refreshControl?.endRefreshing()
     }
 
+    func notUpdating() {
+        self.tableView.refreshControl?.endRefreshing()
+    }
+
     @objc func reloadVideos() {}
 
     open func loadNextVideos() {}
+
+    var emptyStateView: EmptyStateView {
+        return EmptyStateView(image: #imageLiteral(resourceName: "movie"), text: "No videos found")
+    }
 }
 
 extension GenericVideoListViewController {
