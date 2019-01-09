@@ -28,16 +28,15 @@ enum VideoError: Swift.Error {
 public class Video: YoutubeClientObject<YoutubeKit.VideoListRequest, YoutubeKit.Video> {
     public typealias ID = String
 
+    let id: ID
+
     fileprivate init(id: ID, client: YoutubeClient) {
+        self.id = id
         let channelRequest = VideoListRequest(part: [.contentDetails, .statistics, .snippet], filter: .id(id))
 
         super.init(client: client, request: channelRequest) { response in
             return response.tryMap(VideoError.notFound) { $0.items.count == 1 ? $0.items[0] : nil }
         }
-    }
-
-    var id: APISignalProducer<ID> {
-        return makeProperty { $0.id }
     }
 
     var thumbnailURL: APISignalProducer<URL> {
