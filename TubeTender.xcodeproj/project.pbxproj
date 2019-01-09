@@ -92,6 +92,8 @@
 		30F66C7021DF78E300BBBBD8 /* VideoDownloadButtonViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30F66C6F21DF78E300BBBBD8 /* VideoDownloadButtonViewController.swift */; };
 		40822CB521E3F8A900903390 /* Kingfisher+Reactive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40822CB421E3F8A900903390 /* Kingfisher+Reactive.swift */; };
 		40822CBB21E4FE8700903390 /* UIView+Blur.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40822CBA21E4FE8700903390 /* UIView+Blur.swift */; };
+		408C524C21E54554007B2DD2 /* DragAndDropReceiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 408C524B21E54554007B2DD2 /* DragAndDropReceiver.swift */; };
+		408C524E21E55903007B2DD2 /* DurationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 408C524D21E55903007B2DD2 /* DurationView.swift */; };
 		40E2E1EF21E28D21007EA359 /* ApiSession+Reactive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40E2E1EE21E28D21007EA359 /* ApiSession+Reactive.swift */; };
 		40E2E1F321E292D5007EA359 /* YoutubeClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40E2E1F221E292D5007EA359 /* YoutubeClient.swift */; };
 		40E2E1F521E29383007EA359 /* ChannelAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40E2E1F421E29383007EA359 /* ChannelAPI.swift */; };
@@ -200,6 +202,8 @@
 		30F66C6F21DF78E300BBBBD8 /* VideoDownloadButtonViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoDownloadButtonViewController.swift; sourceTree = "<group>"; };
 		40822CB421E3F8A900903390 /* Kingfisher+Reactive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Kingfisher+Reactive.swift"; sourceTree = "<group>"; };
 		40822CBA21E4FE8700903390 /* UIView+Blur.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Blur.swift"; sourceTree = "<group>"; };
+		408C524B21E54554007B2DD2 /* DragAndDropReceiver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DragAndDropReceiver.swift; sourceTree = "<group>"; };
+		408C524D21E55903007B2DD2 /* DurationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DurationView.swift; sourceTree = "<group>"; };
 		40E2E1EE21E28D21007EA359 /* ApiSession+Reactive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ApiSession+Reactive.swift"; sourceTree = "<group>"; };
 		40E2E1F221E292D5007EA359 /* YoutubeClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YoutubeClient.swift; sourceTree = "<group>"; };
 		40E2E1F421E29383007EA359 /* ChannelAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChannelAPI.swift; sourceTree = "<group>"; };
@@ -278,6 +282,7 @@
 			children = (
 				302D03FE216E197A009FC2E5 /* AppDelegate.swift */,
 				30DA13E821E3C6EB000B2638 /* Constants.swift */,
+				408C524B21E54554007B2DD2 /* DragAndDropReceiver.swift */,
 				302D0419216E769C009FC2E5 /* Support Files */,
 				302D041A216E76B7009FC2E5 /* Extensions */,
 				30370F662177E05D00B35ACF /* Helpers */,
@@ -441,6 +446,7 @@
 			children = (
 				30BAB76A2178B47A00B01953 /* SubscriptionFeedViewController.swift */,
 				30BAB7742178BBC500B01953 /* SubscriptionFeedTableCell.swift */,
+				408C524D21E55903007B2DD2 /* DurationView.swift */,
 			);
 			path = SubscriptionFeed;
 			sourceTree = "<group>";
@@ -607,6 +613,7 @@
 				302FB83E21D5886B00A82363 /* DateFormatter+ISO8601Full.swift in Sources */,
 				40822CB521E3F8A900903390 /* Kingfisher+Reactive.swift in Sources */,
 				30F66C7021DF78E300BBBBD8 /* VideoDownloadButtonViewController.swift in Sources */,
+				408C524C21E54554007B2DD2 /* DragAndDropReceiver.swift in Sources */,
 				30ABE219218F965500E4FEA4 /* VideoStreamAPIResponse.swift in Sources */,
 				30ABE21B218F9D3500E4FEA4 /* VideoStreamManager.swift in Sources */,
 				30BAB7712178B4F800B01953 /* AMPullToRefresh.swift in Sources */,
@@ -632,6 +639,7 @@
 				3034ACC321E529C7000F06A9 /* YoutubeURLParser.swift in Sources */,
 				30BAB7752178BBC500B01953 /* SubscriptionFeedTableCell.swift in Sources */,
 				40E2E1F721E3E2FA007EA359 /* Result.swift in Sources */,
+				408C524E21E55903007B2DD2 /* DurationView.swift in Sources */,
 				30BAB77A2178CDFF00B01953 /* Date+Since.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

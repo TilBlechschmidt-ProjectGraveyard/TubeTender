@@ -133,9 +133,9 @@ class PlayerViewController: UIViewController {
     }
 
     @objc func viewTapped() {
-        refreshControlHideTimer()
-        if !controlsVisible {
-            controlsVisible = true
+        controlsVisible = !controlsVisible
+        if controlsVisible {
+            refreshControlHideTimer()
         }
     }
 

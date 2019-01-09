@@ -225,6 +225,7 @@ class VideoMetadataView: UIView {
         videoDescriptionView.dataDetectorTypes = .all
         videoDescriptionView.isScrollEnabled = false
         videoDescriptionView.backgroundColor = nil
+        videoDescriptionView.delegate = self
         videoDescriptionView.translatesAutoresizingMaskIntoConstraints = false
         descriptionView.addSubview(videoDescriptionView)
         descriptionView.addConstraints([
@@ -233,5 +234,14 @@ class VideoMetadataView: UIView {
             videoDescriptionView.rightAnchor.constraint(equalTo: descriptionView.rightAnchor, constant: -uiPadding),
             videoDescriptionView.bottomAnchor.constraint(equalTo: descriptionView.bottomAnchor, constant: -uiPadding)
         ])
+    }
+}
+
+extension VideoMetadataView: UITextViewDelegate {
+    func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
+        if interaction == .invokeDefaultAction {
+            return !IncomingVideoReceiver.default.handle(url: URL)
+        }
+        return true
     }
 }
