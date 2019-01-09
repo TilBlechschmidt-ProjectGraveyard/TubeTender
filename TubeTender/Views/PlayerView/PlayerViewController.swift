@@ -86,7 +86,7 @@ class PlayerViewController: UIViewController {
         playerControlView.durationLabel.reactive.text <~ player.duration.map { self.stringRepresentation(ofTime: $0) }
 
         // Slider & Progress bar
-        playerControlView.progressBar.reactive.progress <~ player.currentTime.map { return Float($0 / SwitchablePlayer.shared.duration.value) }
+        playerControlView.progressBar.reactive.progress <~ player.currentTime.map { return Float($0 / player.duration.value) }
         playerControlView.seekingSlider.reactive.value <~ player.currentTime.signal.observe(on: QueueScheduler.main).filterMap { time in
             return self.playerControlView.seekingSlider.isTracking ? nil : Float(time / player.duration.value)
         }

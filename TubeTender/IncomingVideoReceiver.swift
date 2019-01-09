@@ -64,12 +64,14 @@ class IncomingVideoReceiver: NSObject {
             alertControl.view.tintColor = .lightGray
 
             alertControl.addAction(UIAlertAction(title: "Play Now", style: .default) { _ in
-                SwitchablePlayer.shared.playbackItem.value = video
+                PlaybackQueue.default.playNow(video)
             })
-
-            // TODO Add queue
-            alertControl.addAction(UIAlertAction(title: "Play Next", style: .default, handler: nil))
-            alertControl.addAction(UIAlertAction(title: "Play Later", style: .default, handler: nil))
+            alertControl.addAction(UIAlertAction(title: "Play Next", style: .default, handler: { _ in
+                PlaybackQueue.default.playNext(video)
+            }))
+            alertControl.addAction(UIAlertAction(title: "Play Later", style: .default, handler: { _ in
+                PlaybackQueue.default.playLater(video)
+            }))
             alertControl.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
 
             guard let rootViewController = (UIApplication.shared.delegate?.window ?? nil)?.rootViewController else { return }

@@ -99,6 +99,12 @@ extension YoutubeClient {
     }
 }
 
+extension Video: Equatable {
+    public static func == (lhs: Video, rhs: Video) -> Bool {
+        return lhs.id == rhs.id
+    }
+}
+
 
 // MARK: - Stream management
 

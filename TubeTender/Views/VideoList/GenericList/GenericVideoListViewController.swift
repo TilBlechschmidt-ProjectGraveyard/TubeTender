@@ -42,6 +42,8 @@ class GenericVideoListViewController: UITableViewController {
     }
 
     @objc func handleLongPress(gestureRecognizer: UILongPressGestureRecognizer) {
+        guard gestureRecognizer.state == .began else { return }
+
         let pressLocation = gestureRecognizer.location(in: tableView)
 
         guard let indexPath = tableView.indexPathForRow(at: pressLocation) else { return }
@@ -165,7 +167,7 @@ extension GenericVideoListViewController {
         let video = videos[indexPath.section][indexPath.row]
 
         self.showDetailViewController(VideoViewController(), sender: self)
-        SwitchablePlayer.shared.playbackItem.value = video
+        PlaybackQueue.default.playNow(video)
 
         return nil
     }

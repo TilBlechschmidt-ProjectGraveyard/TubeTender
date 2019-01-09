@@ -87,8 +87,7 @@ class VideoViewController: UIViewController {
 
         regularConstraints.forEach { $0.isActive = true }
 
-        // TODO Replace this with a binding
-        SwitchablePlayer.shared.playbackItem.signal.observeValues { video in
+        PlaybackQueue.default.currentItem.signal.observeValues { video in
             if let video = video {
                 self.videoDetailViewController.video = video
                 UIView.animate(withDuration: 0.5) {
