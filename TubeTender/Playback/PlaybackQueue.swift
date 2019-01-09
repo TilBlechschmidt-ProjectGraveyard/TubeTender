@@ -32,10 +32,6 @@ class PlaybackQueue {
         self.currentItem = Property(currentIndex.map { $0.map({ videos.value[$0] }) })
         self.queue = Property(currentIndex.map { videos.value[(($0 + 1) ?? videos.value.count)...] })
         self.history = Property(currentIndex.map { videos.value[..<($0 ?? videos.value.count)] })
-
-        queue.signal.observeValues { q in
-            print(Array(q).map { $0.id })
-        }
     }
 
     func changeIndex(by delta: Int) {
