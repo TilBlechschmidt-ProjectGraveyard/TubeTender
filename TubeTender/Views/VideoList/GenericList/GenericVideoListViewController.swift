@@ -26,10 +26,9 @@ class GenericVideoListViewController: UITableViewController {
         tableView.refreshControl?.addTarget(self, action: #selector(self.reloadVideos), for: .valueChanged)
         tableView.rowHeight = CGFloat.greatestFiniteMagnitude
 
-        let initialLoadingIndicator = UIActivityIndicatorView(style: .white)
-        initialLoadingIndicator.startAnimating()
-        initialLoadingIndicator.reactive.isHidden <~ items.map { $0.count > 0 }
-        tableView.backgroundView = initialLoadingIndicator
+        let emptyStateView = self.emptyStateView
+        emptyStateView.reactive.isHidden <~ items.map { $0.count > 0 }
+        tableView.backgroundView = emptyStateView
 
         let longPressGestureRecognizer = UILongPressGestureRecognizer(
             target: self,
@@ -65,9 +64,21 @@ class GenericVideoListViewController: UITableViewController {
         self.tableView.refreshControl?.endRefreshing()
     }
 
+    func notUpdating() {
+        self.tableView.refreshControl?.endRefreshing()
+    }
+
     @objc func reloadVideos() {}
 
     open func loadNextVideos() {}
+
+    open var emptyStateView: EmptyStateView {
+        return EmptyStateView(image: #imageLiteral(resourceName: "movie"), text: "No videos found")
+    }
+
+    open var hideThumbnails: Bool {
+        return false
+    }
 }
 
 extension GenericVideoListViewController {
@@ -76,23 +87,20 @@ extension GenericVideoListViewController {
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        var cell = tableView.dequeueReusableCell(withIdentifier: SubscriptionFeedViewTableCell.identifier) as? SubscriptionFeedViewTableCell
-        if cell == nil {
-            cell = SubscriptionFeedViewTableCell(style: .default, reuseIdentifier: SubscriptionFeedViewTableCell.identifier)
-        }
-        cell?.video = items.value[indexPath.row]
-
-        return cell!
+        let cell = tableView.dequeueReusableCell(withIdentifier: SubscriptionFeedViewTableCell.identifier) as! SubscriptionFeedViewTableCell
+        cell.video = items.value[indexPath.row]
+        cell.hideThumbnail = hideThumbnails
+        return cell
     }
 }
 
 extension GenericVideoListViewController {
     override func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-        return tableView.frame.width * 0.5625 + 75
+        return self.tableView(tableView, heightForRowAt: indexPath)
     }
 
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return tableView.frame.width * 0.5625 + 75
+        return (hideThumbnails ? 0 : tableView.frame.width * 0.5625) + Constants.channelIconSize + 2 * Constants.uiPadding
     }
 
     override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {

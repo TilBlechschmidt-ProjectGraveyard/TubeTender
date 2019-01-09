@@ -21,11 +21,15 @@ class SearchListViewController: GenericVideoListViewController {
         searchController.searchBar.keyboardAppearance = .dark
         searchController.searchBar.delegate = self
         navigationItem.searchController = searchController
+        navigationItem.hidesSearchBarWhenScrolling = false
         definesPresentationContext = true
     }
 
     private func loadVideos(pageToken: String?, action: @escaping ([Video]) -> ()) {
-        guard let searchString = currentSearchString, searchString != "" else { return }
+        guard let searchString = currentSearchString, searchString != "" else {
+            notUpdating()
+            return
+        }
 
         YoutubeClient.shared.search(forString: searchString, pageToken: pageToken).videos.startWithValues { result in
             guard let result = result.value else { return }
@@ -41,6 +45,10 @@ class SearchListViewController: GenericVideoListViewController {
 
     override func loadNextVideos() {
         loadVideos(pageToken: nextPageToken, action: self.append)
+    }
+
+    override var emptyStateView: EmptyStateView {
+        return EmptyStateView(image: #imageLiteral(resourceName: "search"), text: "No videos found")
     }
 }
 

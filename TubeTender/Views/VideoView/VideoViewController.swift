@@ -9,7 +9,7 @@
 import UIKit
 
 class VideoViewController: UIViewController {
-    private let emptyView = UIView() // UIImageView()
+    private let emptyStateView = EmptyStateView(image: #imageLiteral(resourceName: "camera"), text: "No video selected")
     private let videoView = UIView()
     private let playerViewController = PlayerViewController()
     private let videoDetailViewController = VideoMetadataViewController()
@@ -25,39 +25,12 @@ class VideoViewController: UIViewController {
         playerViewController.delegate = self
 
         // Logo view setup
-        emptyView.alpha = 1
-        emptyView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(emptyView)
-        view.addConstraints([
-            emptyView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            emptyView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            emptyView.heightAnchor.constraint(equalTo: view.heightAnchor),
-            emptyView.widthAnchor.constraint(equalTo: view.widthAnchor)
-        ])
-
-        let emptyLabel = UILabel()
-        emptyLabel.textColor = UIColor(red: 0.3, green: 0.3, blue: 0.3, alpha: 1)
-        emptyLabel.font = emptyLabel.font.withSize(25)
-        emptyLabel.text = "No video selected."
-        emptyLabel.textAlignment = .center
-        emptyLabel.translatesAutoresizingMaskIntoConstraints = false
-        emptyView.addSubview(emptyLabel)
-        emptyView.addConstraints([
-            emptyLabel.centerXAnchor.constraint(equalTo: emptyView.centerXAnchor),
-            emptyLabel.topAnchor.constraint(equalTo: emptyView.centerYAnchor, constant: 8)
-        ])
-
-        let emptyIcon = UIImageView()
-        emptyIcon.image = UIImage(named: "camera")
-        emptyIcon.tintColor = UIColor(red: 0.3, green: 0.3, blue: 0.3, alpha: 1)
-        emptyIcon.contentMode = .scaleAspectFit
-        emptyIcon.translatesAutoresizingMaskIntoConstraints = false
-        emptyView.addSubview(emptyIcon)
-        emptyView.addConstraints([
-            emptyIcon.centerXAnchor.constraint(equalTo: emptyView.centerXAnchor),
-            emptyIcon.bottomAnchor.constraint(equalTo: emptyView.centerYAnchor, constant: -8),
-            emptyIcon.heightAnchor.constraint(equalToConstant: 50)
-        ])
+        emptyStateView.alpha = 1
+        view.addSubview(emptyStateView)
+        emptyStateView.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+            make.size.equalToSuperview()
+        }
 
         // Video view setup
         videoView.alpha = 0
@@ -119,12 +92,12 @@ class VideoViewController: UIViewController {
                 self.videoDetailViewController.video = video
                 UIView.animate(withDuration: 0.5) {
                     self.videoView.alpha = 1
-                    self.emptyView.alpha = 0
+                    self.emptyStateView.alpha = 0
                 }
             } else {
                 UIView.animate(withDuration: 0.5) {
                     self.videoView.alpha = 0
-                    self.emptyView.alpha = 1
+                    self.emptyStateView.alpha = 1
                 }
             }
         }

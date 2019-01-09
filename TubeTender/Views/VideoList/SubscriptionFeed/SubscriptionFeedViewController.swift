@@ -34,6 +34,7 @@ class SubscriptionFeedViewController: GenericVideoListViewController {
             case .success(let (videos, cutoffDate)):
                 onCompletion(videos, cutoffDate)
             case .failure(let error):
+                self.notUpdating()
                 print("Failed to fetch infinite feed!", error)
                 // TODO Show this to the user.
             }
@@ -54,5 +55,9 @@ class SubscriptionFeedViewController: GenericVideoListViewController {
             self.cutoffDate = cutoffDate
             self.append(videos: videos)
         }
+    }
+
+    override var emptyStateView: EmptyStateView {
+        return EmptyStateView(image: #imageLiteral(resourceName: "movie"), text: "No videos found")
     }
 }

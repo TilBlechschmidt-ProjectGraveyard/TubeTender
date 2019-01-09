@@ -95,6 +95,7 @@
 		4021444721E625E300AAC670 /* GenericVideoListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4021444621E625E300AAC670 /* GenericVideoListViewController.swift */; };
 		4021444A21E631BB00AAC670 /* SearchListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4021444921E631BB00AAC670 /* SearchListViewController.swift */; };
 		4021444C21E63C8500AAC670 /* SearchAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4021444B21E63C8500AAC670 /* SearchAPI.swift */; };
+		4021444E21E68E4300AAC670 /* EmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4021444D21E68E4300AAC670 /* EmptyStateView.swift */; };
 		40822CB521E3F8A900903390 /* Kingfisher+Reactive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40822CB421E3F8A900903390 /* Kingfisher+Reactive.swift */; };
 		40822CBB21E4FE8700903390 /* UIView+Blur.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40822CBA21E4FE8700903390 /* UIView+Blur.swift */; };
 		408C524C21E54554007B2DD2 /* IncomingVideoReceiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 408C524B21E54554007B2DD2 /* IncomingVideoReceiver.swift */; };
@@ -210,6 +211,7 @@
 		4021444621E625E300AAC670 /* GenericVideoListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericVideoListViewController.swift; sourceTree = "<group>"; };
 		4021444921E631BB00AAC670 /* SearchListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchListViewController.swift; sourceTree = "<group>"; };
 		4021444B21E63C8500AAC670 /* SearchAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchAPI.swift; sourceTree = "<group>"; };
+		4021444D21E68E4300AAC670 /* EmptyStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyStateView.swift; sourceTree = "<group>"; };
 		40822CB421E3F8A900903390 /* Kingfisher+Reactive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Kingfisher+Reactive.swift"; sourceTree = "<group>"; };
 		40822CBA21E4FE8700903390 /* UIView+Blur.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Blur.swift"; sourceTree = "<group>"; };
 		408C524B21E54554007B2DD2 /* IncomingVideoReceiver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncomingVideoReceiver.swift; sourceTree = "<group>"; };
@@ -434,6 +436,7 @@
 			children = (
 				30F488FF219CD3E0002FAE36 /* SplitViewController.swift */,
 				30BE79BA216FF73F00E6B281 /* AnimatablePlayButton.swift */,
+				4021444D21E68E4300AAC670 /* EmptyStateView.swift */,
 				40822CB921E3FFBB00903390 /* SignIn */,
 				4021444421E623BF00AAC670 /* VideoList */,
 				3005DC62219B763D0002F6A1 /* PlayerView */,
@@ -641,6 +644,7 @@
 				300F296721D59F2900C9B0B0 /* Video.swift in Sources */,
 				40822CBB21E4FE8700903390 /* UIView+Blur.swift in Sources */,
 				40E2E1F521E29383007EA359 /* ChannelAPI.swift in Sources */,
+				4021444E21E68E4300AAC670 /* EmptyStateView.swift in Sources */,
 				30370F612177769800B35ACF /* String+FancyFormatting.swift in Sources */,
 				3067715121DA32BC009AA051 /* PlayerProtocol.swift in Sources */,
 				30DA13E721E3C593000B2638 /* SignalProducer+Cache.swift in Sources */,
