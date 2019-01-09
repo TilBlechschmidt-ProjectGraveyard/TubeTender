@@ -11,8 +11,8 @@ import ReactiveSwift
 
 enum VideoSource {
     case none
-    case view(view: UIView)
-    case rect(rect: CGRect, view: UIView)
+    case view(view: UIView, permittedArrowDirections: UIPopoverArrowDirection)
+    case rect(rect: CGRect, view: UIView, permittedArrowDirections: UIPopoverArrowDirection)
 
 
     var isNone: Bool {
@@ -75,11 +75,13 @@ class IncomingVideoReceiver: NSObject {
             guard let rootViewController = (UIApplication.shared.delegate?.window ?? nil)?.rootViewController else { return }
 
             switch source {
-            case let .view(view):
+            case let .view(view, permittedArrowDirections):
                 alertControl.popoverPresentationController?.sourceView = view
-            case let .rect(rect, view):
+                alertControl.popoverPresentationController?.permittedArrowDirections = permittedArrowDirections
+            case let .rect(rect, view, permittedArrowDirections):
                 alertControl.popoverPresentationController?.sourceView = view
                 alertControl.popoverPresentationController?.sourceRect = rect
+                alertControl.popoverPresentationController?.permittedArrowDirections = permittedArrowDirections
             default:
                 break
             }

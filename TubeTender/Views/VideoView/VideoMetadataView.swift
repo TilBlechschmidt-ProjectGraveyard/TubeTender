@@ -246,7 +246,7 @@ extension VideoMetadataView: UITextViewDelegate {
 
             let rect = textView.caretRect(for: center)
 
-            return !IncomingVideoReceiver.default.handle(url: URL, source: .rect(rect: rect, view: textView))
+            return !IncomingVideoReceiver.default.handle(url: URL, source: .rect(rect: rect, view: textView, permittedArrowDirections: .any))
         }
         return true
     }

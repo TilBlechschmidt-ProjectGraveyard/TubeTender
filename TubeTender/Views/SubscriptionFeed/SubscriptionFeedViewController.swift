@@ -61,6 +61,11 @@ class SubscriptionFeedViewController: UIViewController {
         placeholder.textAlignment = .center
         placeholder.reactive.isHidden <~ items.map { $0.count > 0 }
         tableView.backgroundView = placeholder
+
+        let longPressGestureRecognizer = UILongPressGestureRecognizer(
+            target: self,
+            action: #selector(handleLongPress(gestureRecognizer:)))
+        tableView.addGestureRecognizer(longPressGestureRecognizer)
     }
 
     func fetchFeed(cutoffDate: Date?, onCompletion: @escaping ([Video], Date) -> Void) {
@@ -101,6 +106,16 @@ class SubscriptionFeedViewController: UIViewController {
             let indexPaths = (previousLength..<self.items.value.count).map { IndexPath(row: $0, section: 0) }
             self.tableView.insertRows(at: indexPaths, with: .fade)
         }
+    }
+
+    @objc func handleLongPress(gestureRecognizer: UILongPressGestureRecognizer) {
+        let pressLocation = gestureRecognizer.location(in: tableView)
+
+        guard let indexPath = tableView.indexPathForRow(at: pressLocation) else { return }
+
+        IncomingVideoReceiver.default.handle(
+            video: self.items.value[indexPath.row],
+            source: .rect(rect: tableView.rectForRow(at: indexPath), view: tableView, permittedArrowDirections: .left))
     }
 }
 
