@@ -37,7 +37,9 @@ class SubscriptionFeedViewTableCell: UITableViewCell {
 
     private func setupUI() {
         backgroundColor = nil
-        selectedBackgroundView = nil
+        selectedBackgroundView = UIView()
+        selectedBackgroundView?.backgroundColor = Constants.selectedBackgroundColor
+
         setupThumbnail()
         setupMetadata()
     }
