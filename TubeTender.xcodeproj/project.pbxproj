@@ -96,6 +96,7 @@
 		4021444A21E631BB00AAC670 /* SearchListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4021444921E631BB00AAC670 /* SearchListViewController.swift */; };
 		4021444C21E63C8500AAC670 /* SearchAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4021444B21E63C8500AAC670 /* SearchAPI.swift */; };
 		4021444E21E68E4300AAC670 /* EmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4021444D21E68E4300AAC670 /* EmptyStateView.swift */; };
+		4021445121E6AE1D00AAC670 /* QueueListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4021445021E6AE1D00AAC670 /* QueueListViewController.swift */; };
 		40822CB521E3F8A900903390 /* Kingfisher+Reactive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40822CB421E3F8A900903390 /* Kingfisher+Reactive.swift */; };
 		40822CBB21E4FE8700903390 /* UIView+Blur.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40822CBA21E4FE8700903390 /* UIView+Blur.swift */; };
 		408C524C21E54554007B2DD2 /* IncomingVideoReceiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 408C524B21E54554007B2DD2 /* IncomingVideoReceiver.swift */; };
@@ -212,6 +213,7 @@
 		4021444921E631BB00AAC670 /* SearchListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchListViewController.swift; sourceTree = "<group>"; };
 		4021444B21E63C8500AAC670 /* SearchAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchAPI.swift; sourceTree = "<group>"; };
 		4021444D21E68E4300AAC670 /* EmptyStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyStateView.swift; sourceTree = "<group>"; };
+		4021445021E6AE1D00AAC670 /* QueueListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueueListViewController.swift; sourceTree = "<group>"; };
 		40822CB421E3F8A900903390 /* Kingfisher+Reactive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Kingfisher+Reactive.swift"; sourceTree = "<group>"; };
 		40822CBA21E4FE8700903390 /* UIView+Blur.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Blur.swift"; sourceTree = "<group>"; };
 		408C524B21E54554007B2DD2 /* IncomingVideoReceiver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncomingVideoReceiver.swift; sourceTree = "<group>"; };
@@ -469,6 +471,7 @@
 				4021444521E625CC00AAC670 /* GenericList */,
 				30BAB7732178BB7400B01953 /* SubscriptionFeed */,
 				4021444821E631A200AAC670 /* SearchList */,
+				4021444F21E6AE0800AAC670 /* QueueList */,
 			);
 			path = VideoList;
 			sourceTree = "<group>";
@@ -490,6 +493,14 @@
 				4021444921E631BB00AAC670 /* SearchListViewController.swift */,
 			);
 			path = SearchList;
+			sourceTree = "<group>";
+		};
+		4021444F21E6AE0800AAC670 /* QueueList */ = {
+			isa = PBXGroup;
+			children = (
+				4021445021E6AE1D00AAC670 /* QueueListViewController.swift */,
+			);
+			path = QueueList;
 			sourceTree = "<group>";
 		};
 		40822CB621E3FD7700903390 /* Reactive */ = {
@@ -642,6 +653,7 @@
 				30B03AC421E68E6D007B3E38 /* PlaybackQueue.swift in Sources */,
 				30A81A3E21D53E9500FBE8EE /* VideoMetadataView.swift in Sources */,
 				300F296721D59F2900C9B0B0 /* Video.swift in Sources */,
+				4021445121E6AE1D00AAC670 /* QueueListViewController.swift in Sources */,
 				40822CBB21E4FE8700903390 /* UIView+Blur.swift in Sources */,
 				40E2E1F521E29383007EA359 /* ChannelAPI.swift in Sources */,
 				4021444E21E68E4300AAC670 /* EmptyStateView.swift in Sources */,

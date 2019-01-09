@@ -88,13 +88,18 @@ class GenericVideoListViewController: UITableViewController {
 
     func startFetch() -> Bool {
         guard !isLoading else { return false }
+        tableView.refreshControl?.beginRefreshing()
         isLoading = true
         return true
     }
 
-    func reloadVideos() {}
+    func reloadVideos() {
+        notUpdating()
+    }
 
-    open func loadNextVideos() {}
+    open func loadNextVideos() {
+        notUpdating()
+    }
 
     open func createEmptyStateView() -> UIView {
         return UIView()
@@ -119,9 +124,11 @@ extension GenericVideoListViewController {
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: SubscriptionFeedViewTableCell.identifier) as! SubscriptionFeedViewTableCell
-        cell.video = videos[indexPath.section][indexPath.row]
+        let cell = SubscriptionFeedViewTableCell(style: .default, reuseIdentifier: nil)
+//      let cell = tableView.dequeueReusableCell(withIdentifier: SubscriptionFeedViewTableCell.identifier) as! SubscriptionFeedViewTableCell
         cell.hideThumbnail = hideThumbnail(at: indexPath)
+        cell.video = videos[indexPath.section][indexPath.row]
+
         return cell
     }
 
@@ -149,17 +156,25 @@ extension GenericVideoListViewController {
         }
 
         var currentIndexPath = indexPath
+        var counter = 0
 
-        for _ in 1...5 {
-            if videos[currentIndexPath.section].count > currentIndexPath.row + 1 {
-                currentIndexPath.row += 1
-            } else if videos.count > currentIndexPath.section + 1 {
+        while counter < 5 {
+            currentIndexPath.row += 1
+
+            if videos[currentIndexPath.section].count >= currentIndexPath.row {
                 currentIndexPath = IndexPath(row: 0, section: currentIndexPath.section + 1)
-            } else {
+            }
+
+            if videos.count >= currentIndexPath.section {
                 return
             }
 
+            if videos[currentIndexPath.section].count >= currentIndexPath.row {
+                continue
+            }
+
             videos[currentIndexPath.section][currentIndexPath.row].prefetchData()
+            counter += 1
         }
     }
 

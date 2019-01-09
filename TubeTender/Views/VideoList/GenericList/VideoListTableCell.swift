@@ -36,7 +36,6 @@ class SubscriptionFeedViewTableCell: UIRebindableTableViewCell {
     var hideThumbnail: Bool = false {
         didSet {
             thumbnailView.isHidden = hideThumbnail
-            makeBindings()
         }
     }
 
@@ -76,15 +75,14 @@ class SubscriptionFeedViewTableCell: UIRebindableTableViewCell {
         }
 
         makeDisposableBindings { bindings in
-            bindings += thumbnailBlur.reactive.isHidden <~ video.isPremium.map { !($0.value ?? false) }
-            bindings += thumbnailView.reactive.setImage(options: [.transition(.fade(0.5))]) <~ video.thumbnailURL.map { $0.value }
-
-            bindings += lockView.reactive.isHidden <~ video.isPremium.map { !($0.value ?? false) }
-
-            bindings += durationView.label.reactive.text <~ stringDuration
+            if !hideThumbnail {
+                bindings += thumbnailBlur.reactive.isHidden <~ video.isPremium.map { !($0.value ?? false) }
+                bindings += thumbnailView.reactive.setImage(options: [.transition(.fade(0.5))]) <~ video.thumbnailURL.map { $0.value }
+                bindings += lockView.reactive.isHidden <~ video.isPremium.map { !($0.value ?? false) }
+                bindings += durationView.label.reactive.text <~ stringDuration
+            }
 
             bindings += channelIconView.reactive.setImage(options: [.transition(.fade(0.5))]) <~ iconURL.map { $0.value }
-
             bindings += titleLabel.reactive.text <~ video.title.map { $0.value ?? "Loading ..." }
             bindings += subtitleLabel.reactive.text <~ subtitle
         }

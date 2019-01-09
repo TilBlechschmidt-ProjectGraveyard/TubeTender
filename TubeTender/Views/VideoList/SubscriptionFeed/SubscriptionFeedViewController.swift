@@ -7,10 +7,6 @@
 //
 
 import UIKit
-import YoutubeKit
-import ReactiveSwift
-import Result
-import ReactiveCocoa
 
 class SubscriptionFeedViewController: GenericVideoListViewController {
     private var cutoffDate: Date?
@@ -42,7 +38,6 @@ class SubscriptionFeedViewController: GenericVideoListViewController {
     }
 
     override func reloadVideos() {
-        tableView.refreshControl?.beginRefreshing()
         fetchFeed(cutoffDate: nil) { videos, cutoffDate in
             self.cutoffDate = cutoffDate
             self.replace(videos: [videos])
