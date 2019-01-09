@@ -141,16 +141,9 @@ extension SubscriptionFeedViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
         let video = items.value[indexPath.row]
 
-        // TODO Snowball into playback manager and make it not use IDs but Video instead.
-        video.id.startWithValues { result in
-            if let id = result.value {
-                PlaybackManager.shared.playNow(videoID: id).startWithResult { _ in
-                    DispatchQueue.main.async {
-                        // TODO replace segue with self.showDetailViewController(vc, sender: self)
-                        self.performSegue(withIdentifier: "showDetail", sender: self)
-                    }
-                }
-            }
+        DispatchQueue.main.async {
+            self.showDetailViewController(VideoViewController(), sender: self)
+            SwitchablePlayer.shared.playbackItem.value = video
         }
 
         return nil

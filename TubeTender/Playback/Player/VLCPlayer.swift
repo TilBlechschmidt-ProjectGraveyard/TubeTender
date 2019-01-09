@@ -10,28 +10,43 @@ import UIKit
 import ReactiveSwift
 
 class VLCPlayer {
-    private var vlcMediaPlayer: VLCMediaPlayer = VLCMediaPlayer()
+    private var vlcMediaPlayer: VLCMediaPlayer!
     private var previousState: VLCMediaPlayerState = .stopped
 
-    private var _currentTime: MutableProperty<TimeInterval> = MutableProperty(0)
-    private var _duration: MutableProperty<TimeInterval> = MutableProperty(0)
-    private var _status: MutableProperty<PlayerStatus> = MutableProperty(.noMediaLoaded)
+    private let _currentTime: MutableProperty<TimeInterval> = MutableProperty(0)
+    private let _duration: MutableProperty<TimeInterval> = MutableProperty(0)
+    private let _status: MutableProperty<PlayerStatus> = MutableProperty(.noMediaLoaded)
 
-    lazy var currentTime: Property<TimeInterval> = Property(_currentTime)
-    lazy var duration: Property<TimeInterval> = Property(_duration)
-    lazy var status: Property<PlayerStatus> = Property(_status)
+    let currentTime: Property<TimeInterval>
+    let duration: Property<TimeInterval>
+    let status: Property<PlayerStatus>
 
-    private(set) var drawable = UIView() { didSet { vlcMediaPlayer.drawable = drawable } }
+    let drawable = UIView()
 
     init() {
+        currentTime = Property(_currentTime)
+        duration = Property(_duration)
+        status = Property(_status)
+        replaceMediaPlayer()
+    }
+
+    func replaceMediaPlayer() {
+        vlcMediaPlayer = VLCMediaPlayer()
         vlcMediaPlayer.delegate = self
+        vlcMediaPlayer.drawable = drawable
+        previousState = .stopped
+        _status.value = .noMediaLoaded
+        _duration.value = 0
+        _currentTime.value = 0
     }
 }
 
 extension VLCPlayer: Player {
+    var featureSet: PlayerFeatures { return .all }
+
     func load(url: URL) {
+        stop()
         vlcMediaPlayer.media = VLCMedia(url: url)
-        // TODO Set the duration and current time once loaded
     }
 
     func loadAudio(url: URL) {
@@ -62,11 +77,11 @@ extension VLCPlayer: Player {
 }
 
 extension VLCPlayer: VLCMediaPlayerDelegate {
-    func mediaPlayerTimeChanged() {
+    func mediaPlayerTimeChanged(_ aNotification: Notification!) {
         _currentTime.value = Double(vlcMediaPlayer.time.intValue) / 1000
     }
 
-    func mediaPlayerStateChanged() {
+    func mediaPlayerStateChanged(_ aNotification: Notification!) {
         let currentState: VLCMediaPlayerState  = vlcMediaPlayer.state;
 
         // TODO Take a look at isPlaying and willPlay

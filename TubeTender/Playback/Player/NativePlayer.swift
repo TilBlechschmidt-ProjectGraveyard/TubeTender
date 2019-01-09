@@ -9,12 +9,32 @@
 import ReactiveSwift
 import AVKit
 
+class AVPlayerView: UIView {
+    var player: AVPlayer? {
+        get {
+            return playerLayer.player
+        }
+        set {
+            playerLayer.player = newValue
+        }
+    }
+
+    var playerLayer: AVPlayerLayer {
+        return layer as! AVPlayerLayer
+    }
+
+    // Override UIView property
+    override static var layerClass: AnyClass {
+        return AVPlayerLayer.self
+    }
+}
+
 class NativePlayer: NSObject {
     private var _currentTime: MutableProperty<TimeInterval> = MutableProperty(0)
     private var _duration: MutableProperty<TimeInterval> = MutableProperty(0)
     private var _status: MutableProperty<PlayerStatus> = MutableProperty(.noMediaLoaded)
 
-    private var playerView = AVPlayerView()
+    private(set) var playerView = AVPlayerView()
     private var player: AVPlayer?
 
     lazy var currentTime: Property<TimeInterval> = Property(_currentTime)
@@ -26,27 +46,25 @@ class NativePlayer: NSObject {
     override init() {
         drawable = playerView
     }
-
-    deinit {
-        player?.removeObserver(self, forKeyPath: #keyPath(AVPlayer.currentItem))
-    }
-
-    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-        super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
-
-        print("\(keyPath): \(change?[.newKey])")
-
-        // TODO Check if this works
-        if keyPath == #keyPath(AVPlayer.currentItem), change?[.oldKey] == nil, let media = change?[.newKey] as? AVPlayerItem {
-            print(media.duration.seconds)
-            self._duration.value = media.duration.seconds
-        }
-    }
 }
 
 extension NativePlayer: Player {
+    var featureSet: PlayerFeatures { return [.hdr, .highFps] }
+
     func load(url: URL) {
-        player = AVPlayer(url: url)
+        // Create asset to be played
+        let asset = AVAsset(url: url)
+
+        // Create a new AVPlayerItem with the asset and an
+        // array of asset keys to be automatically loaded
+        let playerItem = AVPlayerItem(asset: asset)
+
+        playerItem.reactive.signal(forKeyPath: #keyPath(AVPlayerItem.status)).observeValues { media in
+            self._duration.value = playerItem.duration.seconds
+        }
+
+        // Create the player
+        player = AVPlayer(playerItem: playerItem)
         playerView.player = player
 
         // Observe the time
@@ -57,31 +75,34 @@ extension NativePlayer: Player {
             }
         }
 
-        // TODO Observe the playback state (ended, buffering)
-        // TODO Set _duration once its available (available here: player?.currentItem?.duration)
-        player?.addObserver(self, forKeyPath: #keyPath(AVPlayer.currentItem), options: [.old, .new], context: nil)
-    }
+        _status.value = .buffering
 
-    func loadAudio(url: URL) {
-        fatalError("Unimplemented (loadAudio @ NativePlayer)")
+        player?.reactive.signal(forKeyPath: #keyPath(AVPlayer.timeControlStatus)).observeValues { _ in
+            guard let status = self.player?.timeControlStatus else { return }
+            switch status {
+            case .paused:
+                self._status.value = .paused
+            case .waitingToPlayAtSpecifiedRate:
+                self._status.value = .buffering
+            case .playing:
+                self._status.value = .playing
+            }
+        }
     }
 
     func play() {
         player?.play()
-        // TODO Check if buffering
-        _status.value = .playing
     }
 
     func pause() {
         player?.pause()
-        _status.value = .paused
     }
 
     func stop() {
-        _status.value = .noMediaLoaded
         player?.pause()
         player = nil
         playerView.player = nil
+        _status.value = .noMediaLoaded
     }
 
     func seek(to time: TimeInterval) {

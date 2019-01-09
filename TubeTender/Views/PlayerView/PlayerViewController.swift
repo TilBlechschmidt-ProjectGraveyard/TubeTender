@@ -7,16 +7,14 @@
 //
 
 import UIKit
+import ReactiveSwift
 
 protocol PlayerViewControllerDelegate: class {
-    func playerViewController(_ playerViewController: PlayerViewController, willLoadVideo withID: VideoID)
-    func playerViewControllerDidEmptyQueue(_ playerViewController: PlayerViewController)
     func playerViewController(_ playerViewController: PlayerViewController, didChangeFullscreenStatus: Bool)
 }
 
 class PlayerViewController: UIViewController {
     var contentViewController = UIViewController()
-    var playbackManager: PlaybackManager!
     var playerControlView = PlayerControlView()
     var videoView = UIView()
     var mediaDuration: Int32?
@@ -44,8 +42,8 @@ class PlayerViewController: UIViewController {
 
         // TODO Add the logo in the center of the video
 
-        playbackManager.drawable = videoView
-        playbackManager.delegate = self
+//        playbackManager.drawable = videoView
+//        playbackManager.delegate = self
 
         // Add video view
         videoView.removeFromSuperview()
@@ -58,6 +56,42 @@ class PlayerViewController: UIViewController {
             videoView.rightAnchor.constraint(equalTo: contentView.rightAnchor)
         ])
 
+        videoView.addSubview(SwitchablePlayer.shared)
+        SwitchablePlayer.shared.snp.makeConstraints { make in
+            make.height.equalToSuperview()
+            make.width.equalToSuperview()
+            make.center.equalToSuperview()
+        }
+
+        let player = SwitchablePlayer.shared
+
+        // Play button
+        playerControlView.playButton.reactive.isPlaying <~ player.status.map { $0 == .playing }
+        playerControlView.playButton.reactive.controlEvents(.touchUpInside).observeValues { _ in
+            if player.status.value == .playing {
+                player.pause()
+            } else {
+                player.play()
+            }
+        }
+
+        // PiP button
+        playerControlView.pictureInPictureButton.reactive.controlEvents(.touchUpInside).observeValues { _ in
+            player.startPictureInPicture()
+        }
+
+        // Duration & Elapsed time
+        // TODO Different value when .noMediaLoaded
+        playerControlView.elapsedTime.reactive.text <~ player.currentTime.map { self.stringRepresentation(ofTime: $0) }
+        playerControlView.durationLabel.reactive.text <~ player.duration.map { self.stringRepresentation(ofTime: $0) }
+
+        // Slider & Progress bar
+        playerControlView.progressBar.reactive.progress <~ player.currentTime.map { return Float($0 / SwitchablePlayer.shared.duration.value) }
+        playerControlView.seekingSlider.reactive.value <~ player.currentTime.signal.observe(on: QueueScheduler.main).filterMap { time in
+            return self.playerControlView.seekingSlider.isTracking ? nil : Float(time / player.duration.value)
+        }
+        playerControlView.seekingSlider.reactive.values.observeValues { player.seek(toPercentage: Double($0)) }
+
         // Add controls
         contentView.addSubview(playerControlView)
         playerControlView.translatesAutoresizingMaskIntoConstraints = false
@@ -67,6 +101,17 @@ class PlayerViewController: UIViewController {
             playerControlView.leftAnchor.constraint(equalTo: videoView.leftAnchor),
             playerControlView.rightAnchor.constraint(equalTo: videoView.rightAnchor)
         ])
+
+        playerControlView.loadingIndicator.reactive.isAnimating <~ player.status.signal.map { $0 == .buffering }
+        player.pictureInPictureActive.signal.observe(on: QueueScheduler.main).observeValues { pipActive in
+            self.controlsDisabled = pipActive
+            if pipActive {
+                self.isFullscreenActive = false
+            }
+            UIView.animate(withDuration: 0.5) {
+                self.playerControlView.controlView.alpha = pipActive ? 0 : 1
+            }
+        }
 
         // Bind gesture recognizers
         // TODO Also handle touchDragOutside if touchdown originated inside the slider
@@ -107,6 +152,7 @@ class PlayerViewController: UIViewController {
     }
 
     var idleTimer: Timer?
+    var controlsDisabled = false
     var controlsVisible: Bool {
         get {
             return self.playerControlView.controlView.alpha == 1
@@ -133,7 +179,7 @@ class PlayerViewController: UIViewController {
     }
 
     @objc func viewTapped() {
-        controlsVisible = !controlsVisible
+        controlsVisible = !controlsVisible && !controlsDisabled
         if controlsVisible {
             refreshControlHideTimer()
         }
@@ -155,116 +201,23 @@ class PlayerViewController: UIViewController {
     }
 
     @objc func seeked() {
-        playerControlView.seekingSlider.flatMap { playbackManager.seek(to: Double($0.value)) }
         self.refreshControlHideTimer()
     }
 
     @objc func playButtonTapped() {
-        if playerControlView.playButton.isSelected {
-            playbackManager.play()
-        } else {
-            playbackManager.pause()
-        }
-
         self.refreshControlHideTimer()
     }
 
     @objc func pictureInPictureTapped() {
-        DispatchQueue.main.async {
-            if self.playbackManager.isPictureInPictureActive {
-                self.playbackManager.stopPictureInPicture()
-            } else {
-                _ = try? self.playbackManager.startPictureInPicture()
-            }
-
-            self.refreshControlHideTimer()
-        }
-    }
-}
-
-extension PlayerViewController: PlaybackManagerDelegate {
-    func playbackManagerDidFinishPlayback(_ playbackManager: PlaybackManager) {
-        // TODO Show an abortable countdown
-        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-            // TODO Show errors that might originate here
-            self.playbackManager.next().start()
-            self.controlsVisible = true
-        }
-    }
-
-    func playbackManagerDidStartPlayback(_ playbackManager: PlaybackManager) {
-        DispatchQueue.main.async {
-            self.playerControlView.playButton.deselect()
-        }
-    }
-
-    func playbackManagerDidStopPlayback(_ playbackManager: PlaybackManager) {
-        DispatchQueue.main.async {
-            self.playerControlView.playButton.select()
-            self.controlsVisible = true
-        }
-    }
-
-    func playbackManager(_ playbackManager: PlaybackManager, didChangeTime time: Int32) {
-        DispatchQueue.main.async {
-            let position: Float = Float(time) / Float(self.mediaDuration ?? 0)
-            self.playerControlView.progressBar.setProgress(position, animated: true)
-            self.playerControlView.elapsedTime.text = self.stringRepresentation(ofTime: time)
-
-            if !self.playerControlView.seekingSlider.isTracking {
-                self.playerControlView.seekingSlider.setValue(position, animated: true)
-            }
-        }
-    }
-
-    func playbackManagerWillLoadMedia(_ playbackManager: PlaybackManager, withID: VideoID) {
-        DispatchQueue.main.async {
-            self.delegate?.playerViewController(self, willLoadVideo: withID)
-            self.playerControlView.elapsedTime.text = "--:--"
-            self.playerControlView.durationLabel.text = "--:--"
-            self.playerControlView.progressBar.setProgress(0, animated: true)
-            self.playerControlView.seekingSlider.setValue(0, animated: true)
-            self.playerControlView.controlView.alpha = 0
-            self.playerControlView.loadingIndicator.startAnimating()
-            self.refreshControlHideTimer()
-        }
-    }
-
-    func playbackManagerDidLoadMedia(_ playbackManager: PlaybackManager, withDuration duration: Int32) {
-        DispatchQueue.main.async {
-            self.mediaDuration = duration
-            self.playerControlView.controlView.alpha = 1
-            self.playerControlView.loadingIndicator.stopAnimating()
-            self.playerControlView.durationLabel.text = self.stringRepresentation(ofTime: duration)
-            self.refreshControlHideTimer()
-        }
-    }
-
-    func playbackManagerDidEmptyQueue(_ playbackManager: PlaybackManager) {
-        self.delegate?.playerViewControllerDidEmptyQueue(self)
-        self.controlsVisible = true
-    }
-
-    func playbackManagerWillStartPictureInPicture(_ playbackManager: PlaybackManager) {
-        DispatchQueue.main.async {
-            UIView.animate(withDuration: 0.5) {
-                self.playerControlView.controlView.alpha = 0
-            }
-        }
-    }
-
-    func playbackManagerWillStopPictureInPicture(_ playbackManager: PlaybackManager) {
-        DispatchQueue.main.async {
-            UIView.animate(withDuration: 0.5) {
-                self.playerControlView.controlView.alpha = 1
-                self.refreshControlHideTimer()
-            }
-        }
+        self.refreshControlHideTimer()
     }
 
     private func stringRepresentation(ofTime time: Int32) -> String {
-        let timeInSeconds = Int32(Double(time) / 1000)
+        return stringRepresentation(ofTime: Double(time) / 1000)
+    }
 
+    private func stringRepresentation(ofTime time: TimeInterval) -> String {
+        let timeInSeconds = Int32(time)
         let (hours, minutes, seconds) = (timeInSeconds / 3600, (timeInSeconds % 3600) / 60, timeInSeconds % 60)
         let output = String(format: "%02d:%02d", minutes, seconds)
         return hours > 0 ? String(format: "%02d:%@", hours, output) : output

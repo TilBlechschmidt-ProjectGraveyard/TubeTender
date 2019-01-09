@@ -12,13 +12,27 @@ import ReactiveSwift
 enum PlayerStatus {
     case noMediaLoaded
     case playbackFailed
+    case playbackFinished
 
     case playing
     case buffering
     case paused
 }
 
+struct PlayerFeatures: OptionSet {
+    let rawValue: Int
+
+    static let highFps = PlayerFeatures(rawValue: 1 << 0)
+    static let hdr = PlayerFeatures(rawValue: 1 << 1)
+    static let adaptiveStreaming = PlayerFeatures(rawValue: 1 << 2)
+
+    static let all: PlayerFeatures = [.highFps, .hdr, .adaptiveStreaming]
+}
+
 protocol Player: class {
+    // Feature support
+    var featureSet: PlayerFeatures { get }
+
     // Drawing surface
     var drawable: UIView { get }
 
@@ -36,4 +50,10 @@ protocol Player: class {
     func pause()
     func stop()
     func seek(to: TimeInterval)
+}
+
+extension Player {
+    func loadAudio(url: URL) {
+        fatalError("Unimplemented loadAudio @ Player")
+    }
 }

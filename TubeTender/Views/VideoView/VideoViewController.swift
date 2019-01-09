@@ -23,8 +23,6 @@ class VideoViewController: UIViewController {
 
         // PlayerViewController setup
         playerViewController.delegate = self
-        playerViewController.playbackManager = PlaybackManager.shared
-        playerViewController.playbackManager.preferQuality = StreamQuality.hd1080
 
         // Logo view setup
         emptyView.alpha = 1
@@ -114,22 +112,22 @@ class VideoViewController: UIViewController {
             videoView.sendSubviewToBack(videoDetailView)
         }
 
-        if let playbackManager = playerViewController.playbackManager, let currentlyPlaying = playbackManager.currentlyPlaying {
-            willLoadVideo(withID: currentlyPlaying.id, animate: false)
-        }
-
         regularConstraints.forEach { $0.isActive = true }
-    }
 
-    func willLoadVideo(withID videoID: VideoID, animate: Bool) {
-        DispatchQueue.main.async {
-            if self.videoView.alpha < 1 {
-                UIView.animate(withDuration: animate ? 0.5 : 0) {
+        // TODO Replace this with a binding
+        SwitchablePlayer.shared.playbackItem.signal.observeValues { video in
+            if let video = video {
+                self.videoDetailViewController.video = video
+                UIView.animate(withDuration: 0.5) {
                     self.videoView.alpha = 1
                     self.emptyView.alpha = 0
                 }
+            } else {
+                UIView.animate(withDuration: 0.5) {
+                    self.videoView.alpha = 0
+                    self.emptyView.alpha = 1
+                }
             }
-            self.videoDetailViewController.videoID = videoID
         }
     }
 }
@@ -145,19 +143,6 @@ extension VideoViewController: PlayerViewControllerDelegate {
         }
         UIView.animate(withDuration: 0.25) {
             self.view.layoutIfNeeded()
-        }
-    }
-
-    func playerViewController(_ playerViewController: PlayerViewController, willLoadVideo videoID: VideoID) {
-        willLoadVideo(withID: videoID, animate: true)
-    }
-
-    func playerViewControllerDidEmptyQueue(_ playerViewController: PlayerViewController) {
-        DispatchQueue.main.async {
-            UIView.animate(withDuration: 0.5) {
-                self.videoView.alpha = 0
-                self.emptyView.alpha = 1
-            }
         }
     }
 }

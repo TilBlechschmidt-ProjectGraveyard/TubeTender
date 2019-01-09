@@ -54,10 +54,7 @@ class IncomingVideoReceiver: NSObject, UIDropInteractionDelegate {
     }
 
     public func handle(videoURL url: YoutubeURL) {
-        PlaybackManager.shared.playNow(videoID: url.videoID).startWithResult {
-            print($0)
-        }
-
+        SwitchablePlayer.shared.playbackItem.value = YoutubeClient.shared.video(withID: url.videoID)
         print("Found Video: \(url.videoID)")
     }
 

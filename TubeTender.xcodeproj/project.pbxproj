@@ -36,6 +36,7 @@
 		302FB83E21D5886B00A82363 /* DateFormatter+ISO8601Full.swift in Sources */ = {isa = PBXBuildFile; fileRef = 302FB83D21D5886B00A82363 /* DateFormatter+ISO8601Full.swift */; };
 		302FB84021D58A8A00A82363 /* VideoAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 302FB83F21D58A8A00A82363 /* VideoAPI.swift */; };
 		3034ACC321E529C7000F06A9 /* YoutubeURLParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3034ACC221E529C7000F06A9 /* YoutubeURLParser.swift */; };
+		3034ACC921E54854000F06A9 /* SwitchablePlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3034ACC821E54854000F06A9 /* SwitchablePlayer.swift */; };
 		30370F5521763F6000B35ACF /* VLCTime+Float.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30370F5421763F6000B35ACF /* VLCTime+Float.swift */; };
 		30370F57217735A200B35ACF /* YoutubeKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 30370F56217735A200B35ACF /* YoutubeKit.framework */; };
 		30370F59217735FB00B35ACF /* YoutubeKit.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 30370F56217735A200B35ACF /* YoutubeKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -54,8 +55,6 @@
 		30ABE214218F928A00E4FEA4 /* ArrayComparable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30ABE213218F928A00E4FEA4 /* ArrayComparable.swift */; };
 		30ABE217218F962900E4FEA4 /* VideoStreamAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30ABE216218F962900E4FEA4 /* VideoStreamAPI.swift */; };
 		30ABE219218F965500E4FEA4 /* VideoStreamAPIResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30ABE218218F965500E4FEA4 /* VideoStreamAPIResponse.swift */; };
-		30ABE21B218F9D3500E4FEA4 /* VideoStreamManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30ABE21A218F9D3500E4FEA4 /* VideoStreamManager.swift */; };
-		30ABE21D21905D8900E4FEA4 /* PlaybackManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30ABE21C21905D8900E4FEA4 /* PlaybackManager.swift */; };
 		30ABE21F21905F5800E4FEA4 /* Queue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30ABE21E21905F5800E4FEA4 /* Queue.swift */; };
 		30ABE2212190B48E00E4FEA4 /* PlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30ABE2202190B48E00E4FEA4 /* PlayerViewController.swift */; };
 		30B1EB4B21DC0E9800B16CA2 /* DownloadButton.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B1EB4A21DC0E9800B16CA2 /* DownloadButton.framework */; };
@@ -157,6 +156,7 @@
 		302FB83D21D5886B00A82363 /* DateFormatter+ISO8601Full.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DateFormatter+ISO8601Full.swift"; sourceTree = "<group>"; };
 		302FB83F21D58A8A00A82363 /* VideoAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoAPI.swift; sourceTree = "<group>"; };
 		3034ACC221E529C7000F06A9 /* YoutubeURLParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YoutubeURLParser.swift; sourceTree = "<group>"; };
+		3034ACC821E54854000F06A9 /* SwitchablePlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchablePlayer.swift; sourceTree = "<group>"; };
 		30370F5421763F6000B35ACF /* VLCTime+Float.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VLCTime+Float.swift"; sourceTree = "<group>"; };
 		30370F56217735A200B35ACF /* YoutubeKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = YoutubeKit.framework; path = Carthage/Build/iOS/YoutubeKit.framework; sourceTree = "<group>"; };
 		30370F5A217739C500B35ACF /* SkeletonView.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SkeletonView.framework; path = Carthage/Build/iOS/SkeletonView.framework; sourceTree = "<group>"; };
@@ -172,8 +172,6 @@
 		30ABE213218F928A00E4FEA4 /* ArrayComparable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayComparable.swift; sourceTree = "<group>"; };
 		30ABE216218F962900E4FEA4 /* VideoStreamAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoStreamAPI.swift; sourceTree = "<group>"; };
 		30ABE218218F965500E4FEA4 /* VideoStreamAPIResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoStreamAPIResponse.swift; sourceTree = "<group>"; };
-		30ABE21A218F9D3500E4FEA4 /* VideoStreamManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoStreamManager.swift; sourceTree = "<group>"; };
-		30ABE21C21905D8900E4FEA4 /* PlaybackManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackManager.swift; sourceTree = "<group>"; };
 		30ABE21E21905F5800E4FEA4 /* Queue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Queue.swift; sourceTree = "<group>"; };
 		30ABE2202190B48E00E4FEA4 /* PlayerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerViewController.swift; sourceTree = "<group>"; };
 		30B1EB4A21DC0E9800B16CA2 /* DownloadButton.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DownloadButton.framework; path = Carthage/Build/iOS/DownloadButton.framework; sourceTree = "<group>"; };
@@ -378,7 +376,7 @@
 		3067715621DA5681009AA051 /* Playback */ = {
 			isa = PBXGroup;
 			children = (
-				30ABE21C21905D8900E4FEA4 /* PlaybackManager.swift */,
+				3034ACC821E54854000F06A9 /* SwitchablePlayer.swift */,
 				3067714F21DA32B0009AA051 /* Player */,
 			);
 			path = Playback;
@@ -411,7 +409,6 @@
 		30A81A3C21D53C4400FBE8EE /* VideoStreams */ = {
 			isa = PBXGroup;
 			children = (
-				30ABE21A218F9D3500E4FEA4 /* VideoStreamManager.swift */,
 				30ABE216218F962900E4FEA4 /* VideoStreamAPI.swift */,
 				30ABE218218F965500E4FEA4 /* VideoStreamAPIResponse.swift */,
 			);
@@ -595,8 +592,8 @@
 			files = (
 				30ABE217218F962900E4FEA4 /* VideoStreamAPI.swift in Sources */,
 				30BAB76B2178B47A00B01953 /* SubscriptionFeedViewController.swift in Sources */,
-				30ABE21D21905D8900E4FEA4 /* PlaybackManager.swift in Sources */,
 				30BAB7722178B4F800B01953 /* AMRefresher.swift in Sources */,
+				3034ACC921E54854000F06A9 /* SwitchablePlayer.swift in Sources */,
 				30A81A3E21D53E9500FBE8EE /* VideoMetadataView.swift in Sources */,
 				300F296721D59F2900C9B0B0 /* Video.swift in Sources */,
 				40822CBB21E4FE8700903390 /* UIView+Blur.swift in Sources */,
@@ -615,7 +612,6 @@
 				30F66C7021DF78E300BBBBD8 /* VideoDownloadButtonViewController.swift in Sources */,
 				408C524C21E54554007B2DD2 /* DragAndDropReceiver.swift in Sources */,
 				30ABE219218F965500E4FEA4 /* VideoStreamAPIResponse.swift in Sources */,
-				30ABE21B218F9D3500E4FEA4 /* VideoStreamManager.swift in Sources */,
 				30BAB7712178B4F800B01953 /* AMPullToRefresh.swift in Sources */,
 				30A81A3A21D53A7D00FBE8EE /* VideoMetadataViewController.swift in Sources */,
 				30988C1F21DEBF5C0070D14A /* TubeTender.xcdatamodeld in Sources */,

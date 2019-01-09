@@ -91,9 +91,9 @@ class DownloadManager {
 
     private init() { }
 
-    var currentlyDownloading: [VideoID : Signal<Double, DownloadManagerError>] = [:]
+    var currentlyDownloading: [Video.ID : Signal<Double, DownloadManagerError>] = [:]
 
-    public func status(forVideoWithID videoID: VideoID) -> DownloadStatus {
+    public func status(forVideoWithID videoID: Video.ID) -> DownloadStatus {
         return .notStored
 //        let completedStatus = Static.downloadManagerStack.queryValue(
 //            From<DownloadedVideo>().select(\.completed).where(\.id == videoID)
@@ -112,7 +112,7 @@ class DownloadManager {
 //        }
     }
 
-    public func removeDownload(withID videoID: VideoID) -> DownloadManagerError? {
+    public func removeDownload(withID videoID: Video.ID) -> DownloadManagerError? {
 //        let containerPath = containerPathForVideo(withID: videoID)!
 //
 //        guard FileManager.default.fileExists(atPath: containerPath.path) else {
@@ -131,7 +131,7 @@ class DownloadManager {
         return nil
     }
 
-    public func downloadVideo(withID videoID: VideoID) -> Signal<Double, DownloadManagerError> {
+    public func downloadVideo(withID videoID: Video.ID) -> Signal<Double, DownloadManagerError> {
         return SignalProducer<Double, DownloadManagerError>(error: DownloadManagerError.notImplemented).startWithSignal { signal, _ in signal }
 //        let databaseInsertion = Static.downloadManagerStack.createSignalProducer { transaction in
 //            let video = transaction.create(Into<DownloadedVideo>())

@@ -7,7 +7,6 @@
 //
 
 import struct YoutubeKit.Video
-//import struct YoutubeKit.VideoList
 import struct YoutubeKit.VideoListRequest
 import Result
 import ReactiveSwift
@@ -17,21 +16,34 @@ enum VideoError: Swift.Error {
     case notFound
 }
 
-//public class VideoList: YoutubeClientObject<YoutubeKit.VideoListRequest, YoutubeKit.VideoList> {
-//    fileprivate init(ids: [Video.ID], client: YoutubeClient) {
-//        let channelRequest = VideoListRequest(part: [.contentDetails, .statistics, .snippet], filter: .id(ids.joined(separator: ",")))
-//
-//        super.init(client: client, request: channelRequest, mapResponse: { $0 })
-//    }
-//}
+fileprivate func groupByQuality(_ streams: [StreamMetadata]) -> [StreamQuality : [StreamMetadata]] {
+    return streams.reduce(into: [:]) { result, stream in
+        if result[stream.quality] != nil {
+            result[stream.quality]?.append(stream)
+        } else {
+            result[stream.quality] = [stream]
+        }
+    }
+}
+
+extension Array {
+    fileprivate func filterIfPossible(_ predicate: (Element) -> Bool) -> [Element] {
+        let filtered = self.filter(predicate)
+        return filtered.count > 0 ? filtered : self
+    }
+}
 
 public class Video: YoutubeClientObject<YoutubeKit.VideoListRequest, YoutubeKit.Video> {
     public typealias ID = String
 
     let id: ID
 
+    private let streams: APISignalProducer<StreamCollection>
+
     fileprivate init(id: ID, client: YoutubeClient) {
         self.id = id
+        self.streams = VideoStreamAPI.shared.streams(forVideoID: id).cached(lifetime: Constants.cacheLifetime)
+
         let channelRequest = VideoListRequest(part: [.contentDetails, .statistics, .snippet], filter: .id(id))
 
         super.init(client: client, request: channelRequest) { response in
@@ -86,3 +98,58 @@ extension YoutubeClient {
         return ids.map { video(withID: $0) }
     }
 }
+
+
+// MARK: - Stream management
+
+fileprivate let videoInfoPath = "https://www.youtube.com/get_video_info?video_id=%@&asv=3&el=detailpage&ps=default&hl=en_US"
+
+typealias StreamSet = (video: StreamMetadata, audio: StreamMetadata?)
+
+extension Video {
+    func stream(withPreferredQuality preferredQuality: StreamQuality,
+                adaptive: Bool,
+                preferHighFPS: Bool = true,
+                preferHDR: Bool = false) -> SignalProducer<StreamSet, NoError> {
+        return streams.filterMap({ $0.value }).map { streamCollection in
+            let subset = adaptive ? streamCollection.video : streamCollection.mixed
+
+            var bestStream = subset[0]
+
+            for stream in subset[1...] {
+                let hdrMatch = preferHDR && !bestStream.hdr && stream.hdr
+                let fpsMatch = preferHighFPS && !bestStream.highFPS && stream.highFPS
+                let betterSecondaryMatch: Bool
+
+                if fpsMatch {
+                    betterSecondaryMatch = true
+                } else if bestStream.highFPS == stream.highFPS {
+                    betterSecondaryMatch = hdrMatch
+                } else {
+                    betterSecondaryMatch = false
+                }
+
+                if betterSecondaryMatch && bestStream.quality == stream.quality {
+                    bestStream = stream
+                } else if bestStream.quality > preferredQuality && bestStream.quality > stream.quality {
+                    bestStream = stream
+                } else if
+                    bestStream.quality <= preferredQuality
+                        && stream.quality > bestStream.quality
+                        && stream.quality < preferredQuality
+                {
+                    bestStream = stream
+                }
+            }
+
+            let eligibleAudioStreams = streamCollection.audio // .filter { $0.mimeType.contains("mp4") }
+
+            if adaptive, let audioStream = eligibleAudioStreams.first {
+                return (video: bestStream, audio: audioStream)
+            } else {
+                return (video: bestStream, audio: nil)
+            }
+        }
+    }
+}
+

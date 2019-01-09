@@ -8,6 +8,7 @@
 
 import Foundation
 import ReactiveSwift
+import Result
 
 enum VideoStreamAPIError: Error {
     case invalidRequestURL
@@ -23,16 +24,12 @@ final class VideoStreamAPI {
 
     private init() {}
 
-    func streamManager(forVideoID videoID: String) -> SignalProducer<VideoStreamManager, VideoStreamAPIError> {
-        return self.streams(forVideoID: videoID).map { VideoStreamManager(withStreams: $0) }
-    }
-
-    func streams(forVideoID videoID: String) -> SignalProducer<StreamCollection, VideoStreamAPIError> {
+    func streams(forVideoID videoID: String) -> SignalProducer<StreamCollection, AnyError> {
         return SignalProducer { observer, _ in
             // Build the request URL
             let path = String(format: VideoStreamAPI.videoInfoPath, videoID)
             guard let url = URL(string: path) else {
-                observer.send(error: .invalidRequestURL)
+                observer.send(error: AnyError(VideoStreamAPIError.invalidRequestURL))
                 return
             }
 
@@ -45,7 +42,7 @@ final class VideoStreamAPI {
             session.dataTask(with: req) { data, response, error in
                 // Convert the response to a string
                 guard let data = data, data.count > 0, let urlParameters = String(data: data, encoding: .utf8) else {
-                    observer.send(error: .invalidResponse)
+                    observer.send(error: AnyError(VideoStreamAPIError.invalidResponse))
                     return
                 }
 
@@ -64,7 +61,7 @@ final class VideoStreamAPI {
                 // TODO Check player_response["playabilityStatus"]
                 guard let apiResponseData = dictionary["player_response"]?.data(using: .utf8),
                     let apiResponse = try? JSONDecoder().decode(VideoStreamAPIResponse.self, from: apiResponseData) else {
-                    observer.send(error: .invalidResponse)
+                    observer.send(error: AnyError(VideoStreamAPIError.invalidResponse))
                     return
                 }
 

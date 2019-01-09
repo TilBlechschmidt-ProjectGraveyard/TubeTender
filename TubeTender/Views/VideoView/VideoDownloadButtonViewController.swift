@@ -11,9 +11,9 @@ import DownloadButton
 import ReactiveSwift
 
 class VideoDownloadButtonViewController: UIViewController {
-    var videoID: String! {
+    var video: Video! {
         didSet {
-            switch DownloadManager.shared.status(forVideoWithID: videoID) {
+            switch DownloadManager.shared.status(forVideoWithID: video.id) {
             case .downloaded:
                 downloadButton.isDownloaded = true
             case .inProgress(let progressSignal):
@@ -31,9 +31,9 @@ class VideoDownloadButtonViewController: UIViewController {
 
     private var downloadProgressSignal: Signal<Double, DownloadManagerError>! {
         willSet {
-            let signalVideoID = videoID!
+            let signalVideoID = video.id
             newValue
-                .take(while: { _ in signalVideoID == self.videoID })
+                .take(while: { _ in signalVideoID == self.video.id })
                 .observeResult { result in
                     switch result {
                     case .success(let progress):
@@ -66,7 +66,7 @@ class VideoDownloadButtonViewController: UIViewController {
         let alert = UIAlertController(title: "Delete video", message: "Do you want to remove the downloaded video?", preferredStyle: UIAlertController.Style.alert)
 
         alert.addAction(UIAlertAction(title: "Delete", style: UIAlertAction.Style.destructive, handler: { _ in
-            if DownloadManager.shared.removeDownload(withID: self.videoID) == nil {
+            if DownloadManager.shared.removeDownload(withID: self.video.id) == nil {
                 DispatchQueue.main.async {
                     self.downloadButton.downloadState = .toDownload
                 }
@@ -78,7 +78,7 @@ class VideoDownloadButtonViewController: UIViewController {
     }
 
     @objc func onDownloadTap() {
-        switch DownloadManager.shared.status(forVideoWithID: videoID) {
+        switch DownloadManager.shared.status(forVideoWithID: video.id) {
         case .downloaded:
             deleteDownload()
         case .inProgress(_):
@@ -89,7 +89,7 @@ class VideoDownloadButtonViewController: UIViewController {
             print("TODO Implement stall action")
         case .notStored:
             downloadButton.downloadState = .willDownload
-            downloadProgressSignal = DownloadManager.shared.downloadVideo(withID: videoID)
+            downloadProgressSignal = DownloadManager.shared.downloadVideo(withID: video.id)
         }
     }
 }

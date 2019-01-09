@@ -14,12 +14,10 @@ import Result
 class VideoMetadataViewController: UIViewController {
     let videoMetadataView = VideoMetadataView()
 
-    var videoID: String! {
+    var video: Video! {
         didSet {
-            if oldValue != videoID {
-                downloadButtonViewController.videoID = videoID
-                fetchVideoDetails()
-            }
+            downloadButtonViewController.video = video
+            fetchVideoDetails()
         }
     }
 
@@ -48,8 +46,6 @@ class VideoMetadataViewController: UIViewController {
 
 
     func fetchVideoDetails() {
-        let video = YoutubeClient.shared.video(withID: videoID)
-
         videoMetadataView.videoTitle.reactive.text <~ video.title.map { $0.value ?? "Loading..." }
         videoMetadataView.videoDescriptionView.reactive.text <~ video.description.map { $0.value ?? "Loading..." }
         videoMetadataView.viewCount.reactive.text <~ video.viewCount.map { result -> String? in
