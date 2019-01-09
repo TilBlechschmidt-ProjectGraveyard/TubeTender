@@ -40,14 +40,14 @@ class SearchListViewController: GenericVideoListViewController {
     }
 
     override func reloadVideos() {
-        loadVideos(pageToken: nil, action: self.replace)
+        loadVideos(pageToken: nil) { self.replace(videos: [$0]) }
     }
 
     override func loadNextVideos() {
-        loadVideos(pageToken: nextPageToken, action: self.append)
+        loadVideos(pageToken: nextPageToken) { self.append(videos: $0) }
     }
 
-    override var emptyStateView: EmptyStateView {
+    override func createEmptyStateView() -> UIView {
         return EmptyStateView(image: #imageLiteral(resourceName: "search"), text: "No videos found")
     }
 }

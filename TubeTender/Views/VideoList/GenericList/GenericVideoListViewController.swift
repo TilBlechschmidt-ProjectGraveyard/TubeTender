@@ -14,7 +14,15 @@ class GenericVideoListViewController: UITableViewController {
         return UIStatusBarStyle.lightContent
     }
 
-    public var items = MutableProperty<[Video]>([])
+    private lazy var emptyStateView: UIView = createEmptyStateView()
+
+    public var videos: [[Video]] = [] {
+        didSet {
+            emptyStateView.isHidden = videos.count > 0
+        }
+    }
+
+    private var isLoading: Bool = false
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,11 +31,8 @@ class GenericVideoListViewController: UITableViewController {
         tableView.separatorColor = Constants.borderColor
         tableView.refreshControl = UIRefreshControl()
 
-        tableView.refreshControl?.addTarget(self, action: #selector(self.reloadVideos), for: .valueChanged)
+        tableView.refreshControl?.addTarget(self, action: #selector(self.handlePullToRefresh), for: .valueChanged)
         tableView.rowHeight = CGFloat.greatestFiniteMagnitude
-
-        let emptyStateView = self.emptyStateView
-        emptyStateView.reactive.isHidden <~ items.map { $0.count > 0 }
         tableView.backgroundView = emptyStateView
 
         let longPressGestureRecognizer = UILongPressGestureRecognizer(
@@ -42,53 +47,84 @@ class GenericVideoListViewController: UITableViewController {
         guard let indexPath = tableView.indexPathForRow(at: pressLocation) else { return }
 
         IncomingVideoReceiver.default.handle(
-            video: self.items.value[indexPath.row],
+            video: self.videos[0][indexPath.row],
             source: .rect(rect: tableView.rectForRow(at: indexPath), view: tableView, permittedArrowDirections: .left))
     }
 
-    func append(videos: [Video]) {
-        let previousLength = self.items.value.count
+    func append(videos: [Video], toSection section: Int = 0) {
+        let previousLength = self.videos[section].count
 
-        self.items.value.append(contentsOf: videos)
+        self.videos[section].append(contentsOf: videos)
 
-        let indexPaths = (previousLength..<self.items.value.count).map { IndexPath(row: $0, section: 0) }
+        let indexPaths = (previousLength..<self.videos[section].count).map { IndexPath(row: $0, section: section) }
         self.tableView.insertRows(at: indexPaths, with: .fade)
         self.tableView.refreshControl?.endRefreshing()
+        isLoading = false
     }
 
-    func replace(videos: [Video]) {
-        self.items.value = videos
+    func replace(videos: [[Video]]) {
+        self.videos = videos
         self.tableView.reloadData()
         self.tableView.refreshControl?.endRefreshing()
+        isLoading = false
     }
 
     func notUpdating() {
         self.tableView.refreshControl?.endRefreshing()
+        isLoading = false
     }
 
-    @objc func reloadVideos() {}
+    @objc private func handlePullToRefresh() {
+        guard startFetch() else { return }
+        reloadVideos()
+    }
+
+    private func handleInfiniteScrollLoadRequest() {
+        guard startFetch() else { return }
+        loadNextVideos()
+    }
+
+    func startFetch() -> Bool {
+        guard !isLoading else { return false }
+        isLoading = true
+        return true
+    }
+
+    func reloadVideos() {}
 
     open func loadNextVideos() {}
 
-    open var emptyStateView: EmptyStateView {
-        return EmptyStateView(image: #imageLiteral(resourceName: "movie"), text: "No videos found")
+    open func createEmptyStateView() -> UIView {
+        return UIView()
     }
 
-    open var hideThumbnails: Bool {
+    open func headerTitle(forSection section: Int) -> String? {
+        return nil
+    }
+
+    open func hideThumbnail(at indexPath: IndexPath) -> Bool {
         return false
     }
 }
 
 extension GenericVideoListViewController {
+    override func numberOfSections(in tableView: UITableView) -> Int {
+        return videos.count
+    }
+
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return items.value.count
+        return videos[section].count
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: SubscriptionFeedViewTableCell.identifier) as! SubscriptionFeedViewTableCell
-        cell.video = items.value[indexPath.row]
-        cell.hideThumbnail = hideThumbnails
+        cell.video = videos[indexPath.section][indexPath.row]
+        cell.hideThumbnail = hideThumbnail(at: indexPath)
         return cell
+    }
+
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return headerTitle(forSection: section)
     }
 }
 
@@ -98,21 +134,35 @@ extension GenericVideoListViewController {
     }
 
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return (hideThumbnails ? 0 : tableView.frame.width * 0.5625) + Constants.channelIconSize + 2 * Constants.uiPadding
+        return (hideThumbnail(at: indexPath) ? 0 : tableView.frame.width * 0.5625) + Constants.channelIconSize + 2 * Constants.uiPadding
     }
 
     override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        if indexPath.row > items.value.count - 10 {
-            loadNextVideos()
+        let remainingItemsInCurrentSection = videos[indexPath.section].count - indexPath.row - 1
+        let remainingItemsInNextSections = videos[(indexPath.section + 1)...].reduce(0) { return $0 + $1.count }
+        let remainingItems = remainingItemsInCurrentSection + remainingItemsInNextSections
+
+        if remainingItems < 10 {
+            handleInfiniteScrollLoadRequest()
         }
 
-        for index in (indexPath.row+1)..<min(indexPath.row + 5, items.value.count) {
-            items.value[index].prefetchData()
+        var currentIndexPath = indexPath
+
+        for _ in 1...5 {
+            if videos[currentIndexPath.section].count > currentIndexPath.row + 1 {
+                currentIndexPath.row += 1
+            } else if videos.count > currentIndexPath.section + 1 {
+                currentIndexPath = IndexPath(row: 0, section: currentIndexPath.section + 1)
+            } else {
+                return
+            }
+
+            videos[currentIndexPath.section][currentIndexPath.row].prefetchData()
         }
     }
 
     override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
-        let video = items.value[indexPath.row]
+        let video = videos[indexPath.section][indexPath.row]
 
         self.showDetailViewController(VideoViewController(), sender: self)
         SwitchablePlayer.shared.playbackItem.value = video
