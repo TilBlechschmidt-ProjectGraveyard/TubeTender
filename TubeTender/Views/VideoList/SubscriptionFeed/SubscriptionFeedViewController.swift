@@ -7,28 +7,19 @@
 //
 
 import UIKit
-import YoutubeKit
-import ReactiveSwift
-import Result
-import ReactiveCocoa
 
 class SubscriptionFeedViewController: GenericVideoListViewController {
     private var cutoffDate: Date?
-    private var isFetching = false
 
     override func viewDidLoad() {
         super.viewDidLoad()
         NotificationCenter.default.addObserver(self,
-                                               selector: #selector(self.reloadVideos),
+                                               selector: #selector(self.handleLogin),
                                                name: NSNotification.Name("AppDelegate.authentication.loggedIn"),
                                                object: nil)
     }
 
     func fetchFeed(cutoffDate: Date?, onCompletion: @escaping ([Video], Date) -> Void) {
-        guard !isFetching else {
-            return
-        }
-        isFetching = true
         SubscriptionFeedAPI.shared.fetchSubscriptionFeed(publishedBefore: cutoffDate).startWithResult { result in
             switch result {
             case .success(let (videos, cutoffDate)):
@@ -38,15 +29,18 @@ class SubscriptionFeedViewController: GenericVideoListViewController {
                 print("Failed to fetch infinite feed!", error)
                 // TODO Show this to the user.
             }
-            self.isFetching = false
         }
     }
 
+    @objc private func handleLogin() {
+        guard startFetch() else { return }
+        reloadVideos()
+    }
+
     override func reloadVideos() {
-        tableView.refreshControl?.beginRefreshing()
         fetchFeed(cutoffDate: nil) { videos, cutoffDate in
             self.cutoffDate = cutoffDate
-            self.replace(videos: videos)
+            self.replace(videos: [videos])
         }
     }
 
@@ -57,7 +51,7 @@ class SubscriptionFeedViewController: GenericVideoListViewController {
         }
     }
 
-    override var emptyStateView: EmptyStateView {
+    override func createEmptyStateView() -> UIView {
         return EmptyStateView(image: #imageLiteral(resourceName: "movie"), text: "No videos found")
     }
 }
