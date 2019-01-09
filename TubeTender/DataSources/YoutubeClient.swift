@@ -57,6 +57,10 @@ public class YoutubeClientObject<Request: Requestable, DataType> {
     func makeProperty<T>(_ mapper: @escaping (DataType) -> T?) -> APISignalProducer<T> {
         return response.tryMap(YoutubeClientObjectError.invalidAPIResponse, mapper)
     }
+
+    func prefetchData() {
+        response.start()
+    }
 }
 
 extension YoutubeClientObject where Request.Response == DataType {

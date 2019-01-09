@@ -57,6 +57,7 @@
 		30ABE219218F965500E4FEA4 /* VideoStreamAPIResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30ABE218218F965500E4FEA4 /* VideoStreamAPIResponse.swift */; };
 		30ABE21F21905F5800E4FEA4 /* Queue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30ABE21E21905F5800E4FEA4 /* Queue.swift */; };
 		30ABE2212190B48E00E4FEA4 /* PlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30ABE2202190B48E00E4FEA4 /* PlayerViewController.swift */; };
+		30B03AC221E68A45007B3E38 /* UIRebindableTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30B03AC121E68A45007B3E38 /* UIRebindableTableViewCell.swift */; };
 		30B1EB4B21DC0E9800B16CA2 /* DownloadButton.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B1EB4A21DC0E9800B16CA2 /* DownloadButton.framework */; };
 		30B1EB4C21DC0EA300B16CA2 /* DownloadButton.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 30B1EB4A21DC0E9800B16CA2 /* DownloadButton.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		30B338B521E27F66001FC825 /* ReactiveCocoa.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 30B338B421E27F65001FC825 /* ReactiveCocoa.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -178,6 +179,7 @@
 		30ABE218218F965500E4FEA4 /* VideoStreamAPIResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoStreamAPIResponse.swift; sourceTree = "<group>"; };
 		30ABE21E21905F5800E4FEA4 /* Queue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Queue.swift; sourceTree = "<group>"; };
 		30ABE2202190B48E00E4FEA4 /* PlayerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerViewController.swift; sourceTree = "<group>"; };
+		30B03AC121E68A45007B3E38 /* UIRebindableTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIRebindableTableViewCell.swift; sourceTree = "<group>"; };
 		30B1EB4A21DC0E9800B16CA2 /* DownloadButton.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DownloadButton.framework; path = Carthage/Build/iOS/DownloadButton.framework; sourceTree = "<group>"; };
 		30B338B421E27F65001FC825 /* ReactiveCocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReactiveCocoa.framework; path = Carthage/Build/iOS/ReactiveCocoa.framework; sourceTree = "<group>"; };
 		30B338B721E28021001FC825 /* SnapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SnapKit.framework; path = Carthage/Build/iOS/SnapKit.framework; sourceTree = "<group>"; };
@@ -471,6 +473,7 @@
 				4021444621E625E300AAC670 /* GenericVideoListViewController.swift */,
 				30BAB7742178BBC500B01953 /* VideoListTableCell.swift */,
 				408C524D21E55903007B2DD2 /* DurationView.swift */,
+				30B03AC121E68A45007B3E38 /* UIRebindableTableViewCell.swift */,
 			);
 			path = GenericList;
 			sourceTree = "<group>";
@@ -657,6 +660,7 @@
 				30F2E38C21DD4D14005EFCA9 /* Alamofire+Reactive.swift in Sources */,
 				30A81A3721D539F600FBE8EE /* VideoViewController.swift in Sources */,
 				30F48900219CD3E1002FAE36 /* SplitViewController.swift in Sources */,
+				30B03AC221E68A45007B3E38 /* UIRebindableTableViewCell.swift in Sources */,
 				40E2E1F321E292D5007EA359 /* YoutubeClient.swift in Sources */,
 				30370F5521763F6000B35ACF /* VLCTime+Float.swift in Sources */,
 				40E2E1F921E3E7AE007EA359 /* Optional+Error.swift in Sources */,

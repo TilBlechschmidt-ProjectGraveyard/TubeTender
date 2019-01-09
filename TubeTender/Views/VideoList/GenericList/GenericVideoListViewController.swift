@@ -18,6 +18,7 @@ class GenericVideoListViewController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        tableView.register(SubscriptionFeedViewTableCell.self, forCellReuseIdentifier: SubscriptionFeedViewTableCell.identifier)
         tableView.backgroundColor = Constants.backgroundColor
         tableView.separatorColor = Constants.borderColor
         tableView.refreshControl = UIRefreshControl()
@@ -73,16 +74,13 @@ extension GenericVideoListViewController {
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = SubscriptionFeedViewTableCell(video: items.value[indexPath.row])
+        var cell = tableView.dequeueReusableCell(withIdentifier: SubscriptionFeedViewTableCell.identifier) as? SubscriptionFeedViewTableCell
+        if cell == nil {
+            cell = SubscriptionFeedViewTableCell(style: .default, reuseIdentifier: SubscriptionFeedViewTableCell.identifier)
+        }
+        cell?.video = items.value[indexPath.row]
 
-        // TODO Implement cell reusability
-        //        var cell = tableView.dequeueReusableCell(withIdentifier: "Cell") as? SubscriptionFeedViewTableCell
-        //        if cell == nil {
-        //            cell = SubscriptionFeedViewTableCell(style: .default, reuseIdentifier: "Cell")
-        //        }
-        //        cell?.video = items[indexPath.row]
-
-        return cell
+        return cell!
     }
 }
 
@@ -98,6 +96,10 @@ extension GenericVideoListViewController {
     override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         if indexPath.row > items.value.count - 10 {
             loadNextVideos()
+        }
+
+        for index in (indexPath.row+1)..<min(indexPath.row + 5, items.value.count) {
+            items.value[index].prefetchData()
         }
     }
 

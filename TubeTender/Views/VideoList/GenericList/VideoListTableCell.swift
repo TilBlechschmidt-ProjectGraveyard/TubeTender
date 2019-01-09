@@ -12,7 +12,9 @@ import ReactiveSwift
 import Result
 import SnapKit
 
-class SubscriptionFeedViewTableCell: UITableViewCell {
+class SubscriptionFeedViewTableCell: UIRebindableTableViewCell {
+    static let identifier = "SubscriptionFeedViewTableCell"
+
     let thumbnailView = UIImageView()
     let durationView = DurationView()
     let lockView = UIImageView(image: #imageLiteral(resourceName: "lock"))
@@ -22,17 +24,59 @@ class SubscriptionFeedViewTableCell: UITableViewCell {
     let subtitleLabel = UILabel()
     let channelIconView = UIImageView()
 
-    let video: Video
+    var thumbnailBlur: UIVisualEffectView!
 
-    init(video: Video) {
-        self.video = video
-        super.init(style: .default, reuseIdentifier: nil)
+    var video: Video! {
+        didSet {
+            thumbnailView.image = nil
+            makeBindings()
+        }
+    }
 
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupUI()
     }
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    private func makeBindings() {
+        let iconURL = video.channel.get(\.thumbnailURL)
+
+        let subtitleData = SignalProducer.zip(
+            video.channelTitle.map { $0.value },
+            video.viewCount.map { $0.value },
+            video.published.map { $0.value },
+            video.isPremium.map { $0.value }
+        )
+
+        let subtitle: SignalProducer<String, NoError> = subtitleData.map { data in
+            let (channelTitle, viewCount, published, isPremium) = data
+
+            let displayData = [
+                channelTitle ?? "Loading ...",
+                (isPremium ?? false) ? "Premium Content" : viewCount.map { "\($0.withThousandSeparators) views" },
+                published?.since()
+            ]
+
+            return displayData.compactMap({ $0 }).joined(separator: " ∙ ")
+        }
+
+        makeDisposableBindings { bindings in
+            bindings += thumbnailBlur.reactive.isHidden <~ video.isPremium.map { !($0.value ?? false) }
+            bindings += thumbnailView.reactive.setImage(options: [.transition(.fade(0.5))]) <~ video.thumbnailURL.map { $0.value }
+
+            bindings += lockView.reactive.isHidden <~ video.isPremium.map { !($0.value ?? false) }
+
+            bindings += durationView.label.reactive.text <~ video.duration.map { $0.value ?? "--:--" }
+
+            bindings += channelIconView.reactive.setImage(options: [.transition(.fade(0.5))]) <~ iconURL.map { $0.value }
+
+            bindings += titleLabel.reactive.text <~ video.title.map { $0.value ?? "Loading ..." }
+            bindings += subtitleLabel.reactive.text <~ subtitle
+        }
     }
 
     private func setupUI() {
@@ -56,10 +100,8 @@ class SubscriptionFeedViewTableCell: UITableViewCell {
         }
 
         // Add blur and image
-        let thumbnailBlur = thumbnailView.blur(style: .light)
+        thumbnailBlur = thumbnailView.blur(style: .light)
         thumbnailBlur.isHidden = true
-        thumbnailBlur.reactive.isHidden <~ video.isPremium.map { !($0.value ?? false) }
-        thumbnailView.reactive.setImage(options: [.transition(.fade(0.5))]) <~ video.thumbnailURL.map { $0.value }
 
         // Setup subviews
         setupLock()
@@ -78,7 +120,6 @@ class SubscriptionFeedViewTableCell: UITableViewCell {
 
         // Setup hide/show
         lockView.isHidden = true
-        lockView.reactive.isHidden <~ video.isPremium.map { !($0.value ?? false) }
     }
 
     private func setupDurationView() {
@@ -87,7 +128,6 @@ class SubscriptionFeedViewTableCell: UITableViewCell {
             make.right.equalToSuperview()
             make.bottom.equalToSuperview()
         }
-        durationView.label.reactive.text <~ video.duration.map { $0.value ?? "--:--" }
     }
 
     private func setupMetadata() {
@@ -116,10 +156,6 @@ class SubscriptionFeedViewTableCell: UITableViewCell {
             make.height.equalTo(Constants.channelIconSize)
             make.width.equalTo(Constants.channelIconSize)
         }
-
-        // Add icon
-        let iconURL = video.channel.get(\.thumbnailURL)
-        channelIconView.reactive.setImage(options: [.transition(.fade(0.5))]) <~ iconURL.map { $0.value }
     }
 
     private func setupTitles() {
@@ -144,34 +180,11 @@ class SubscriptionFeedViewTableCell: UITableViewCell {
         titleLabel.textColor = .white
         titleLabel.lineBreakMode = .byTruncatingTail
         titleLabel.numberOfLines = 2
-        titleLabel.reactive.text <~ video.title.map { $0.value ?? "Loading ..." }
     }
 
     private func setupSubtitle() {
         subtitleLabel.font = UIFont.systemFont(ofSize: 11)
         subtitleLabel.textColor = .lightGray
         subtitleLabel.lineBreakMode = .byTruncatingTail
-
-        // Setup data
-        let subtitleData = SignalProducer.zip(
-            video.channelTitle.map { $0.value },
-            video.viewCount.map { $0.value },
-            video.published.map { $0.value },
-            video.isPremium.map { $0.value }
-        )
-
-        let subtitle: SignalProducer<String, NoError> = subtitleData.map { data in
-            let (channelTitle, viewCount, published, isPremium) = data
-
-            let displayData = [
-                channelTitle ?? "Loading ...",
-                (isPremium ?? false) ? "Premium Content" : viewCount.map { "\($0.withThousandSeparators) views" },
-                published?.since()
-            ]
-
-            return displayData.compactMap({ $0 }).joined(separator: " ∙ ")
-        }
-
-        subtitleLabel.reactive.text <~ subtitle
     }
 }
