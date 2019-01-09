@@ -231,7 +231,7 @@
         <scene sceneID="m9f-Be-p64">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="mFJ-IW-dAp" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Queue" image="settings" id="zkU-wV-WAz"/>
+                    <tabBarItem key="tabBarItem" title="Queue" image="queue" id="zkU-wV-WAz"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" barStyle="black" largeTitles="YES" id="ZhO-ez-Rsv">
                         <rect key="frame" x="0.0" y="20" width="375" height="96"/>
@@ -250,6 +250,7 @@
     <resources>
         <image name="download" width="30" height="30"/>
         <image name="movie" width="30" height="30"/>
+        <image name="queue" width="30" height="30"/>
         <image name="search" width="30" height="30"/>
         <image name="settings" width="30" height="30"/>
     </resources>
