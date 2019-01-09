@@ -69,7 +69,7 @@ class SubscriptionFeedAPI {
     private func fetchSubscriptionFeed(forChannel channelID: Channel.ID, publishedBefore: Date?) -> SignalProducer<[(video: Video, publishedAt: Date)], AnyError> {
         let activityFeedRequest = ActivityListRequest(part: [.contentDetails, .snippet],
                                                       filter: .channelID(channelID),
-                                                      maxResults: 20,
+                                                      maxResults: 50,
                                                       publishedBefore: publishedBefore)
 
         return ApiSession.shared.reactive.send(activityFeedRequest).map { response in
