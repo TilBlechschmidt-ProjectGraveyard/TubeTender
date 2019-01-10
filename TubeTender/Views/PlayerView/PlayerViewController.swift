@@ -14,9 +14,9 @@ protocol PlayerViewControllerDelegate: class {
 }
 
 class PlayerViewController: UIViewController {
-    var contentViewController = UIViewController()
-    var playerControlView = PlayerControlView()
-    var videoView = UIView()
+    let contentViewController = UIViewController()
+    let playerControlView = PlayerControlView()
+    let videoView = UIView()
     var mediaDuration: Int32?
 
     weak var delegate: PlayerViewControllerDelegate?
@@ -67,7 +67,7 @@ class PlayerViewController: UIViewController {
 
         // Play button
         playerControlView.playButton.reactive.isPlaying <~ player.status.map { $0 == .playing }
-        playerControlView.playButton.reactive.controlEvents(.touchUpInside).observeValues { _ in
+        playerControlView.playButton.reactive.controlEvents(.touchUpInside).take(duringLifetimeOf: self).observeValues { _ in
             if player.status.value == .playing {
                 player.pause()
             } else {
@@ -82,15 +82,15 @@ class PlayerViewController: UIViewController {
 
         // Duration & Elapsed time
         // TODO Different value when .noMediaLoaded
-        playerControlView.elapsedTime.reactive.text <~ player.currentTime.map { self.stringRepresentation(ofTime: $0) }
-        playerControlView.durationLabel.reactive.text <~ player.duration.map { self.stringRepresentation(ofTime: $0) }
+        playerControlView.elapsedTime.reactive.text <~ player.currentTime.map { PlayerViewController.stringRepresentation(ofTime: $0) }
+        playerControlView.durationLabel.reactive.text <~ player.duration.map { PlayerViewController.stringRepresentation(ofTime: $0) }
 
         // Slider & Progress bar
         playerControlView.progressBar.reactive.progress <~ player.currentTime.map { return Float($0 / player.duration.value) }
-        playerControlView.seekingSlider.reactive.value <~ player.currentTime.signal.observe(on: QueueScheduler.main).filterMap { time in
+        playerControlView.seekingSlider.reactive.value <~ player.currentTime.signal.observe(on: QueueScheduler.main).filterMap { [unowned self] time in
             return self.playerControlView.seekingSlider.isTracking ? nil : Float(time / player.duration.value)
         }
-        playerControlView.seekingSlider.reactive.values.observeValues { player.seek(toPercentage: Double($0)) }
+        playerControlView.seekingSlider.reactive.values.take(duringLifetimeOf: self).observeValues { player.seek(toPercentage: Double($0)) }
 
         // Add controls
         contentView.addSubview(playerControlView)
@@ -102,8 +102,8 @@ class PlayerViewController: UIViewController {
             playerControlView.rightAnchor.constraint(equalTo: videoView.rightAnchor)
         ])
 
-        playerControlView.loadingIndicator.reactive.isAnimating <~ player.status.signal.map { $0 == .buffering }
-        player.pictureInPictureActive.signal.observe(on: QueueScheduler.main).observeValues { pipActive in
+        playerControlView.loadingIndicator.reactive.isAnimating <~ player.status.signal.take(duringLifetimeOf: self).map { $0 == .buffering }
+        player.pictureInPictureActive.signal.observe(on: QueueScheduler.main).take(duringLifetimeOf: self).observeValues { [unowned self] pipActive in
             self.controlsDisabled = pipActive
             if pipActive {
                 self.isFullscreenActive = false
@@ -212,11 +212,11 @@ class PlayerViewController: UIViewController {
         self.refreshControlHideTimer()
     }
 
-    private func stringRepresentation(ofTime time: Int32) -> String {
+    private static func stringRepresentation(ofTime time: Int32) -> String {
         return stringRepresentation(ofTime: Double(time) / 1000)
     }
 
-    private func stringRepresentation(ofTime time: TimeInterval) -> String {
+    private static func stringRepresentation(ofTime time: TimeInterval) -> String {
         let timeInSeconds = Int32(time)
         let (hours, minutes, seconds) = (timeInSeconds / 3600, (timeInSeconds % 3600) / 60, timeInSeconds % 60)
         let output = String(format: "%02d:%02d", minutes, seconds)

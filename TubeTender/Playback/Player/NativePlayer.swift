@@ -59,7 +59,7 @@ extension NativePlayer: Player {
         // array of asset keys to be automatically loaded
         let playerItem = AVPlayerItem(asset: asset)
 
-        playerItem.reactive.signal(forKeyPath: #keyPath(AVPlayerItem.status)).observeValues { media in
+        playerItem.reactive.signal(forKeyPath: #keyPath(AVPlayerItem.status)).observeValues { [unowned self] media in
             self._duration.value = playerItem.duration.seconds
         }
 
@@ -77,7 +77,7 @@ extension NativePlayer: Player {
 
         _status.value = .buffering
 
-        player?.reactive.signal(forKeyPath: #keyPath(AVPlayer.timeControlStatus)).observeValues { _ in
+        player?.reactive.signal(forKeyPath: #keyPath(AVPlayer.timeControlStatus)).observeValues { [unowned self] _ in
             guard let status = self.player?.timeControlStatus else { return }
             switch status {
             case .paused:

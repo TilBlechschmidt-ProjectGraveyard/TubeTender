@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import ReactiveSwift
 
 class VideoViewController: UIViewController {
     private let emptyStateView = EmptyStateView(image: #imageLiteral(resourceName: "camera"), text: "No video selected")
@@ -87,7 +88,7 @@ class VideoViewController: UIViewController {
 
         regularConstraints.forEach { $0.isActive = true }
 
-        PlaybackQueue.default.currentItem.signal.observeValues { video in
+        PlaybackQueue.default.currentItem.signal.take(duringLifetimeOf: self).observeValues { [unowned self] video in
             if let video = video {
                 self.videoDetailViewController.video = video
                 UIView.animate(withDuration: 0.5) {

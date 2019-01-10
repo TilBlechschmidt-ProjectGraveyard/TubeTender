@@ -57,10 +57,10 @@ class SwitchablePlayer: UIView {
         super.init(frame: .zero)
         setupPlayer()
 
-        playbackItem.signal.observeValues { _ in self.reloadVideo(restorePlaybackPosition: false) }
-        preferredQuality.signal.observeValues { _ in self.reloadVideo() }
-        preferHighFPS.signal.observeValues { _ in self.reloadVideo() }
-        preferHDR.signal.observeValues { _ in self.reloadVideo() }
+        playbackItem.signal.observeValues { [unowned self] _ in self.reloadVideo(restorePlaybackPosition: false) }
+        preferredQuality.signal.observeValues { [unowned self] _ in self.reloadVideo() }
+        preferHighFPS.signal.observeValues { [unowned self] _ in self.reloadVideo() }
+        preferHDR.signal.observeValues { [unowned self] _ in self.reloadVideo() }
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -137,7 +137,7 @@ class SwitchablePlayer: UIView {
         pictureInPictureController = AVPictureInPictureController(playerLayer: nativePlayer.playerView.playerLayer)
         pictureInPictureController?.delegate = self
 
-        status.signal.take(while: { $0 != .playing }).observeCompleted {
+        status.signal.take(while: { $0 != .playing }).observeCompleted { [unowned self] in
             self.pictureInPictureController?.startPictureInPicture()
         }
     }

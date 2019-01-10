@@ -34,7 +34,8 @@ class VideoDownloadButtonViewController: UIViewController {
             let signalVideoID = video.id
             newValue
                 .take(while: { _ in signalVideoID == self.video.id })
-                .observeResult { result in
+                .take(duringLifetimeOf: self)
+                .observeResult { [unowned self] result in
                     switch result {
                     case .success(let progress):
                         DispatchQueue.main.async {
