@@ -29,6 +29,7 @@ class AVPlayerView: UIView {
     }
 }
 
+// TODO Implement the handling of .playbackFinished
 class NativePlayer: NSObject {
     private var _currentTime: MutableProperty<TimeInterval> = MutableProperty(0)
     private var _duration: MutableProperty<TimeInterval> = MutableProperty(0)

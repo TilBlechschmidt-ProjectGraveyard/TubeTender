@@ -133,6 +133,10 @@ class SwitchablePlayer: UIView {
         player.seek(to: max(min(target, duration.value - 5), 0))
     }
 
+    func seek(to target: TimeInterval) {
+        player.seek(to: target)
+    }
+
     func startPictureInPicture() {
         _pictureInPictureActive.value = true
 

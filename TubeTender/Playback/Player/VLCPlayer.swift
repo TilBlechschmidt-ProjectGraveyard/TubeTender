@@ -96,7 +96,7 @@ extension VLCPlayer: VLCMediaPlayerDelegate {
         switch(currentState) {
         case .ended:
             // TODO: The video feed ends a few seconds short. Figure out why
-            _status.value = .noMediaLoaded
+            _status.value = .playbackFinished
         case .stopped:
             _status.value = .noMediaLoaded
         case .paused:

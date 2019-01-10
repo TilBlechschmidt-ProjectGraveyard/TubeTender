@@ -191,6 +191,7 @@ class PlayerViewController: UIViewController {
     }
 
     @objc func viewDoubleTapped(_ sender: UITapGestureRecognizer) {
+        self.refreshControlHideTimer()
         // TODO Implement exponential growth after a few steps
         // TODO Add animation to indicate seeking visually
         let tapPoint = sender.location(in: self.view)
