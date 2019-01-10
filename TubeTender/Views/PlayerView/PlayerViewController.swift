@@ -38,12 +38,7 @@ class PlayerViewController: UIViewController {
 
         let contentView = contentViewController.view!
 
-        contentView.backgroundColor = UIColor(red: 0.07, green: 0.07, blue: 0.07, alpha: 1)
-
-        // TODO Add the logo in the center of the video
-
-//        playbackManager.drawable = videoView
-//        playbackManager.delegate = self
+        contentView.backgroundColor = UIColor.black
 
         // Add video view
         videoView.removeFromSuperview()
@@ -64,6 +59,12 @@ class PlayerViewController: UIViewController {
         }
 
         let player = SwitchablePlayer.shared
+
+        player.status.combinePrevious(.noMediaLoaded).signal.observeValues { previous, current in
+            if previous != .playing && current == .playing {
+                self.refreshControlHideTimer()
+            }
+        }
 
         // Play button
         playerControlView.playButton.reactive.isPlaying <~ player.status.map { $0 == .playing }
@@ -127,6 +128,10 @@ class PlayerViewController: UIViewController {
 
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.viewTapped))
         playerControlView.addGestureRecognizer(tapGestureRecognizer)
+        let doubleTapGesture = UITapGestureRecognizer(target: self, action: #selector(self.viewDoubleTapped(_:)))
+        doubleTapGesture.numberOfTapsRequired = 2
+        tapGestureRecognizer.require(toFail: doubleTapGesture)
+        playerControlView.addGestureRecognizer(doubleTapGesture)
 
         let pinchGestureRecognizer = UIPinchGestureRecognizer(target: self, action: #selector(self.viewPinched))
         playerControlView.addGestureRecognizer(pinchGestureRecognizer)
@@ -182,6 +187,18 @@ class PlayerViewController: UIViewController {
         controlsVisible = !controlsVisible && !controlsDisabled
         if controlsVisible {
             refreshControlHideTimer()
+        }
+    }
+
+    @objc func viewDoubleTapped(_ sender: UITapGestureRecognizer) {
+        self.refreshControlHideTimer()
+        // TODO Implement exponential growth after a few steps
+        // TODO Add animation to indicate seeking visually
+        let tapPoint = sender.location(in: self.view)
+        if tapPoint.x > self.view.bounds.width / 2 {
+            SwitchablePlayer.shared.seek(by: 10)
+        } else {
+            SwitchablePlayer.shared.seek(by: -10)
         }
     }
 

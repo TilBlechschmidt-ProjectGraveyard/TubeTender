@@ -10,9 +10,7 @@ import UIKit
 import DownloadButton
 
 class VideoMetadataView: UIView {
-    let uiPadding: CGFloat = 15.0
-    let channelIconSize: CGFloat = 35.0
-    let borderColor = UIColor(red: 0.3, green: 0.3, blue: 0.3, alpha: 1)
+    let channelIconSize: CGFloat = Constants.smallChannelIconSize
 
     private let metaScrollView = UIScrollView()
     private let metaView = UIView()
@@ -48,7 +46,7 @@ class VideoMetadataView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
 
-        backgroundColor = UIColor(red: 0.141, green: 0.141, blue: 0.141, alpha: 1)
+        backgroundColor = Constants.backgroundColor.darker
 
         setupMetaScrollView()
 
@@ -102,8 +100,8 @@ class VideoMetadataView: UIView {
         detailView.addSubview(videoTitle)
         videoTitle.translatesAutoresizingMaskIntoConstraints = false
         detailView.addConstraints([
-            videoTitle.topAnchor.constraint(equalTo: detailView.topAnchor, constant: uiPadding),
-            videoTitle.leftAnchor.constraint(equalTo: detailView.leftAnchor, constant: uiPadding)
+            videoTitle.topAnchor.constraint(equalTo: detailView.topAnchor, constant: Constants.uiPadding),
+            videoTitle.leftAnchor.constraint(equalTo: detailView.leftAnchor, constant: Constants.uiPadding)
         ])
 
         viewCount.font = viewCount.font.withSize(11)
@@ -111,19 +109,19 @@ class VideoMetadataView: UIView {
         detailView.addSubview(viewCount)
         viewCount.translatesAutoresizingMaskIntoConstraints = false
         detailView.addConstraints([
-            viewCount.topAnchor.constraint(equalTo: videoTitle.bottomAnchor, constant: uiPadding / 2),
+            viewCount.topAnchor.constraint(equalTo: videoTitle.bottomAnchor, constant: Constants.uiPadding / 2),
             viewCount.leftAnchor.constraint(equalTo: videoTitle.leftAnchor),
             viewCount.rightAnchor.constraint(equalTo: videoTitle.rightAnchor),
-            viewCount.bottomAnchor.constraint(equalTo: detailView.bottomAnchor, constant: -uiPadding),
+            viewCount.bottomAnchor.constraint(equalTo: detailView.bottomAnchor, constant: -Constants.uiPadding),
         ])
 
         detailButtonView.translatesAutoresizingMaskIntoConstraints = false
         detailView.addSubview(detailButtonView)
         detailView.addConstraints([
-            detailButtonView.topAnchor.constraint(equalTo: detailView.topAnchor, constant: uiPadding),
-            detailButtonView.leftAnchor.constraint(equalTo: videoTitle.rightAnchor, constant: uiPadding),
-            detailButtonView.rightAnchor.constraint(equalTo: detailView.rightAnchor, constant: -uiPadding),
-            detailButtonView.bottomAnchor.constraint(equalTo: detailView.bottomAnchor, constant: -uiPadding)
+            detailButtonView.topAnchor.constraint(equalTo: detailView.topAnchor, constant: Constants.uiPadding),
+            detailButtonView.leftAnchor.constraint(equalTo: videoTitle.rightAnchor, constant: Constants.uiPadding),
+            detailButtonView.rightAnchor.constraint(equalTo: detailView.rightAnchor, constant: -Constants.uiPadding),
+            detailButtonView.bottomAnchor.constraint(equalTo: detailView.bottomAnchor, constant: -Constants.uiPadding)
         ])
     }
 
@@ -138,7 +136,7 @@ class VideoMetadataView: UIView {
         ])
 
         let topBorder = UIView()
-        topBorder.backgroundColor = borderColor
+        topBorder.backgroundColor = Constants.borderColor
         topBorder.translatesAutoresizingMaskIntoConstraints = false
         channelView.addSubview(topBorder)
         channelView.addConstraints([
@@ -148,7 +146,7 @@ class VideoMetadataView: UIView {
         ])
 
         let bottomBorder = UIView()
-        bottomBorder.backgroundColor = borderColor
+        bottomBorder.backgroundColor = Constants.borderColor
         bottomBorder.translatesAutoresizingMaskIntoConstraints = false
         channelView.addSubview(bottomBorder)
         channelView.addConstraints([
@@ -168,9 +166,9 @@ class VideoMetadataView: UIView {
         channelView.addConstraints([
             channelThumbnail.widthAnchor.constraint(equalToConstant: channelIconSize),
             channelThumbnail.heightAnchor.constraint(equalToConstant: channelIconSize),
-            channelThumbnail.topAnchor.constraint(equalTo: channelView.topAnchor, constant: uiPadding),
-            channelThumbnail.leftAnchor.constraint(equalTo: channelView.leftAnchor, constant: uiPadding),
-            channelThumbnail.bottomAnchor.constraint(equalTo: channelView.bottomAnchor, constant: -uiPadding)
+            channelThumbnail.topAnchor.constraint(equalTo: channelView.topAnchor, constant: Constants.uiPadding),
+            channelThumbnail.leftAnchor.constraint(equalTo: channelView.leftAnchor, constant: Constants.uiPadding),
+            channelThumbnail.bottomAnchor.constraint(equalTo: channelView.bottomAnchor, constant: -Constants.uiPadding)
         ])
 
         let channelDetailLabelView = UIView()
@@ -178,8 +176,8 @@ class VideoMetadataView: UIView {
         channelDetailLabelView.translatesAutoresizingMaskIntoConstraints = false
         channelView.addSubview(channelDetailLabelView)
         channelView.addConstraints([
-            channelDetailLabelView.leftAnchor.constraint(equalTo: channelThumbnail.rightAnchor, constant: uiPadding),
-            channelDetailLabelView.rightAnchor.constraint(equalTo: channelView.rightAnchor, constant: -uiPadding),
+            channelDetailLabelView.leftAnchor.constraint(equalTo: channelThumbnail.rightAnchor, constant: Constants.uiPadding),
+            channelDetailLabelView.rightAnchor.constraint(equalTo: channelView.rightAnchor, constant: -Constants.uiPadding),
             channelDetailLabelView.centerYAnchor.constraint(equalTo: channelThumbnail.centerYAnchor)
         ])
 
@@ -205,7 +203,7 @@ class VideoMetadataView: UIView {
             channelSubscriberCount.leftAnchor.constraint(equalTo: channelDetailLabelView.leftAnchor),
             channelSubscriberCount.rightAnchor.constraint(equalTo: channelDetailLabelView.rightAnchor),
             channelSubscriberCount.bottomAnchor.constraint(equalTo: channelDetailLabelView.bottomAnchor),
-            channelSubscriberCount.topAnchor.constraint(equalTo: channelTitle.bottomAnchor, constant: uiPadding / 4)
+            channelSubscriberCount.topAnchor.constraint(equalTo: channelTitle.bottomAnchor, constant: Constants.uiPadding / 4)
         ])
     }
 
@@ -229,10 +227,10 @@ class VideoMetadataView: UIView {
         videoDescriptionView.translatesAutoresizingMaskIntoConstraints = false
         descriptionView.addSubview(videoDescriptionView)
         descriptionView.addConstraints([
-            videoDescriptionView.topAnchor.constraint(equalTo: descriptionView.topAnchor, constant: uiPadding),
-            videoDescriptionView.leftAnchor.constraint(equalTo: descriptionView.leftAnchor, constant: uiPadding),
-            videoDescriptionView.rightAnchor.constraint(equalTo: descriptionView.rightAnchor, constant: -uiPadding),
-            videoDescriptionView.bottomAnchor.constraint(equalTo: descriptionView.bottomAnchor, constant: -uiPadding)
+            videoDescriptionView.topAnchor.constraint(equalTo: descriptionView.topAnchor, constant: Constants.uiPadding),
+            videoDescriptionView.leftAnchor.constraint(equalTo: descriptionView.leftAnchor, constant: Constants.uiPadding),
+            videoDescriptionView.rightAnchor.constraint(equalTo: descriptionView.rightAnchor, constant: -Constants.uiPadding),
+            videoDescriptionView.bottomAnchor.constraint(equalTo: descriptionView.bottomAnchor, constant: -Constants.uiPadding)
         ])
     }
 }

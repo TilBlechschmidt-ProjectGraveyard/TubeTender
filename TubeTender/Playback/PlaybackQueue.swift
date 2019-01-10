@@ -8,14 +8,28 @@
 
 import UIKit
 import ReactiveSwift
+import Result
+import MediaPlayer
+
+enum PlaybackQueueChangeSet {
+    case inserted(atIndex: Int)
+    case removed(atIndex: Int)
+    case moved(fromIndex: Int, toIndex: Int)
+}
 
 class PlaybackQueue {
-    static let `default` = PlaybackQueue(player: SwitchablePlayer.shared)
+    static let `default` = PlaybackQueue(player: SwitchablePlayer.shared, commandCenter: CommandCenter.shared)
 
     let player: SwitchablePlayer
+    let commandCenter: CommandCenter
 
-    private let videos: MutableProperty<[Video]>
-    private let currentIndex = MutableProperty<Int?>(nil)
+    private let _videos: MutableProperty<[Video]>
+    private let _currentIndex = MutableProperty<Int?>(nil)
+    private var changeSetObserver: Signal<PlaybackQueueChangeSet, NoError>.Observer!
+
+    let videos: Property<[Video]>
+    let currentIndex: Property<Int?>
+    private(set) var changeSetSignal: Signal<PlaybackQueueChangeSet, NoError>!
 
     // Queue: Latest item will be played next
     let queue: Property<ArraySlice<Video>>
@@ -23,15 +37,44 @@ class PlaybackQueue {
     // History: Latest item has been played most recently
     let history: Property<ArraySlice<Video>>
 
-    init(player: SwitchablePlayer) {
+    init(player: SwitchablePlayer, commandCenter: CommandCenter) {
         self.player = player
+        self.commandCenter = commandCenter
 
         let videos = MutableProperty<[Video]>([])
-        self.videos = videos
+        self._videos = videos
+        self.videos = Property(videos)
+        self.currentIndex = Property(_currentIndex)
 
         self.currentItem = Property(currentIndex.map { $0.map({ videos.value[$0] }) })
         self.queue = Property(currentIndex.map { videos.value[(($0 + 1) ?? videos.value.count)...] })
         self.history = Property(currentIndex.map { videos.value[..<($0 ?? videos.value.count)] })
+
+        self.changeSetSignal = Signal { observer, lifetime in
+            self.changeSetObserver = observer
+        }
+
+        // TODO Don't bind the elapsed time but instead just set it when the status changes.
+        commandCenter.elapsedTime <~ self.player.currentTime
+        commandCenter.duration <~ self.player.duration
+
+        commandCenter.hasNext <~ self.currentIndex.map { index in
+            return index.flatMap({ $0 < videos.value.count - 1  }) ?? false
+        }
+        commandCenter.hasPrevious <~ self.currentIndex.map { index in
+            return index.flatMap({ $0 > 0 && videos.value.count > 0 }) ?? (videos.value.count > 0)
+        }
+
+        commandCenter.delegate = self
+
+        player.status.signal.observeValues { status in
+            if status == .playbackFinished {
+                print("playing next video in 2 seconds")
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                    self.next()
+                }
+            }
+        }
     }
 
     func changeIndex(by delta: Int) {
@@ -40,13 +83,16 @@ class PlaybackQueue {
         newIndex += delta
 
         if newIndex >= videos.value.count || newIndex < 0 {
-            currentIndex.value = nil
+            _currentIndex.value = nil
         } else {
-            currentIndex.value = newIndex
+            _currentIndex.value = newIndex
         }
 
         if player.playbackItem.value != currentItem.value {
             player.playbackItem.value = currentItem.value
+            if let video = currentItem.value {
+                commandCenter.load(video: video)
+            }
         }
     }
 
@@ -55,7 +101,7 @@ class PlaybackQueue {
     }
 
     func previous() {
-        changeIndex(by: -1)
+        changeIndex(by: currentIndex.value == nil ? 0 : -1)
     }
 
     func playNow(_ video: Video) {
@@ -65,13 +111,35 @@ class PlaybackQueue {
     }
 
     func playNext(_ video: Video) {
-        videos.value.insert(video, at: (currentIndex.value + 1) ?? videos.value.count)
+        let insertionIndex = (currentIndex.value + 1) ?? videos.value.count
+        _videos.value.insert(video, at: insertionIndex)
+        changeSetObserver.send(value: PlaybackQueueChangeSet.inserted(atIndex: insertionIndex))
         changeIndex(by: 0)
     }
 
     func playLater(_ video: Video) {
-        videos.value.append(video)
+        _videos.value.append(video)
+        changeSetObserver.send(value: PlaybackQueueChangeSet.inserted(atIndex: videos.value.count - 1))
         changeIndex(by: 0)
+    }
+}
+
+extension PlaybackQueue: CommandCenterDelegate {
+    func commandCenter(_ commandCenter: CommandCenter, didReceiveCommand command: CommandCenterAction) -> MPRemoteCommandHandlerStatus {
+        switch command {
+        case .play:
+            self.player.play()
+        case .pause:
+            self.player.pause()
+        case .seek(let target):
+            self.player.seek(to: target)
+        case .next:
+            self.next()
+        case .previous:
+            self.previous()
+        }
+
+        return .success
     }
 }
 

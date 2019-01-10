@@ -79,6 +79,7 @@
 		30BAB7782178C96C00B01953 /* Kingfisher.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 30BAB7762178C96300B01953 /* Kingfisher.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		30BAB77A2178CDFF00B01953 /* Date+Since.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30BAB7792178CDFF00B01953 /* Date+Since.swift */; };
 		30BE79BB216FF73F00E6B281 /* AnimatablePlayButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30BE79BA216FF73F00E6B281 /* AnimatablePlayButton.swift */; };
+		30D0490A21E754EE0077E80C /* CommandCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30D0490921E754EE0077E80C /* CommandCenter.swift */; };
 		30D91B70218F6C810020C814 /* ReactiveSwift.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 30D91B6E218F6C810020C814 /* ReactiveSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		30D91B71218F6C810020C814 /* Result.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 30D91B6F218F6C810020C814 /* Result.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		30D91B72218F6CB40020C814 /* ReactiveSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 30D91B6E218F6C810020C814 /* ReactiveSwift.framework */; };
@@ -199,6 +200,7 @@
 		30BAB7762178C96300B01953 /* Kingfisher.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Kingfisher.framework; path = Carthage/Build/iOS/Kingfisher.framework; sourceTree = "<group>"; };
 		30BAB7792178CDFF00B01953 /* Date+Since.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Since.swift"; sourceTree = "<group>"; };
 		30BE79BA216FF73F00E6B281 /* AnimatablePlayButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatablePlayButton.swift; sourceTree = "<group>"; };
+		30D0490921E754EE0077E80C /* CommandCenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandCenter.swift; sourceTree = "<group>"; };
 		30D91B6E218F6C810020C814 /* ReactiveSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReactiveSwift.framework; path = Carthage/Build/iOS/ReactiveSwift.framework; sourceTree = "<group>"; };
 		30D91B6F218F6C810020C814 /* Result.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Result.framework; path = Carthage/Build/iOS/Result.framework; sourceTree = "<group>"; };
 		30DA13E621E3C593000B2638 /* SignalProducer+Cache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SignalProducer+Cache.swift"; sourceTree = "<group>"; };
@@ -393,6 +395,7 @@
 			isa = PBXGroup;
 			children = (
 				30B03AC321E68E6D007B3E38 /* PlaybackQueue.swift */,
+				30D0490921E754EE0077E80C /* CommandCenter.swift */,
 				3034ACC821E54854000F06A9 /* SwitchablePlayer.swift */,
 				3067714F21DA32B0009AA051 /* Player */,
 			);
@@ -652,6 +655,7 @@
 				3034ACC921E54854000F06A9 /* SwitchablePlayer.swift in Sources */,
 				30B03AC421E68E6D007B3E38 /* PlaybackQueue.swift in Sources */,
 				30A81A3E21D53E9500FBE8EE /* VideoMetadataView.swift in Sources */,
+				30D0490A21E754EE0077E80C /* CommandCenter.swift in Sources */,
 				300F296721D59F2900C9B0B0 /* Video.swift in Sources */,
 				4021445121E6AE1D00AAC670 /* QueueListViewController.swift in Sources */,
 				40822CBB21E4FE8700903390 /* UIView+Blur.swift in Sources */,

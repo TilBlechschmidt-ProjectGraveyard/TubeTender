@@ -20,7 +20,7 @@ class VideoViewController: UIViewController {
 
     override func viewDidLoad() {
 
-        view.backgroundColor = UIColor(red: 0.141, green: 0.141, blue: 0.141, alpha: 1)
+        view.backgroundColor = Constants.backgroundColor
 
         // PlayerViewController setup
         playerViewController.delegate = self
@@ -35,7 +35,7 @@ class VideoViewController: UIViewController {
 
         // Video view setup
         videoView.alpha = 0
-        videoView.backgroundColor = UIColor(red: 0.141, green: 0.141, blue: 0.141, alpha: 1)
+        videoView.backgroundColor = Constants.backgroundColor
         view.addSubview(videoView)
         videoView.translatesAutoresizingMaskIntoConstraints = false
         view.addConstraints([

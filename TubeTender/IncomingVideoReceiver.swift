@@ -49,7 +49,7 @@ class IncomingVideoReceiver: NSObject {
     public func handle(video: Video, source: VideoSource) {
         DispatchQueue.main.async {
             let alertControl = UIAlertController(
-                title: "Loading",
+                title: "Loading\n...\n...",
                 message: nil,
                 preferredStyle: source.isNone ? .alert : .actionSheet)
 
