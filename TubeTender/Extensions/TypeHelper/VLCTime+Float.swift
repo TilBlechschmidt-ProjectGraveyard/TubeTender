@@ -8,6 +8,6 @@
 
 import Foundation
 
-func *(lhs: VLCTime, rhs: Float) -> VLCTime {
-    return VLCTime(int: Int32(Float(lhs.intValue) * rhs))
-}
+//func *(lhs: VLCTime, rhs: Float) -> VLCTime {
+//    return VLCTime(int: Int32(Float(lhs.intValue) * rhs))
+//}
