@@ -86,9 +86,13 @@ internal final class FetchedResultsControllerDelegate: NSObject, NSFetchedResult
             
             return
         }
-        
-        self.deletedSections = []
-        self.insertedSections = []
+
+        if #available(iOS 10.3, tvOS 10.3, watchOS 3.2, macOS 10.13, *) {}
+        else {
+
+            self.deletedSections = []
+            self.insertedSections = []
+        }
         
         self.handler?.controllerWillChangeContent(controller)
     }
@@ -115,6 +119,18 @@ internal final class FetchedResultsControllerDelegate: NSObject, NSFetchedResult
             
             return
         }
+
+        if #available(iOS 10.3, tvOS 10.3, watchOS 3.2, macOS 10.13, *) {
+
+            self.handler?.controller(
+                controller,
+                didChangeObject: anObject,
+                atIndexPath: indexPath,
+                forChangeType: type,
+                newIndexPath: newIndexPath
+            )
+            return
+        }
         
         guard var actualType = NSFetchedResultsChangeType(rawValue: type.rawValue) else {
             
@@ -129,15 +145,11 @@ internal final class FetchedResultsControllerDelegate: NSObject, NSFetchedResult
         // https://forums.developer.apple.com/message/9998#9998
         // https://forums.developer.apple.com/message/31849#31849
 
-        if #available(iOS 10.0, tvOS 10.0, watchOS 3.0, *) {
-         
-            // I don't know if iOS 10 even attempted to fix this mess...
-            if case .update = actualType,
-                indexPath != nil,
-                newIndexPath != nil {
-                
-                actualType = .move
-            }
+        if case .update = actualType,
+            indexPath != nil,
+            newIndexPath != nil {
+
+            actualType = .move
         }
         
         switch actualType {
@@ -185,10 +197,6 @@ internal final class FetchedResultsControllerDelegate: NSObject, NSFetchedResult
                 )
                 return
             }
-            guard #available(iOS 9.0, tvOS 9.0, watchOS 3.0, *) else {
-                
-                return
-            }
             self.handler?.controller(
                 controller,
                 didChangeObject: anObject,
@@ -218,14 +226,18 @@ internal final class FetchedResultsControllerDelegate: NSObject, NSFetchedResult
             
             return
         }
-        
-        switch type {
-            
-        case .delete:   self.deletedSections.insert(sectionIndex)
-        case .insert:   self.insertedSections.insert(sectionIndex)
-        default: break
+
+        if #available(iOS 10.3, tvOS 10.3, watchOS 3.2, macOS 10.13, *) {}
+        else {
+
+            switch type {
+
+            case .delete:   self.deletedSections.insert(sectionIndex)
+            case .insert:   self.insertedSections.insert(sectionIndex)
+            default: break
+            }
         }
-        
+    
         self.handler?.controller(
             controller,
             didChangeSection: sectionInfo,

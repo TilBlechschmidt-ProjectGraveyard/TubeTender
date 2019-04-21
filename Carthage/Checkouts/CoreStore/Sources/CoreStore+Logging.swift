@@ -28,7 +28,7 @@ import Foundation
 
 // MARK: - CoreStore
 
-public extension CoreStore {
+extension CoreStore {
     
     /**
     The `CoreStoreLogger` instance to be used. The default logger is an instance of a `DefaultLogger`.
@@ -66,8 +66,8 @@ public extension CoreStore {
     internal static func assert( _ condition: @autoclosure () -> Bool, _ message: @autoclosure () -> String, fileName: StaticString = #file, lineNumber: Int = #line, functionName: StaticString = #function) {
         
         self.logger.assert(
-            condition,
-            message: message,
+            condition(),
+            message: message(),
             fileName: fileName,
             lineNumber: lineNumber,
             functionName: functionName

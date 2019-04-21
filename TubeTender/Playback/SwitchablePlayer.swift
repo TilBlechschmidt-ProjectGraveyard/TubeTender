@@ -15,7 +15,7 @@ class SwitchablePlayer: UIView {
 
     private var previousPlaybackPosition: TimeInterval?
     private var previouslyPlaying: Bool?
-    private var player: Player {
+    private var player: NativePlayer { //Player {
         willSet {
             previousPlaybackPosition = currentTime.value
             previouslyPlaying = status.value == .playing
@@ -31,36 +31,40 @@ class SwitchablePlayer: UIView {
         }
     }
 
-    var pictureInPictureController: AVPictureInPictureController?
+    private var pictureInPictureController: AVPictureInPictureController?
 
     let playbackItem = MutableProperty<Video?>(nil)
-    let preferredQuality = MutableProperty<StreamQuality>(.hd1080)
-    let preferHighFPS = MutableProperty(true)
-    let preferHDR = MutableProperty(false)
 
     private let _currentTime = MutableProperty<TimeInterval>(0)
     private let _duration = MutableProperty<TimeInterval>(0)
     private let _status = MutableProperty<PlayerStatus>(.noMediaLoaded)
     private let _pictureInPictureActive = MutableProperty(false)
+    private let _currentQuality = MutableProperty<StreamQuality?>(nil)
 
     let currentTime: Property<TimeInterval>
     let duration: Property<TimeInterval>
     let status: Property<PlayerStatus>
     let pictureInPictureActive: Property<Bool>
+    let currentQuality: Property<StreamQuality?>
+    let preferredQuality = MutableProperty<StreamQuality?>(nil)
 
-    init(withPlayer player: Player = VLCPlayer()) {
+    init(withPlayer player: NativePlayer = NativePlayer()) {
         self.player = player
         self.currentTime = Property(_currentTime)
         self.duration = Property(_duration)
         self.status = Property(_status)
         self.pictureInPictureActive = Property(_pictureInPictureActive)
+        self.currentQuality = Property(_currentQuality)
         super.init(frame: .zero)
         setupPlayer()
 
         playbackItem.signal.observeValues { [unowned self] _ in self.reloadVideo(restorePlaybackPosition: false) }
-        preferredQuality.signal.observeValues { [unowned self] _ in self.reloadVideo() }
-        preferHighFPS.signal.observeValues { [unowned self] _ in self.reloadVideo() }
-        preferHDR.signal.observeValues { [unowned self] _ in self.reloadVideo() }
+
+        Settings.subscribe(setting: .DefaultQuality, onChange: { [unowned self] _ in self.reloadVideo() })
+        Settings.subscribe(setting: .MobileQuality, onChange: { [unowned self] _ in self.reloadVideo() })
+
+        pictureInPictureController = AVPictureInPictureController(playerLayer: player.playerView.playerLayer)
+        pictureInPictureController?.delegate = self
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -78,37 +82,38 @@ class SwitchablePlayer: UIView {
         reloadVideo()
 
         _currentTime <~ player.currentTime
-        _duration <~ player.duration
         _status <~ player.status
+        _currentQuality <~ player.currentQuality
+
+        player.preferredQuality <~ preferredQuality
     }
+
+    var videoBinding: Disposable?
 
     private func reloadVideo(restorePlaybackPosition: Bool = true) {
         if let video = playbackItem.value {
-            let wasPreviouslyPlaying = previouslyPlaying ?? (status.value == .playing)
-            let previousPosition = previousPlaybackPosition ?? currentTime.value
-            player.stop()
 
-            // TODO Replace take1 with disposing of the previous producer when this function gets called
-            // That combined with a auto-refreshing cache could circumvent the lifetime of the streams (e.g. app in bg)
-            video.stream(withPreferredQuality: preferredQuality.value,
-                         adaptive: player.featureSet.contains(.adaptiveStreaming),
-                         preferHighFPS: self.preferHighFPS.value && player.featureSet.contains(.highFps),
-                         preferHDR: self.preferHDR.value && player.featureSet.contains(.hdr)
-            ).take(first: 1).observe(on: QueueScheduler.main).startWithValues { stream in
-                if let videoStream = URL(string: stream.video.url) {
-                    self.player.load(url: videoStream)
-                }
-                if let audioStream = (stream.audio?.url).flatMap({ URL(string: $0) }) {
-                    self.player.loadAudio(url: audioStream)
-                }
+            videoBinding?.dispose()
+            videoBinding = _duration <~ video.duration.filterMap { $0.value }
 
-                if wasPreviouslyPlaying || !restorePlaybackPosition {
-                    self.player.play()
-                }
-                if restorePlaybackPosition {
-                    self.player.seek(to: previousPosition)
+            let previouslyPlaying = status.value == .playing || status.value == .noMediaLoaded
+
+            if let url = URL(string: "http://localhost:\(Constants.hlsServerPort)/\(video.id).m3u8") {
+                self.player.load(url: url)
+            }
+
+            // Autostart playback once the media has loaded
+            if previouslyPlaying {
+                self.status.signal.filter({ $0 == .readyToPlay }).take(first: 1).observeCompleted {
+                    if self.status.value != .playing {
+                        DispatchQueue.global().async {
+                            self.player.play()
+                        }
+                    }
                 }
             }
+
+            // TODO Restore playback position
         } else {
             player.stop()
         }
@@ -138,27 +143,20 @@ class SwitchablePlayer: UIView {
     }
 
     func startPictureInPicture() {
-        _pictureInPictureActive.value = true
-
-        let nativePlayer = NativePlayer()
-        player = nativePlayer
-
-        pictureInPictureController = AVPictureInPictureController(playerLayer: nativePlayer.playerView.playerLayer)
-        pictureInPictureController?.delegate = self
-
-        status.signal.take(while: { $0 != .playing }).observeCompleted { [unowned self] in
-            self.pictureInPictureController?.startPictureInPicture()
-        }
+        pictureInPictureController?.startPictureInPicture()
     }
 
     func stopPictureInPicture() {
-        _pictureInPictureActive.value = false
-        player = VLCPlayer()
+        pictureInPictureController?.stopPictureInPicture()
     }
 }
 
 extension SwitchablePlayer: AVPictureInPictureControllerDelegate {
+    func pictureInPictureControllerWillStartPictureInPicture(_ pictureInPictureController: AVPictureInPictureController) {
+        _pictureInPictureActive.value = true
+    }
+
     func pictureInPictureControllerDidStopPictureInPicture(_ pictureInPictureController: AVPictureInPictureController) {
-        self.stopPictureInPicture()
+        _pictureInPictureActive.value = false
     }
 }

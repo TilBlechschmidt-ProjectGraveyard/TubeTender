@@ -137,6 +137,10 @@ extension CoreStoreError: CustomDebugStringConvertible, CoreStoreDebugStringConv
         case .progressiveMigrationRequired(let localStoreURL):
             firstLine = ".progressiveMigrationRequired"
             info.append(("localStoreURL", localStoreURL))
+
+        case .asynchronousMigrationRequired(let localStoreURL):
+            firstLine = ".asynchronousMigrationRequired"
+            info.append(("localStoreURL", localStoreURL))
             
         case .internalError(let NSError):
             firstLine = ".internalError"
@@ -148,11 +152,39 @@ extension CoreStoreError: CustomDebugStringConvertible, CoreStoreDebugStringConv
             
         case .userCancelled:
             firstLine = ".userCancelled"
+
+        case .persistentStoreNotFound(let entity):
+            firstLine = ".persistentStoreNotFound"
+            info.append(("entity", entity))
         }
         
         return createFormattedString(
             "\(firstLine) (", ")",
             info
+        )
+    }
+}
+
+
+// MARK: - CoreStoreObject
+
+extension CoreStoreObject: CustomDebugStringConvertible, CoreStoreDebugStringConvertible {
+    
+    // MARK: CustomDebugStringConvertible
+    
+    public var debugDescription: String {
+        
+        return formattedDebugDescription(self)
+    }
+    
+    
+    // MARK: CoreStoreDebugStringConvertible
+    
+    public var coreStoreDumpString: String {
+        
+        return createFormattedString(
+            "(", ")",
+            ("rawObject", self.rawObject as Any)
         )
     }
 }
@@ -292,37 +324,6 @@ extension GroupBy: CustomDebugStringConvertible, CoreStoreDebugStringConvertible
 }
 
 
-#if os(iOS) || os(macOS)
-
-// MARK: - ICloudStore
-
-extension ICloudStore: CustomDebugStringConvertible, CoreStoreDebugStringConvertible {
-    
-    // MARK: CustomDebugStringConvertible
-    
-    public var debugDescription: String {
-        
-        return formattedDebugDescription(self)
-    }
-    
-    
-    // MARK: CoreStoreDebugStringConvertible
-    
-    public var coreStoreDumpString: String {
-        
-        return createFormattedString(
-            "(", ")",
-            ("configuration", self.configuration as Any),
-            ("storeOptions", self.storeOptions as Any),
-            ("cacheFileURL", self.cacheFileURL),
-            ("cloudStorageOptions", self.cloudStorageOptions)
-        )
-    }
-}
-    
-#endif
-
-
 // MARK: - InMemoryStore
 
 extension InMemoryStore: CustomDebugStringConvertible, CoreStoreDebugStringConvertible {
@@ -402,9 +403,16 @@ extension UnsafeDataModelSchema: CustomDebugStringConvertible, CoreStoreDebugStr
 // MARK: - ListMonitor
 
 @available(macOS 10.12, *)
-private struct CoreStoreFetchedSectionInfoWrapper: CoreStoreDebugStringConvertible {
+fileprivate struct CoreStoreFetchedSectionInfoWrapper: CoreStoreDebugStringConvertible {
     
-    let sectionInfo: NSFetchedResultsSectionInfo
+    // MARK: CustomDebugStringConvertible
+    
+    var debugDescription: String {
+        
+        return formattedDebugDescription(self)
+    }
+    
+    // MARK: CoreStoreDebugStringConvertible
     
     var coreStoreDumpString: String {
         
@@ -414,6 +422,10 @@ private struct CoreStoreFetchedSectionInfoWrapper: CoreStoreDebugStringConvertib
             ("indexTitle", self.sectionInfo.indexTitle as Any)
         )
     }
+    
+    // MARK: FilePrivate
+    
+    let sectionInfo: NSFetchedResultsSectionInfo
 }
 
 @available(macOS 10.12, *)
@@ -545,41 +557,7 @@ extension MigrationChain: CustomDebugStringConvertible, CoreStoreDebugStringConv
 
 // MARK: - MigrationType
 
-extension MigrationResult: CustomDebugStringConvertible, CoreStoreDebugStringConvertible {
-    
-    // MARK: CustomDebugStringConvertible
-    
-    public var debugDescription: String {
-        
-        return formattedDebugDescription(self)
-    }
-    
-    
-    // MARK: CoreStoreDebugStringConvertible
-    
-    public var coreStoreDumpString: String {
-        
-        switch self {
-            
-        case .success(let migrationTypes):
-            return createFormattedString(
-                ".success (", ")",
-                ("migrationTypes", migrationTypes)
-            )
-            
-        case .failure(let error):
-            return createFormattedString(
-                ".failure (", ")",
-                ("error", error)
-            )
-        }
-    }
-}
-
-
-// MARK: - MigrationType
-
-extension MigrationType: CustomDebugStringConvertible, CoreStoreDebugStringConvertible {
+extension MigrationType: CoreStoreDebugStringConvertible {
     
     // MARK: CustomDebugStringConvertible
     
@@ -658,10 +636,9 @@ extension OrderBy: CustomDebugStringConvertible, CoreStoreDebugStringConvertible
 }
 
 
-// MARK: - SaveResult
+// MARK: - PartialObject
 
-@available(*, deprecated, message: "Use the new DataStack.perform(asynchronous:...) and DataStack.perform(synchronous:...) family of APIs")
-extension SaveResult: CustomDebugStringConvertible, CoreStoreDebugStringConvertible {
+extension PartialObject: CustomDebugStringConvertible, CoreStoreDebugStringConvertible {
     
     // MARK: CustomDebugStringConvertible
     
@@ -675,20 +652,10 @@ extension SaveResult: CustomDebugStringConvertible, CoreStoreDebugStringConverti
     
     public var coreStoreDumpString: String {
         
-        switch self {
-            
-        case .success(let hasChanges):
-            return createFormattedString(
-                ".success (", ")",
-                ("hasChanges", hasChanges)
-            )
-            
-        case .failure(let error):
-            return createFormattedString(
-                ".failure (", ")",
-                ("error", error)
-            )
-        }
+        return createFormattedString(
+            "(", ")",
+            ("rawObject", self.rawObject as Any)
+        )
     }
 }
 
@@ -806,40 +773,6 @@ extension SelectTerm: CustomDebugStringConvertible, CoreStoreDebugStringConverti
                 ".identity (", ")",
                 ("alias", alias),
                 ("nativeType", nativeType)
-            )
-        }
-    }
-}
-
-
-// MARK: - SetupResult
-
-extension SetupResult: CustomDebugStringConvertible, CoreStoreDebugStringConvertible {
-    
-    // MARK: CustomDebugStringConvertible
-    
-    public var debugDescription: String {
-        
-        return formattedDebugDescription(self)
-    }
-    
-    
-    // MARK: CoreStoreDebugStringConvertible
-    
-    public var coreStoreDumpString: String {
-        
-        switch self {
-            
-        case .success(let storage):
-            return createFormattedString(
-                ".success (", ")",
-                ("storage", storage)
-            )
-            
-        case .failure(let error):
-            return createFormattedString(
-                ".failure (", ")",
-                ("error", error)
             )
         }
     }
@@ -989,11 +922,11 @@ extension VersionLock: CustomStringConvertible, CustomDebugStringConvertible, Co
         for (index, keyValue) in self.hashesByEntityName.sorted(by: { $0.key < $1.key }).enumerated() {
             
             let data = keyValue.value
-            let count = data.count
-            let bytes = data.withUnsafeBytes { (pointer: UnsafePointer<HashElement>) in
+            let bytes = data.withUnsafeBytes { (pointer) in
                 
-                return (0 ..< (count / MemoryLayout<HashElement>.size))
-                    .map({ "\("0x\(String(pointer[$0], radix: 16, uppercase: false))")" })
+                return pointer
+                    .bindMemory(to: VersionLock.HashElement.self)
+                    .map({ "\("0x\(String($0, radix: 16, uppercase: false))")" })
             }
             string.append("\(index == 0 ? "\n" : ",\n")\"\(keyValue.key)\": [\(bytes.joined(separator: ", "))]")
         }
@@ -1086,7 +1019,7 @@ private func createFormattedString(_ firstLine: String, _ lastLine: String, _ in
     return string
 }
 
-fileprivate extension String {
+extension String {
     
     fileprivate static func indention(_ level: Int = 1) -> String {
         
@@ -1107,7 +1040,7 @@ fileprivate extension String {
 
 // MARK: - Private: CoreStoreDebugStringConvertible
 
-public protocol CoreStoreDebugStringConvertible {
+public protocol CoreStoreDebugStringConvertible: CustomDebugStringConvertible {
     
     var coreStoreDumpString: String { get }
 }
@@ -1188,6 +1121,11 @@ extension NSAttributeDescription: CoreStoreDebugStringConvertible {
 
 extension NSAttributeType: CoreStoreDebugStringConvertible {
     
+    public var debugDescription: String {
+        
+        return formattedDebugDescription(self)
+    }
+    
     public var coreStoreDumpString: String {
         
         switch self {
@@ -1207,6 +1145,8 @@ extension NSAttributeType: CoreStoreDebugStringConvertible {
         case .objectIDAttributeType:        return ".objectIDAttributeType"
         case .UUIDAttributeType:            return ".UUIDAttributeType"
         case .URIAttributeType:             return ".URIAttributeType"
+        @unknown default:
+            fatalError()
         }
     }
 }
@@ -1221,6 +1161,11 @@ extension Bundle: CoreStoreDebugStringConvertible {
 
 extension NSDeleteRule: CoreStoreDebugStringConvertible {
     
+    public var debugDescription: String {
+        
+        return formattedDebugDescription(self)
+    }
+    
     public var coreStoreDumpString: String {
         
         switch self {
@@ -1229,6 +1174,8 @@ extension NSDeleteRule: CoreStoreDebugStringConvertible {
         case .nullifyDeleteRule:    return ".nullifyDeleteRule"
         case .cascadeDeleteRule:    return ".cascadeDeleteRule"
         case .denyDeleteRule:       return ".denyDeleteRule"
+        @unknown default:
+            fatalError()
         }
     }
 }
@@ -1257,7 +1204,10 @@ extension NSEntityDescription: CoreStoreDebugStringConvertible {
             
             info.append(("compoundIndexes", self.compoundIndexes))
         }
-        info.append(("uniquenessConstraints", self.uniquenessConstraints))
+        if #available(macOS 10.11, *) {
+            
+            info.append(("uniquenessConstraints", self.uniquenessConstraints))
+        }
         return createFormattedString(
             "(", ")",
             info
@@ -1388,7 +1338,38 @@ extension Optional: CoreStoreDebugStringConvertible {
     }
 }
 
+extension Result: CoreStoreDebugStringConvertible {
+    
+    public var debugDescription: String {
+        
+        return formattedDebugDescription(self)
+    }
+    
+    public var coreStoreDumpString: String {
+        
+        switch self {
+            
+        case .success(let info):
+            return createFormattedString(
+                ".success (", ")",
+                ("info", info)
+            )
+            
+        case .failure(let error):
+            return createFormattedString(
+                ".failure (", ")",
+                ("error", error)
+            )
+        }
+    }
+}
+
 extension Selector: CoreStoreDebugStringConvertible {
+    
+    public var debugDescription: String {
+        
+        return formattedDebugDescription(self)
+    }
     
     public var coreStoreDumpString: String {
         

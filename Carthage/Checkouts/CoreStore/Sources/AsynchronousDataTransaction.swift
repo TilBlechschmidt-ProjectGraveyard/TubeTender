@@ -50,45 +50,11 @@ public final class AsynchronousDataTransaction: BaseDataTransaction {
     // MARK: - Result
     
     /**
-     The `Result` contains the success or failure information for a completed transaction
+     The `Result` contains the success or failure information for a completed transaction.
+     `Result<T>.success` indicates that the transaction succeeded, either because the save succeeded or because there were no changes to save. The associated `userInfo` is the value returned from the transaction closure.
+     `Result<T>.failure` indicates that the transaction either failed or was cancelled. The associated object for this value is a `CoreStoreError` enum value.
      */
-    public enum Result<T> {
-        
-        /**
-         `Result<T>.success` indicates that the transaction succeeded, either because the save succeeded or because there were no changes to save. The associated `userInfo` is the value returned from the transaction closure.
-         */
-        case success(userInfo: T)
-        
-        /**
-         `Result<T>.failure` indicates that the transaction either failed or was cancelled. The associated object for this value is a `CoreStoreError` enum value.
-         */
-        case failure(error: CoreStoreError)
-        
-        /**
-         Returns `true` if the result indicates `.success`, `false` if the result is `.failure`.
-         */
-        public var boolValue: Bool {
-            
-            switch self {
-                
-            case .success: return true
-            case .failure: return false
-            }
-        }
-        
-        
-        // MARK: Internal
-        
-        internal init(userInfo: T) {
-            
-            self = .success(userInfo: userInfo)
-        }
-        
-        internal init(error: CoreStoreError) {
-            
-            self = .failure(error: error)
-        }
-    }
+    public typealias Result<UserInfoType> = Swift.Result<UserInfoType, CoreStoreError>
     
     // MARK: -
     
@@ -211,68 +177,5 @@ public final class AsynchronousDataTransaction: BaseDataTransaction {
         }
         group.wait()
         self.context.reset()
-    }
-    
-    
-    // MARK: Deprecated
-    
-    @available(*, deprecated, message: "Use the new auto-commiting methods `DataStack.perform(asynchronous:completion:)` or `DataStack.perform(asynchronous:success:failure:)`. Please read the documentation on the behavior of the new methods.")
-    public func commit(_ completion: @escaping (_ result: SaveResult) -> Void = { _ in }) {
-        
-        CoreStore.assert(
-            self.transactionQueue.cs_isCurrentExecutionContext(),
-            "Attempted to commit a \(cs_typeName(self)) outside its designated queue."
-        )
-        CoreStore.assert(
-            !self.isCommitted,
-            "Attempted to commit a \(cs_typeName(self)) more than once."
-        )
-        self.autoCommit { (hasChanges, error) in
-            
-            if let error = error {
-                
-                completion(SaveResult(error))
-            }
-            else {
-                
-                completion(SaveResult(hasChanges: hasChanges))
-            }
-        }
-    }
-    
-    @available(*, deprecated, message: "Secondary tasks spawned from AsynchronousDataTransactions and SynchronousDataTransactions are no longer supported. ")
-    @discardableResult
-    public func beginSynchronous(_ closure: @escaping (_ transaction: SynchronousDataTransaction) -> Void) -> SaveResult? {
-        
-        CoreStore.assert(
-            self.transactionQueue.cs_isCurrentExecutionContext(),
-            "Attempted to begin a child transaction from a \(cs_typeName(self)) outside its designated queue."
-        )
-        CoreStore.assert(
-            !self.isCommitted,
-            "Attempted to begin a child transaction from an already committed \(cs_typeName(self))."
-        )
-        let childTransaction = SynchronousDataTransaction(
-            mainContext: self.context,
-            queue: self.childTransactionQueue
-        )
-        childTransaction.transactionQueue.cs_sync {
-            
-            closure(childTransaction)
-            
-            if !childTransaction.isCommitted && childTransaction.hasChanges {
-                
-                CoreStore.log(
-                    .warning,
-                    message: "The closure for the \(cs_typeName(childTransaction)) completed without being committed. All changes made within the transaction were discarded."
-                )
-            }
-        }
-        switch childTransaction.result {
-            
-        case .none:                         return nil
-        case .some(let hasChanges, nil):    return SaveResult(hasChanges: hasChanges)
-        case .some(_, let error?):          return SaveResult(error)
-        }
     }
 }

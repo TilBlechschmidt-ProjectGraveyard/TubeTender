@@ -9,7 +9,7 @@
 import UIKit
 import ReactiveSwift
 
-class VLCPlayer {
+class VLCPlayer: NSObject {
     private var vlcMediaPlayer: VLCMediaPlayer!
     private var previousState: VLCMediaPlayerState = .stopped
 
@@ -23,10 +23,11 @@ class VLCPlayer {
 
     let drawable = UIView()
 
-    init() {
+    override init() {
         currentTime = Property(_currentTime)
         duration = Property(_duration)
         status = Property(_status)
+        super.init()
         replaceMediaPlayer()
     }
 

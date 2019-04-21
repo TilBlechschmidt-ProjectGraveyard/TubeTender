@@ -29,7 +29,7 @@ import Foundation
 
 // MARK: - ValueContainer.Required
 
-public extension ValueContainer.Required {
+extension ValueContainer.Required {
     
     /**
      Creates a `Where` clause by comparing if a property is equal to a value
@@ -112,7 +112,7 @@ public extension ValueContainer.Required {
 
 // MARK: - ValueContainer.Optional
 
-public extension ValueContainer.Optional {
+extension ValueContainer.Optional {
     
     /**
      Creates a `Where` clause by comparing if a property is equal to a value
@@ -223,7 +223,7 @@ public extension ValueContainer.Optional {
 
 // MARK: - RelationshipContainer.ToOne
 
-public extension RelationshipContainer.ToOne {
+extension RelationshipContainer.ToOne {
     
     /**
      Creates a `Where` clause by comparing if a property is equal to a value
@@ -256,71 +256,5 @@ public extension RelationshipContainer.ToOne {
     public static func ~= <S: Sequence>(_ sequence: S, _ relationship: RelationshipContainer<O>.ToOne<D>) -> Where<O> where S.Iterator.Element == D {
         
         return Where(relationship.keyPath, isMemberOf: sequence)
-    }
-}
-
-
-// MARK: Deprecated
-
-extension DynamicObject where Self: CoreStoreObject {
-    
-    @available(*, deprecated, message: "Use the String(keyPath:) initializer and pass the KeyPath: String(keyPath: \\Person.name)")
-    public static func keyPath<O, V>(_ attribute: (Self) -> ValueContainer<O>.Required<V>) -> String  {
-        
-        return attribute(self.meta).keyPath
-    }
-    
-    @available(*, deprecated, message: "Use the String(keyPath:) initializer and pass the KeyPath: String(keyPath: \\Person.name)")
-    public static func keyPath<O, V>(_ attribute: (Self) -> ValueContainer<O>.Optional<V>) -> String  {
-        
-        return attribute(self.meta).keyPath
-    }
-    
-    @available(*, deprecated, message: "Use the String(keyPath:) initializer and pass the KeyPath: String(keyPath: \\Person.friend)")
-    public static func keyPath<O, D>(_ relationship: (Self) -> RelationshipContainer<O>.ToOne<D>) -> String  {
-        
-        return relationship(self.meta).keyPath
-    }
-    
-    @available(*, deprecated, message: "Use the String(keyPath:) initializer and pass the KeyPath: String(keyPath: \\Person.friends)")
-    public static func keyPath<O, D>(_ relationship: (Self) -> RelationshipContainer<O>.ToManyOrdered<D>) -> String  {
-        
-        return relationship(self.meta).keyPath
-    }
-    
-    @available(*, deprecated, message: "Use the String(keyPath:) initializer and pass the KeyPath: String(keyPath: \\Person.friends)")
-    public static func keyPath<O, D>(_ relationship: (Self) -> RelationshipContainer<O>.ToManyUnordered<D>) -> String  {
-        
-        return relationship(self.meta).keyPath
-    }
-    
-    @available(*, deprecated, message: "Use the Where<DynamicObject>(_:) initializer that accepts the same closure argument")
-    public static func `where`(_ condition: (Self) -> Where<Self>) -> Where<Self>  {
-        
-        return condition(self.meta)
-    }
-    
-    @available(*, deprecated, message: "Use the new OrderBy<DynamicObject>(ascending:) overload that accepts the same closure argument")
-    public static func orderBy<O, V>(ascending attribute: (Self) -> ValueContainer<O>.Required<V>) -> OrderBy<Self>  {
-        
-        return OrderBy(.ascending(attribute(self.meta).keyPath))
-    }
-    
-    @available(*, deprecated, message: "Use the new OrderBy<DynamicObject>(ascending:) overload that accepts the same closure argument")
-    public static func orderBy<O, V>(ascending attribute: (Self) -> ValueContainer<O>.Optional<V>) -> OrderBy<Self>  {
-        
-        return OrderBy(.ascending(attribute(self.meta).keyPath))
-    }
-    
-    @available(*, deprecated, message: "Use the new OrderBy<DynamicObject>(descending:) overload that accepts the same closure argument")
-    public static func orderBy<O, V>(descending attribute: (Self) -> ValueContainer<O>.Required<V>) -> OrderBy<Self>  {
-        
-        return OrderBy(.descending(attribute(self.meta).keyPath))
-    }
-    
-    @available(*, deprecated, message: "Use the new OrderBy<DynamicObject>(descending:) overload that accepts the same closure argument")
-    public static func orderBy<O, V>(descending attribute: (Self) -> ValueContainer<O>.Optional<V>) -> OrderBy<Self>  {
-        
-        return OrderBy(.descending(attribute(self.meta).keyPath))
     }
 }

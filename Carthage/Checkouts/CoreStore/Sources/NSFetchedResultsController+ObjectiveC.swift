@@ -25,44 +25,6 @@
 
 import Foundation
 import CoreData
-
-
-// MARK: - CSDataStack
-
-@available(macOS 10.12, *)
-public extension CSDataStack {
-    
-    @available(*, deprecated, message: "CoreStore will obsolete NSFetchedResultsController support in the future in favor of CSListMonitor")
-    @objc
-    public func createFetchedResultsControllerFrom(_ from: CSFrom, sectionBy: CSSectionBy, fetchClauses: [CSFetchClause]) -> NSFetchedResultsController<NSManagedObject> {
-        
-        return createFRC(
-            fromContext: self.bridgeToSwift.mainContext,
-            from: from,
-            sectionBy: sectionBy,
-            fetchClauses: fetchClauses
-        )
-    }
-}
-    
-    
-// MARK: - CSUnsafeDataTransaction
-
-@available(macOS 10.12, *)
-public extension CSUnsafeDataTransaction {
-    
-    @available(*, deprecated, message: "CoreStore will obsolete NSFetchedResultsController support in the future in favor of CSListMonitor")
-    @objc
-    public func createFetchedResultsControllerFrom(_ from: CSFrom, sectionBy: CSSectionBy, fetchClauses: [CSFetchClause]) -> NSFetchedResultsController<NSManagedObject> {
-        
-        return createFRC(
-            fromContext: self.bridgeToSwift.context,
-            from: from,
-            sectionBy: sectionBy,
-            fetchClauses: fetchClauses
-        )
-    }
-}
     
     
 // MARK: - Private
@@ -72,12 +34,12 @@ fileprivate func createFRC(fromContext context: NSManagedObjectContext, from: CS
     
     let controller = CoreStoreFetchedResultsController(
         context: context,
-        fetchRequest: CoreStoreFetchRequest().dynamicCast(),
+        fetchRequest: CoreStoreFetchRequest(),
         from: from.bridgeToSwift,
         sectionBy: sectionBy?.bridgeToSwift,
         applyFetchClauses: { (fetchRequest) in
             
-            fetchClauses.forEach { $0.applyToFetchRequest(fetchRequest as! NSFetchRequest<NSFetchRequestResult>) }
+            fetchClauses.forEach { $0.applyToFetchRequest(fetchRequest) }
             
             CoreStore.assert(
                 fetchRequest.sortDescriptors?.isEmpty == false,

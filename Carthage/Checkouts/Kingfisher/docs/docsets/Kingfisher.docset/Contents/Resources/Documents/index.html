@@ -234,6 +234,9 @@
                 <a class="nav-group-task-link" href="Protocols/ImageDataProvider.html">ImageDataProvider</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/ImageDownloadRedirectHandler.html">ImageDownloadRedirectHandler</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Protocols/ImageDownloadRequestModifier.html">ImageDownloadRequestModifier</a>
               </li>
               <li class="nav-group-task">
@@ -250,6 +253,9 @@
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Protocols/KingfisherCompatible.html">KingfisherCompatible</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/KingfisherCompatibleValue.html">KingfisherCompatibleValue</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Protocols/Placeholder.html">Placeholder</a>
@@ -270,6 +276,9 @@
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Structs/AnyModifier.html">AnyModifier</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/AnyRedirectHandler.html">AnyRedirectHandler</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Structs/Base64ImageDataProvider.html">Base64ImageDataProvider</a>
@@ -421,6 +430,12 @@
                 <a class="nav-group-task-link" href="Typealiases.html#/s:10Kingfisher23PrefetcherProgressBlocka">PrefetcherProgressBlock</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Typealiases.html#/s:10Kingfisher33PrefetcherSourceCompletionHandlera">PrefetcherSourceCompletionHandler</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Typealiases.html#/s:10Kingfisher29PrefetcherSourceProgressBlocka">PrefetcherSourceProgressBlock</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Typealiases.html#/s:10Kingfisher11Transformera">Transformer</a>
               </li>
               <li class="nav-group-task">
@@ -453,7 +468,7 @@
 <a href="#sponsors" alt="Sponsors on Open Collective"><img src="https://opencollective.com/Kingfisher/sponsors/badge.svg" /></a>
 </p>
 
-<p>Kingfisher is a powerful, pure-Swift library for downloading and caching images from the web. It provides you a chance to use a pure-Swift alternative in your next app.</p>
+<p>Kingfisher is a powerful, pure-Swift library for downloading and caching images from the web. It provides you a chance to use a pure-Swift way to work with remote images in your next app.</p>
 <h2 id='features' class='heading'>Features</h2>
 
 <ul>
@@ -496,7 +511,7 @@
              <span class="o">&gt;&gt;</span> <span class="kt">RoundCornerImageProcessor</span><span class="p">(</span><span class="nv">cornerRadius</span><span class="p">:</span> <span class="mi">20</span><span class="p">)</span>
 <span class="n">imageView</span><span class="o">.</span><span class="n">kf</span><span class="o">.</span><span class="n">indicatorType</span> <span class="o">=</span> <span class="o">.</span><span class="n">activity</span>
 <span class="n">imageView</span><span class="o">.</span><span class="n">kf</span><span class="o">.</span><span class="nf">setImage</span><span class="p">(</span>
-    <span class="nv">with</span><span class="p">:</span> <span class="n">resource</span><span class="p">,</span>
+    <span class="nv">with</span><span class="p">:</span> <span class="n">url</span><span class="p">,</span>
     <span class="nv">placeholder</span><span class="p">:</span> <span class="kt">UIImage</span><span class="p">(</span><span class="nv">named</span><span class="p">:</span> <span class="s">"placeholderImage"</span><span class="p">),</span>
     <span class="nv">options</span><span class="p">:</span> <span class="p">[</span>
         <span class="o">.</span><span class="nf">processor</span><span class="p">(</span><span class="n">processor</span><span class="p">),</span>
@@ -515,7 +530,7 @@
 <span class="p">}</span>
 </code></pre>
 
-<p>It is really a very common situation I will meet in my daily work. Think about how many lines you need to write if without Kingfisher. You will fall in love with it!</p>
+<p>It is really a very common situation I can meet in my daily work. Think about how many lines you need to write without Kingfisher. You will fall in love with it if you give it a try!</p>
 <h3 id='learn-more' class='heading'>Learn More</h3>
 
 <p>To learn the using of Kingfisher by more examples, take a look at the <a href="https://github.com/onevcat/Kingfisher/wiki/Cheat-Sheet">Cheat Sheet</a>. There we summarized most common tasks in Kingfisher, you can get a better idea on what this framework can do. There are also some tips for performance in the same page, remember to check them too.</p>
@@ -593,7 +608,7 @@
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2018 <a class="link" href="https://onevcat.com" target="_blank" rel="external">Wei Wang</a>. All rights reserved. (Last updated: 2018-12-17)</p>
+      <p>&copy; 2019 <a class="link" href="https://onevcat.com" target="_blank" rel="external">Wei Wang</a>. All rights reserved. (Last updated: 2019-03-28)</p>
       <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.4</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>

@@ -8,7 +8,6 @@
 
 import UIKit
 import YoutubeKit
-import SkeletonView
 import GoogleSignIn
 import AVKit
 
@@ -16,6 +15,8 @@ import AVKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
+
+    let hlsServer = try? HLSServer(port: Constants.hlsServerPort)
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
@@ -51,6 +52,34 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         UIVisualEffectView.appearance().effect = UIBlurEffect(style: .dark)
 
+        let versionString = "\(Bundle.main.releaseVersionNumber ?? "0") (\(Bundle.main.buildVersionNumber ?? "0"))"
+        Settings.set(setting: .AppVersion, versionString)
+
+        do {
+            Network.reachability = try Reachability(hostname: "www.youtube.com")
+            do {
+                try Network.reachability?.start()
+            } catch let error as Network.Error {
+                print(error)
+            } catch {
+                print(error)
+            }
+        } catch {
+            print(error)
+        }
+
+        NotificationCenter.default.reactive.notifications(forName: .flagsChanged).signal.take(duringLifetimeOf: self).observeValues { [unowned self] _ in
+            guard let status = Network.reachability?.status else { return }
+            print("\n\n\nReachability Summary")
+            print("Status:", status)
+            print("HostName:", Network.reachability?.hostname ?? "nil")
+            print("Reachable:", Network.reachability?.isReachable ?? "nil")
+            print("Wifi:", Network.reachability?.isReachableViaWiFi ?? "nil")
+            print("Cellular:", Network.reachability?.isWWAN ?? "nil")
+        }
+
+        hlsServer?.listen()
+
         return true
     }
 
@@ -62,6 +91,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationDidBecomeActive(_ application: UIApplication) {
         IncomingVideoReceiver.default.scanPasteboardForURL()
+    }
+
+    func applicationWillResignActive(_ application: UIApplication) {
+        if !(Settings.get(setting: .BackgroundPlayback) as? Bool ?? true) {
+            SwitchablePlayer.shared.pause()
+        }
     }
 }
 
@@ -101,5 +136,14 @@ extension AppDelegate: GIDSignInDelegate {
               withError error: Error!) {
         // Perform any operations when the user disconnects from app here.
         print("logged out")
+    }
+}
+
+extension Bundle {
+    var releaseVersionNumber: String? {
+        return infoDictionary?["CFBundleShortVersionString"] as? String
+    }
+    var buildVersionNumber: String? {
+        return infoDictionary?["CFBundleVersion"] as? String
     }
 }

@@ -28,7 +28,7 @@ import Foundation
 
 // MARK: - CSDataStack
 
-public extension CSDataStack {
+extension CSDataStack {
     
     /**
      Begins a transaction asynchronously where `NSManagedObject` creates, updates, and deletes can be made.
@@ -130,22 +130,5 @@ public extension CSDataStack {
     public func refreshAndMergeAllObjects() {
         
         self.bridgeToSwift.refreshAndMergeAllObjects()
-    }
-    
-    
-    // MARK: Deprecated
-    
-    @available(*, deprecated, message: "Use the new -[CSDataStack beginSynchronous:error:] API that reports failure using an error instance.")
-    @objc
-    @discardableResult
-    public func beginSynchronous(_ closure: @escaping (_ transaction: CSSynchronousDataTransaction) -> Void) -> CSSaveResult? {
-        
-        return bridge {
-            
-            self.bridgeToSwift.beginSynchronous { (transaction) in
-                
-                closure(transaction.bridgeToObjectiveC)
-            }
-        }
     }
 }

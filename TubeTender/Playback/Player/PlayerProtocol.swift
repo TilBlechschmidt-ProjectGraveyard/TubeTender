@@ -14,6 +14,8 @@ enum PlayerStatus {
     case playbackFailed
     case playbackFinished
 
+    case readyToPlay
+
     case playing
     case buffering
     case paused

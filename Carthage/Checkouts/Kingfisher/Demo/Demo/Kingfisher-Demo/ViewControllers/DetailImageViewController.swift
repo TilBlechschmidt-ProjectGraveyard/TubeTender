@@ -4,7 +4,7 @@
 //
 //  Created by onevcat on 2018/11/25.
 //
-//  Copyright (c) 2018 Wei Wang <onevcat@gmail.com>
+//  Copyright (c) 2019 Wei Wang <onevcat@gmail.com>
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -38,7 +38,7 @@ class DetailImageViewController: UIViewController {
         scrollView.delegate = self
         
         imageView.kf.setImage(with: imageURL, options: [.memoryCacheExpiration(.expired)]) { result in
-            guard let image = result.value?.image else {
+            guard let image = try? result.get().image else {
                 return
             }
             let scrollViewFrame = self.scrollView.frame

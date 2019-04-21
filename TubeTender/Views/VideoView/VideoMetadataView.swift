@@ -46,7 +46,7 @@ class VideoMetadataView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
 
-        backgroundColor = Constants.backgroundColor.darker
+        backgroundColor = Constants.backgroundColor // TODO This had .darker attached to it
 
         setupMetaScrollView()
 
@@ -126,7 +126,6 @@ class VideoMetadataView: UIView {
     }
 
     func setupChannelDetails() {
-        channelView.isSkeletonable = true
         channelView.translatesAutoresizingMaskIntoConstraints = false
         metaView.addSubview(channelView)
         metaView.addConstraints([
@@ -155,7 +154,6 @@ class VideoMetadataView: UIView {
             bottomBorder.heightAnchor.constraint(equalToConstant: 1)
         ])
 
-        channelThumbnail.isSkeletonable = true
         channelThumbnail.backgroundColor = UIColor.lightGray
         channelThumbnail.layer.cornerRadius = channelIconSize / 2
         channelThumbnail.layer.masksToBounds = false
@@ -172,7 +170,6 @@ class VideoMetadataView: UIView {
         ])
 
         let channelDetailLabelView = UIView()
-        channelDetailLabelView.isSkeletonable = true
         channelDetailLabelView.translatesAutoresizingMaskIntoConstraints = false
         channelView.addSubview(channelDetailLabelView)
         channelView.addConstraints([
@@ -181,7 +178,6 @@ class VideoMetadataView: UIView {
             channelDetailLabelView.centerYAnchor.constraint(equalTo: channelThumbnail.centerYAnchor)
         ])
 
-        channelTitle.isSkeletonable = true
         channelTitle.font = channelTitle.font.withSize(13)
         channelTitle.textColor = UIColor.white
         channelTitle.lineBreakMode = .byTruncatingTail
@@ -193,7 +189,6 @@ class VideoMetadataView: UIView {
             channelTitle.topAnchor.constraint(equalTo: channelDetailLabelView.topAnchor)
         ])
 
-        channelSubscriberCount.isSkeletonable = true
         channelSubscriberCount.font = channelTitle.font.withSize(11)
         channelSubscriberCount.textColor = UIColor.lightGray
         channelSubscriberCount.lineBreakMode = .byTruncatingTail

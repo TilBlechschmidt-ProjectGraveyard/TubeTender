@@ -29,7 +29,7 @@ import CoreData
 
 // MARK: - CoreStore
 
-public extension CoreStore {
+extension CoreStore {
     
     /**
      Returns the `defaultStack`'s model version. The version string is the same as the name of a version-specific .xcdatamodeld file or `CoreStoreSchema`.
@@ -138,23 +138,5 @@ public extension CoreStore {
     public static func addStorageAndWait<T: CloudStorage>(_ storage: T) throws -> T {
         
         return try self.defaultStack.addStorageAndWait(storage)
-    }
-    
-    
-    // MARK: Deprecated
-    
-    @available(*, deprecated, message: "Use the new CoreStore.entityTypesByName(for:) method passing `NSManagedObject.self` as argument.")
-    public static var entityTypesByName: [EntityName: NSManagedObject.Type] {
-        
-        return self.defaultStack.entityTypesByName
-    }
-    
-    
-    // MARK: Obsolete
-    
-    @available(*, obsoleted: 3.1, renamed: "entityDescription(for:)")
-    public static func entityDescriptionForType(_ type: NSManagedObject.Type) -> NSEntityDescription? {
-        
-        return self.entityDescription(for: type)
     }
 }

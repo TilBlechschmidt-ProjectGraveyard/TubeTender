@@ -122,6 +122,11 @@ class ListObserverDemoViewController: UITableViewController, ListSectionObserver
                 target: self,
                 action: #selector(self.addBarButtonItemTouched(_:))
             ),
+            UIBarButtonItem(
+                barButtonSystemItem: .refresh,
+                target: self,
+                action: #selector(self.shuffleBarButtonItemTouched(_:))
+            ),
             filterBarButton
         ]
         self.filterBarButton = filterBarButton
@@ -155,7 +160,7 @@ class ListObserverDemoViewController: UITableViewController, ListSectionObserver
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        return ColorsDemo.palettes.numberOfObjectsInSection(section)
+        return ColorsDemo.palettes.numberOfObjects(in: section)
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -182,7 +187,7 @@ class ListObserverDemoViewController: UITableViewController, ListSectionObserver
         )
     }
     
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         
         switch editingStyle {
             
@@ -203,7 +208,7 @@ class ListObserverDemoViewController: UITableViewController, ListSectionObserver
     
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         
-        return ColorsDemo.palettes.sectionInfoAtIndex(section).name
+        return ColorsDemo.palettes.sectionInfo(at: section).name
     }
     
     
@@ -283,7 +288,7 @@ class ListObserverDemoViewController: UITableViewController, ListSectionObserver
         ColorsDemo.stack.perform(
             asynchronous: { (transaction) in
                 
-                transaction.deleteAll(From<Palette>())
+                try transaction.deleteAll(From<Palette>())
             },
             completion: { _ in }
         )
@@ -305,9 +310,29 @@ class ListObserverDemoViewController: UITableViewController, ListSectionObserver
             completion: { _ in }
         )
     }
+
+    @IBAction private dynamic func shuffleBarButtonItemTouched(_ sender: AnyObject?) {
+
+        self.setTable(enabled: false)
+        ColorsDemo.stack.perform(
+            asynchronous: { (transaction) in
+
+                for palette in try transaction.fetchAll(From<Palette>()) {
+
+                    palette.hue .= Palette.randomHue()
+                    palette.colorName .= nil
+                }
+            },
+            completion: { _ in
+
+                self.setTable(enabled: true)
+            }
+        )
+    }
     
     private func setTable(enabled: Bool) {
-        
+
+        tableView.isUserInteractionEnabled = enabled
         UIView.animate(
             withDuration: 0.2,
             delay: 0,
@@ -317,7 +342,6 @@ class ListObserverDemoViewController: UITableViewController, ListSectionObserver
                 if let tableView = self.tableView {
                     
                     tableView.alpha = enabled ? 1.0 : 0.5
-                    tableView.isUserInteractionEnabled = enabled
                 }
             },
             completion: nil

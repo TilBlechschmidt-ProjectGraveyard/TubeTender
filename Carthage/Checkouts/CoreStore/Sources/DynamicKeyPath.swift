@@ -24,6 +24,7 @@
 //
 
 import Foundation
+import CoreData
 
 
 // MARK: - AnyDynamicKeyPath
@@ -47,7 +48,7 @@ public protocol DynamicKeyPath: AnyDynamicKeyPath {
     /**
      The DynamicObject type
      */
-    associatedtype ObjectType
+    associatedtype ObjectType: DynamicObject
     
     /**
      The Value type
@@ -58,7 +59,7 @@ public protocol DynamicKeyPath: AnyDynamicKeyPath {
 
 // MARK: - KeyPathString
 
-public extension KeyPathString {
+extension KeyPathString {
     
     /**
      Extracts the keyPath string from the property.
@@ -66,7 +67,7 @@ public extension KeyPathString {
      let keyPath = String(keyPath: \Person.nickname)
      ```
      */
-    public init<O: NSManagedObject, V>(keyPath: KeyPath<O, V>) {
+    public init<O: NSManagedObject, V: AllowedObjectiveCKeyPathValue>(keyPath: KeyPath<O, V>) {
         
         self = keyPath.cs_keyPathString
     }
@@ -78,17 +79,27 @@ public extension KeyPathString {
      ```
      */
     public init<O: CoreStoreObject, K: DynamicKeyPath>(keyPath: KeyPath<O, K>) {
-        
+
         self = O.meta[keyPath: keyPath].cs_keyPathString
+    }
+
+    /**
+     Extracts the keyPath string from the property.
+     ```
+     let keyPath = String(keyPath: \Person.nickname)
+     ```
+     */
+    public init<O: DynamicObject, T, V>(keyPath: Where<O>.Expression<T, V>) {
+
+        self = keyPath.cs_keyPathString
     }
 }
 
 
+
 // MARK: - KeyPath: DynamicKeyPath
 
-// TODO: SE-0143 is not implemented: https://github.com/apple/swift-evolution/blob/master/proposals/0143-conditional-conformances.md
-//extension KeyPath: DynamicKeyPath where Root: NSManagedObject, Value: ImportableAttributeType {
-extension KeyPath: DynamicKeyPath {
+extension KeyPath: DynamicKeyPath, AnyDynamicKeyPath where Root: DynamicObject, Value: AllowedObjectiveCKeyPathValue {
 
     public typealias ObjectType = Root
     public typealias ValueType = Value

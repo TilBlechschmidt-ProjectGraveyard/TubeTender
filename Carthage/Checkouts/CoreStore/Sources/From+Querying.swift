@@ -29,7 +29,7 @@ import CoreData
 
 // MARK: - From
 
-public extension From {
+extension From {
     
     /**
      Creates a `FetchChainBuilder` that starts with the specified `Where` clause
@@ -65,6 +65,17 @@ public extension From {
         
         return self.fetchChain(appending: Where<D>(format, argumentArray: argumentArray))
     }
+
+    /**
+     Creates a `FetchChainBuilder` that starts with the specified `OrderBy` clause.
+
+     - parameter clause: the `OrderBy` clause to create a `FetchChainBuilder` with
+     - returns: a `FetchChainBuilder` that starts with the specified `OrderBy` clause
+     */
+    public func orderBy(_ clause: OrderBy<D>) -> FetchChainBuilder<D> {
+
+        return self.fetchChain(appending: clause)
+    }
     
     /**
      Creates a `FetchChainBuilder` with a series of `SortKey`s
@@ -76,6 +87,17 @@ public extension From {
     public func orderBy(_ sortKey: OrderBy<D>.SortKey, _ sortKeys: OrderBy<D>.SortKey...) -> FetchChainBuilder<D> {
         
         return self.fetchChain(appending: OrderBy<D>([sortKey] + sortKeys))
+    }
+
+    /**
+     Creates a `FetchChainBuilder` with a series of `SortKey`s
+
+     - parameter sortKeys: a series of `SortKey`s
+     - returns: a `FetchChainBuilder` with a series of `SortKey`s
+     */
+    public func orderBy(_ sortKeys: [OrderBy<D>.SortKey]) -> FetchChainBuilder<D> {
+
+        return self.fetchChain(appending: OrderBy<D>(sortKeys))
     }
     
     /**
@@ -215,7 +237,10 @@ public extension From {
     }
 }
 
-public extension From where D: NSManagedObject {
+
+// MARK: - From where D: NSManagedObject
+
+extension From where D: NSManagedObject {
     
     /**
      Creates a `QueryChainBuilder` that starts with a `Select` clause created from the specified key path
@@ -255,7 +280,10 @@ public extension From where D: NSManagedObject {
     }
 }
 
-public extension From where D: CoreStoreObject {
+
+// MARK: - From where D: CoreStoreObject
+
+extension From where D: CoreStoreObject {
     
     /**
      Creates a `FetchChainBuilder` that starts with the specified `Where` clause
@@ -266,6 +294,11 @@ public extension From where D: CoreStoreObject {
     public func `where`<T: AnyWhereClause>(_ clause: (D) -> T) -> FetchChainBuilder<D> {
         
         return self.fetchChain(appending: clause(D.meta))
+    }
+
+    public func `where`(combinedByAnd clause: Where<D>, _ others: Where<D>...) -> FetchChainBuilder<D> {
+
+        return self.fetchChain(appending: ([clause] + others).combinedByAnd())
     }
     
     /**
@@ -417,7 +450,10 @@ public extension From where D: CoreStoreObject {
     }
 }
 
-public extension FetchChainBuilder {
+
+// MARK: - FetchChainBuilder
+
+extension FetchChainBuilder {
     
     /**
      Adds a `Where` clause to the `FetchChainBuilder`
@@ -453,6 +489,17 @@ public extension FetchChainBuilder {
         
         return self.fetchChain(appending: Where<D>(format, argumentArray: argumentArray))
     }
+
+    /**
+     Adds an `OrderBy` clause to the `FetchChainBuilder`
+
+     - parameter clause: the `OrderBy` clause to add
+     - returns: a new `FetchChainBuilder` containing the `OrderBy` clause
+     */
+    public func orderBy(_ clause: OrderBy<D>) -> FetchChainBuilder<D> {
+
+        return self.fetchChain(appending: clause)
+    }
     
     /**
      Adds an `OrderBy` clause to the `FetchChainBuilder`
@@ -464,6 +511,17 @@ public extension FetchChainBuilder {
     public func orderBy(_ sortKey: OrderBy<D>.SortKey, _ sortKeys: OrderBy<D>.SortKey...) -> FetchChainBuilder<D> {
         
         return self.fetchChain(appending: OrderBy<D>([sortKey] + sortKeys))
+    }
+
+    /**
+     Adds an `OrderBy` clause to the `FetchChainBuilder`
+
+     - parameter sortKeys: a series of `SortKey`s
+     - returns: a new `FetchChainBuilder` containing the `OrderBy` clause
+     */
+    public func orderBy(_ sortKeys: [OrderBy<D>.SortKey]) -> FetchChainBuilder<D> {
+
+        return self.fetchChain(appending: OrderBy<D>(sortKeys))
     }
     
     /**
@@ -519,7 +577,10 @@ public extension FetchChainBuilder {
     }
 }
 
-public extension FetchChainBuilder where D: CoreStoreObject {
+
+// MARK: - FetchChainBuilder where D: CoreStoreObject
+
+extension FetchChainBuilder where D: CoreStoreObject {
     
     public func `where`<T: AnyWhereClause>(_ clause: (D) -> T) -> FetchChainBuilder<D> {
         
@@ -527,7 +588,10 @@ public extension FetchChainBuilder where D: CoreStoreObject {
     }
 }
 
-public extension QueryChainBuilder {
+
+// MARK: - QueryChainBuilder
+
+extension QueryChainBuilder {
     
     /**
      Adds a `Where` clause to the `QueryChainBuilder`
@@ -563,6 +627,17 @@ public extension QueryChainBuilder {
         
         return self.queryChain(appending: Where<D>(format, argumentArray: argumentArray))
     }
+
+    /**
+     Adds an `OrderBy` clause to the `QueryChainBuilder`
+
+     - parameter clause: the `OrderBy` clause to add
+     - returns: a new `QueryChainBuilder` containing the `OrderBy` clause
+     */
+    public func orderBy(_ clause: OrderBy<D>) -> QueryChainBuilder<D, R> {
+
+        return self.queryChain(appending: clause)
+    }
     
     /**
      Adds an `OrderBy` clause to the `QueryChainBuilder`
@@ -574,6 +649,17 @@ public extension QueryChainBuilder {
     public func orderBy(_ sortKey: OrderBy<D>.SortKey, _ sortKeys: OrderBy<D>.SortKey...) -> QueryChainBuilder<D, R> {
         
         return self.queryChain(appending: OrderBy<D>([sortKey] + sortKeys))
+    }
+
+    /**
+     Adds an `OrderBy` clause to the `QueryChainBuild`
+
+     - parameter sortKeys: a series of `SortKey`s
+     - returns: a new `QueryChainBuilder` containing the `OrderBy` clause
+     */
+    public func orderBy(_ sortKeys: [OrderBy<D>.SortKey]) -> QueryChainBuilder<D, R> {
+
+        return self.queryChain(appending: OrderBy<D>(sortKeys))
     }
     
     /**
@@ -665,7 +751,10 @@ public extension QueryChainBuilder {
     }
 }
 
-public extension QueryChainBuilder where D: NSManagedObject {
+
+// MARK: - QueryChainBuilder where D: NSManagedObject
+
+extension QueryChainBuilder where D: NSManagedObject {
     
     /**
      Adds a `GroupBy` clause to the `QueryChainBuilder`
@@ -679,7 +768,10 @@ public extension QueryChainBuilder where D: NSManagedObject {
     }
 }
 
-public extension QueryChainBuilder where D: CoreStoreObject {
+
+// MARK: - QueryChainBuilder where D: CoreStoreObject
+
+extension QueryChainBuilder where D: CoreStoreObject {
     
     /**
      Adds a `Where` clause to the `QueryChainBuilder`
@@ -737,8 +829,11 @@ public extension QueryChainBuilder where D: CoreStoreObject {
     }
 }
 
+
+// MARK: - SectionMonitorChainBuilder
+
 @available(macOS 10.12, *)
-public extension SectionMonitorChainBuilder {
+extension SectionMonitorChainBuilder {
     
     /**
      Adds a `Where` clause to the `SectionMonitorChainBuilder`
@@ -774,6 +869,17 @@ public extension SectionMonitorChainBuilder {
         
         return self.sectionMonitorChain(appending: Where<D>(format, argumentArray: argumentArray))
     }
+
+    /**
+     Adds an `OrderBy` clause to the `SectionMonitorChainBuilder`
+
+     - parameter clause: the `OrderBy` clause to add
+     - returns: a new `SectionMonitorChainBuilder` containing the `OrderBy` clause
+     */
+    public func orderBy(_ clause: OrderBy<D>) -> SectionMonitorChainBuilder<D> {
+
+        return self.sectionMonitorChain(appending: clause)
+    }
     
     /**
      Adds an `OrderBy` clause to the `SectionMonitorChainBuilder`
@@ -785,6 +891,17 @@ public extension SectionMonitorChainBuilder {
     public func orderBy(_ sortKey: OrderBy<D>.SortKey, _ sortKeys: OrderBy<D>.SortKey...) -> SectionMonitorChainBuilder<D> {
         
         return self.sectionMonitorChain(appending: OrderBy<D>([sortKey] + sortKeys))
+    }
+
+    /**
+     Adds an `OrderBy` clause to the `SectionMonitorChainBuilder`
+
+     - parameter sortKeys: a series of `SortKey`s
+     - returns: a new `SectionMonitorChainBuilder` containing the `OrderBy` clause
+     */
+    public func orderBy(_ sortKeys: [OrderBy<D>.SortKey]) -> SectionMonitorChainBuilder<D> {
+
+        return self.sectionMonitorChain(appending: OrderBy<D>(sortKeys))
     }
     
     /**
@@ -842,8 +959,11 @@ public extension SectionMonitorChainBuilder {
     }
 }
 
+
+// MARK: - SectionMonitorChainBuilder where D: CoreStoreObject
+
 @available(macOS 10.12, *)
-public extension SectionMonitorChainBuilder where D: CoreStoreObject {
+extension SectionMonitorChainBuilder where D: CoreStoreObject {
     
     /**
      Adds a `Where` clause to the `SectionMonitorChainBuilder`

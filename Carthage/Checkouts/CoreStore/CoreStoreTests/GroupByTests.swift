@@ -68,8 +68,8 @@ final class GroupByTests: BaseTestCase {
             
             let groupBy = GroupBy<NSManagedObject>(#keyPath(TestEntity1.testString))
             
-            let request = CoreStoreFetchRequest()
-            _ = From<TestEntity1>().applyToFetchRequest(request, context: dataStack.mainContext)
+            let request = CoreStoreFetchRequest<NSFetchRequestResult>()
+            try From<TestEntity1>().applyToFetchRequest(request, context: dataStack.mainContext)
             groupBy.applyToFetchRequest(request)
             
             XCTAssertNotNil(request.propertiesToGroupBy)

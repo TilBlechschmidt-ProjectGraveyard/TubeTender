@@ -28,10 +28,10 @@ import Foundation
 
 // MARK: - CoreStore
 
-public extension CoreStore {
+extension CoreStore {
     
     /**
-     Using the `defaultStack`, performs a transaction asynchronously where `NSManagedObject` or `CoreStoreObject` creates, updates, and deletes can be made. The changes are commited automatically after the `task` closure returns. On success, the value returned from closure will be the wrapped as `.success(userInfo: T)` in the `completion`'s `Result<T>`. Any errors thrown from inside the `task` will be reported as `.failure(error: CoreStoreError)`. To cancel/rollback changes, call `try transaction.cancel()`, which throws a `CoreStoreError.userCancelled`.
+     Using the `defaultStack`, performs a transaction asynchronously where `NSManagedObject` or `CoreStoreObject` creates, updates, and deletes can be made. The changes are commited automatically after the `task` closure returns. On success, the value returned from closure will be the wrapped as `.success(T)` in the `completion`'s `Result<T>`. Any errors thrown from inside the `task` will be reported as `.failure(CoreStoreError)`. To cancel/rollback changes, call `try transaction.cancel()`, which throws a `CoreStoreError.userCancelled`.
      
      - parameter task: the asynchronous closure where creates, updates, and deletes can be made to the transaction. Transaction blocks are executed serially in a background queue, and all changes are made from a concurrent `NSManagedObjectContext`.
      - parameter completion: the closure executed after the save completes. The `Result` argument of the closure will either wrap the return value of `task`, or any uncaught errors thrown from within `task`. Cancelled `task`s will be indicated by `.failure(error: CoreStoreError.userCancelled)`. Custom errors thrown by the user will be wrapped in `CoreStoreError.userError(error: Error)`.
@@ -83,21 +83,5 @@ public extension CoreStore {
     public static func refreshAndMergeAllObjects() {
         
         self.defaultStack.refreshAndMergeAllObjects()
-    }
-    
-    
-    // MARK: Deprecated
-    
-    @available(*, deprecated, message: "Use the new auto-commiting methods `perform(asynchronous:completion:)` or `perform(asynchronous:success:failure:)`. Please read the documentation on the behavior of the new methods.")
-    public static func beginAsynchronous(_ closure: @escaping (_ transaction: AsynchronousDataTransaction) -> Void) {
-        
-        self.defaultStack.beginAsynchronous(closure)
-    }
-    
-    @available(*, deprecated, message: "Use the new auto-commiting method `perform(synchronous:)`. Please read the documentation on the behavior of the new methods.")
-    @discardableResult
-    public static func beginSynchronous(_ closure: @escaping (_ transaction: SynchronousDataTransaction) -> Void) -> SaveResult? {
-        
-        return self.defaultStack.beginSynchronous(closure)
     }
 }

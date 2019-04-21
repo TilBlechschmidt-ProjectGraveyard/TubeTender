@@ -46,6 +46,9 @@ class VideoViewController: UIViewController {
         ])
 
         if let playerView = playerViewController.view, let videoDetailView = videoDetailViewController.view {
+            self.addChild(playerViewController)
+            self.addChild(videoDetailViewController)
+
             // Add the player
             videoView.addSubview(playerView)
             playerView.translatesAutoresizingMaskIntoConstraints = false
@@ -84,6 +87,9 @@ class VideoViewController: UIViewController {
                 videoDetailView.rightAnchor.constraint(equalTo: videoView.safeAreaLayoutGuide.rightAnchor)
             ])
             videoView.sendSubviewToBack(videoDetailView)
+
+            videoDetailViewController.didMove(toParent: self)
+            playerViewController.didMove(toParent: self)
         }
 
         regularConstraints.forEach { $0.isActive = true }

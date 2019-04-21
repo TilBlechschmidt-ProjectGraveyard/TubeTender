@@ -29,7 +29,7 @@ import CoreData
 
 // MARK: - CSCoreStore
 
-public extension CSCoreStore {
+extension CSCoreStore {
     
     /**
      Returns the `defaultStack`'s model version. The version string is the same as the name of the version-specific .xcdatamodeld file.
@@ -124,22 +124,5 @@ public extension CSCoreStore {
     public static func addSQLiteStorageAndWait(_ storage: CSSQLiteStore, error: NSErrorPointer) -> CSSQLiteStore? {
         
         return self.defaultStack.addSQLiteStorageAndWait(storage, error: error)
-    }
-    
-    
-    // MARK: Deprecated
-    
-    @available(*, deprecated, message: "Use the new +entityTypesByNameForType: method passing `[NSManagedObject class]` as argument.")
-    @objc
-    public static var entityClassesByName: [EntityName: NSManagedObject.Type] {
-        
-        return CoreStore.entityTypesByName
-    }
-    
-    @available(*, deprecated, message: "Use the new +entityTypesByNameForType: method passing `[NSManagedObject class]` as argument.")
-    @objc
-    public static func entityClassWithName(_ name: EntityName) -> NSManagedObject.Type? {
-        
-        return CoreStore.entityTypesByName[name]
     }
 }

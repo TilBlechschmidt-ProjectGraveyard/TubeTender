@@ -2,6 +2,58 @@
 
 -----
 
+## [5.3.1 - Prefetching Threadh](https://github.com/onevcat/Kingfisher/releases/tag/5.3.1) (2019-03-28)
+
+#### Fix
+* Some thread issues which may cause crash when loading images by `ImagePrefetcher`. [#1150](https://github.com/onevcat/Kingfisher/pull/1150)
+* Setting a negative value by the deprecated `maxCachePeriodInSecond` API now expires the cache correctly. [#1145](https://github.com/onevcat/Kingfisher/pull/1145)
+
+---
+
+## [5.3.0 - Prefetching Sources](https://github.com/onevcat/Kingfisher/releases/tag/5.3.0) (2019-03-24)
+
+#### Add
+* Now `ImagePretcher` also supports using `Source` as fetching target. [#1142](https://github.com/onevcat/Kingfisher/pull/1142)
+* An option to skip file name hashing when storing image to disk cashe. [#1140](https://github.com/onevcat/Kingfisher/pull/1140)
+* Supports multiple Swift versions for CocoaPods 1.7.0.
+
+#### Fix
+* An issue that loading a downsampled image from original version might lead to different scale and potential memory performance problem. [#1126](https://github.com/onevcat/Kingfisher/pull/1126)
+* Marking setter of `kf` wrapper as `nonmutating` and seperate value/reference version of `KingfisherCompatible`. This allows mutating properties on `kf` even with a `let` declaration. [#1134](https://github.com/onevcat/Kingfisher/pull/1134)
+* A regression which causes stack overflow when using `ImagePretcher` to load huge ammount of images. [#1143](https://github.com/onevcat/Kingfisher/pull/1143)
+
+---
+
+## [5.2.0 - Swift 5.0](https://github.com/onevcat/Kingfisher/releases/tag/5.2.0) (2019-02-27)
+
+#### Add
+* Compatible with Swift 5.0 and Xcode 10.2. Now Kingfisher builds against Swift 4.0, 4.2 and 5.0. [#1098](https://github.com/onevcat/Kingfisher/pull/1098)
+
+#### Fix
+* A possible dead lock when using `ImagePretcher` heavily in another thread. [#1122](https://github.com/onevcat/Kingfisher/pull/1122)
+* Redesign `Result` type based on Swift `Result` in standard library. Deprecate `value` and `error` getter for `Kingfisher.Result`.
+
+---
+
+## [5.1.1 - Racing](https://github.com/onevcat/Kingfisher/releases/tag/5.1.1) (2019-02-11)
+
+#### Fix
+* Deprecate incorrect `ImageCache` initializer with `path` parameter. Now use the `cacheDirectoryURL` version for clearer implemetation. [#1114](https://github.com/onevcat/Kingfisher/pull/1114/)
+* Fix a race condition when setting download delegate from multiple `ImagePrefetcher`s. [#1109](https://github.com/onevcat/Kingfisher/issues/1109)
+* Now `directoryURL` of disk storage backend is marked as public correctly. [#1108](https://github.com/onevcat/Kingfisher/issues/1108)
+
+---
+
+## [5.1.0 - Redirecting & Racing](https://github.com/onevcat/Kingfisher/releases/tag/5.1.0) (2019-01-12)
+
+#### Add
+* Add a `ImageDownloadRedirectHandler` for intercepting HTTP request which redirects. [#1072](https://github.com/onevcat/Kingfisher/pull/1072)
+
+#### Fix
+* Some thread racing when downloading and resetting images in the same image view. [#1089](https://github.com/onevcat/Kingfisher/pull/1089)
+
+---
+
 ## [5.0.1 - Interweave](https://github.com/onevcat/Kingfisher/releases/tag/5.0.1) (2018-12-17)
 
 #### Fix

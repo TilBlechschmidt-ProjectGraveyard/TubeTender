@@ -29,7 +29,7 @@ import CoreData
 
 // MARK: - NSManagedObjectContext
 
-internal extension NSManagedObjectContext {
+extension NSManagedObjectContext {
     
     // MARK: Internal
     
@@ -72,7 +72,7 @@ internal extension NSManagedObjectContext {
         #if os(iOS) || os(macOS)
             
         context.observerForDidImportUbiquitousContentChangesNotification = NotificationObserver(
-            notificationName: NSNotification.Name.NSPersistentStoreDidImportUbiquitousContentChanges,
+            notificationName: NSNotification.Name("com.apple.coredata.ubiquity.importer.didfinishimport"), // NSNotification.Name.NSPersistentStoreDidImportUbiquitousContentChanges (used string literals to silence deprecation warning)
             object: coordinator,
             closure: { [weak context] (note) -> Void in
                 

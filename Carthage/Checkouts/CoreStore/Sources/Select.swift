@@ -298,6 +298,9 @@ public enum SelectTerm<D: DynamicObject>: ExpressibleByStringLiteral, Hashable {
     }
 }
 
+
+// MARK: - SelectTerm where D: NSManagedObject
+
 extension SelectTerm where D: NSManagedObject {
     
     /**
@@ -365,6 +368,9 @@ extension SelectTerm where D: NSManagedObject {
         return self.sum(keyPath._kvcKeyPathString!, as: alias)
     }
 }
+
+
+// MARK: - SelectTerm where D: CoreStoreObject
 
 extension SelectTerm where D: CoreStoreObject {
     
@@ -716,7 +722,7 @@ public struct Select<D: DynamicObject, T: SelectResultType>: SelectClause, Hasha
     
     // MARK: Internal
     
-    internal func applyToFetchRequest(_ fetchRequest: NSFetchRequest<NSFetchRequestResult>) {
+    internal func applyToFetchRequest(_ fetchRequest: NSFetchRequest<NSDictionary>) {
         
         fetchRequest.includesPendingChanges = false
         fetchRequest.resultType = .dictionaryResultType
@@ -802,7 +808,7 @@ public struct Select<D: DynamicObject, T: SelectResultType>: SelectClause, Hasha
     }
 }
 
-public extension Select where T: NSManagedObjectID {
+extension Select where T: NSManagedObjectID {
     
     /**
      Initializes a `Select` that queries for `NSManagedObjectID` results
@@ -813,7 +819,7 @@ public extension Select where T: NSManagedObjectID {
     }
 }
 
-public extension Select where D: NSManagedObject {
+extension Select where D: NSManagedObject {
     
     /**
      Initializes a `Select` that queries the value of an attribute pertained by a keyPath
@@ -825,7 +831,7 @@ public extension Select where D: NSManagedObject {
     }
 }
 
-public extension Select where D: CoreStoreObject, T: ImportableAttributeType {
+extension Select where D: CoreStoreObject, T: ImportableAttributeType {
     
     /**
      Initializes a `Select` that queries the value of an attribute pertained by a keyPath
@@ -846,7 +852,7 @@ public extension Select where D: CoreStoreObject, T: ImportableAttributeType {
     }
 }
 
-public extension Select where D: CoreStoreObject, T: ImportableAttributeType & NSCoding & NSCopying {
+extension Select where D: CoreStoreObject, T: ImportableAttributeType & NSCoding & NSCopying {
     
     /**
      Initializes a `Select` that queries the value of an attribute pertained by a keyPath

@@ -22,10 +22,11 @@ class PlayerControlView: UIView {
     private(set) var seekingSlider: UISlider!
 
     // MARK: Context controls (PiP, Fullscreen, Quality, Queue)
-    private(set) var topLeftControlView: UIView!
-    private(set) var topRightControlView: UIView!
+    private(set) var topLeftControlView: ButtonStackView!
     private(set) var pictureInPictureButton: UIButton!
     private(set) var fullscreenButton: UIButton!
+    private(set) var qualityButton: UIButton!
+    private(set) var topRightControlView: ButtonStackView!
 
     // MARK: Constraint sets
     private(set) var fullscreenConstraints: [NSLayoutConstraint] = []
@@ -150,79 +151,81 @@ class PlayerControlView: UIView {
             seekingSlider.widthAnchor.constraint(equalTo: progressBar.widthAnchor)
         ])
 
-        // Add top left/right control views
-        topLeftControlView = UIView()
-        topLeftControlView.translatesAutoresizingMaskIntoConstraints = false
-        controlView.addSubview(topLeftControlView)
-        addConstraints([
-            topLeftControlView.topAnchor.constraint(equalTo: controlView.topAnchor, constant: 10),
-            topLeftControlView.leftAnchor.constraint(equalTo: controlView.leftAnchor, constant: 10)
-        ])
-
-        // Add blur to TLCV
-        let blurEffect = UIBlurEffect(style: UIBlurEffect.Style.dark)
-        let blurEffectView = UIVisualEffectView(effect: blurEffect)
-        blurEffectView.frame = topLeftControlView.bounds
-        blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        blurEffectView.isUserInteractionEnabled = false
-        blurEffectView.clipsToBounds = true
-        blurEffectView.layer.cornerRadius = 10
-        topLeftControlView.layer.cornerRadius = 10
-        topLeftControlView.addSubview(blurEffectView)
-        topLeftControlView.sendSubviewToBack(blurEffectView)
-
-        // Fill in TLCV
+        // Create TLCV buttons
+        var tlcvButtons: [UIView] = []
         pictureInPictureButton = UIButton(type: .roundedRect)
+        pictureInPictureButton.tintColor = UIColor.white
         pictureInPictureButton.setImage(
             AVPictureInPictureController.pictureInPictureButtonStartImage(compatibleWith: nil),
             for: .normal
         )
-        pictureInPictureButton.tintColor = UIColor.white
-        pictureInPictureButton.translatesAutoresizingMaskIntoConstraints = false
-
-        let pipSupported = AVPictureInPictureController.isPictureInPictureSupported()
-        if pipSupported {
-            topLeftControlView.addSubview(pictureInPictureButton)
-            addConstraints([
-                pictureInPictureButton.topAnchor.constraint(equalTo: topLeftControlView.topAnchor, constant: 10),
-                pictureInPictureButton.bottomAnchor.constraint(equalTo: topLeftControlView.bottomAnchor, constant: -10),
-                pictureInPictureButton.leftAnchor.constraint(equalTo: topLeftControlView.leftAnchor, constant: 10)
-            ])
+        if AVPictureInPictureController.isPictureInPictureSupported() {
+            tlcvButtons.append(pictureInPictureButton)
         }
 
-        let fullscreenButtonLeftAnchor = pipSupported ? pictureInPictureButton.rightAnchor : topLeftControlView.leftAnchor
         fullscreenButton = UIButton(type: .roundedRect)
         fullscreenButton.setImage(UIImage(named: "enlarge"), for: .normal)
         fullscreenButton.tintColor = UIColor.white
-        fullscreenButton.translatesAutoresizingMaskIntoConstraints = false
-        topLeftControlView.addSubview(fullscreenButton)
-        addConstraints([
-            fullscreenButton.topAnchor.constraint(equalTo: topLeftControlView.topAnchor, constant: 10),
-            fullscreenButton.bottomAnchor.constraint(equalTo: topLeftControlView.bottomAnchor, constant: -10),
-            fullscreenButton.leftAnchor.constraint(equalTo: fullscreenButtonLeftAnchor, constant: 10),
-            fullscreenButton.rightAnchor.constraint(equalTo: topLeftControlView.rightAnchor, constant: -10),
-            fullscreenButton.heightAnchor.constraint(lessThanOrEqualToConstant: 22),
-            fullscreenButton.widthAnchor.constraint(equalTo: fullscreenButton.heightAnchor)
-        ])
+        fullscreenButton.snp.makeConstraints { make in
+            make.height.equalTo(22)
+            make.width.equalTo(22)
+        }
+        tlcvButtons.append(fullscreenButton)
+
+        // Create TLCV
+        topLeftControlView = ButtonStackView(arrangedSubviews: tlcvButtons)
+        controlView.addSubview(topLeftControlView)
+        topLeftControlView.snp.makeConstraints { make in
+            make.top.equalToSuperview().inset(Constants.uiPadding)
+            make.left.equalToSuperview().inset(Constants.uiPadding)
+        }
+
+        // Create the TRCV buttons
+        qualityButton = UIButton(type: .roundedRect)
+        qualityButton.setImage(UIImage(named: "automation"), for: .normal)
+        qualityButton.tintColor = UIColor.white
+        qualityButton.snp.makeConstraints { make in
+            make.height.equalTo(22)
+            make.width.equalTo(22)
+        }
+
+        // Create TRCV
+        topRightControlView = ButtonStackView(arrangedSubviews: [qualityButton])
+        controlView.addSubview(topRightControlView)
+        topRightControlView.snp.makeConstraints { make in
+            make.top.equalToSuperview().inset(Constants.uiPadding)
+            make.right.equalToSuperview().inset(Constants.uiPadding)
+        }
 
         // Activate the regular constraints
         regularConstraints.forEach { $0.isActive = true }
 
-        // Random experiments with blurs
-//        let testBlurEffect = UIBlurEffect(style: UIBlurEffect.Style.regular)
-//        let testBlurEffectView = UIVisualEffectView(effect: testBlurEffect)
-//        testBlurEffectView.frame = controlView.bounds
-//        testBlurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-//        testBlurEffectView.isUserInteractionEnabled = false
-//        testBlurEffectView.clipsToBounds = true
-//        controlView.addSubview(testBlurEffectView)
-//        controlView.sendSubviewToBack(testBlurEffectView)
-//
-//        let gradient = CAGradientLayer()
-//        gradient.colors = [UIColor.clear.cgColor, UIColor.black.cgColor, UIColor.black.cgColor, UIColor.clear.cgColor]
-//        gradient.locations = [0, 0.1, 0.9, 1]
-//        gradient.frame = blurEffectView.bounds
-//        blurEffectView.layer.mask = gradient
+        // Add the blur layer to make the UI more visible
+        blurView = controlView.blur(style: .dark)
+
+        let playButtonBlack = UIColor.black.withAlphaComponent(0.25)
+        playButtonGradient.colors = [playButtonBlack, playButtonBlack, UIColor.clear, UIColor.clear]
+
+        bottomGradient.colors = [UIColor.clear.cgColor, UIColor.clear.cgColor, UIColor.black.cgColor]
+        bottomGradient.locations = [0, 0.925, 1]
+        bottomGradient.frame = blurView.frame
+
+        gradientLayer.addSublayer(playButtonGradient)
+        gradientLayer.addSublayer(bottomGradient)
+
+        blurView.layer.mask = gradientLayer
+//        self.layer.addSublayer(gradientLayer)
+    }
+
+    let gradientLayer = CALayer()
+    let playButtonGradient = RadialGradientLayer()
+    let bottomGradient = CAGradientLayer()
+    var blurView: UIVisualEffectView!
+
+    override func layoutSubviews() {
+        playButtonGradient.frame = blurView.frame
+        bottomGradient.frame = blurView.frame
+        gradientLayer.frame = blurView.frame
     }
 
     required init?(coder aDecoder: NSCoder) {

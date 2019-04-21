@@ -4,7 +4,7 @@
 //
 //  Created by Wei Wang on 16/1/4.
 //
-//  Copyright (c) 2018 Wei Wang <onevcat@gmail.com>
+//  Copyright (c) 2019 Wei Wang <onevcat@gmail.com>
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -60,9 +60,10 @@ class KingfisherOptionsInfoTests: XCTestCase {
         
         let queue = DispatchQueue.global(qos: .default)
         let testModifier = TestModifier()
+        let testRedirectHandler = TestRedirectHandler()
         let processor = RoundCornerImageProcessor(cornerRadius: 20)
         let serializer = FormatIndicatedCacheSerializer.png
-        let modifier = DefaultImageModifier.default
+        let modifier = AnyImageModifier { i in return i }
 
         var options = KingfisherParsedOptionsInfo([
             .targetCache(cache),
@@ -81,6 +82,7 @@ class KingfisherOptionsInfoTests: XCTestCase {
             KingfisherOptionsInfoItem.scaleFactor(2.0),
             .preloadAllAnimationData,
             .requestModifier(testModifier),
+            .redirectHandler(testRedirectHandler),
             .processor(processor),
             .cacheSerializer(serializer),
             .imageModifier(modifier),
@@ -115,9 +117,10 @@ class KingfisherOptionsInfoTests: XCTestCase {
         XCTAssertEqual(options.scaleFactor, 2.0)
         XCTAssertTrue(options.preloadAllAnimationData)
         XCTAssertTrue(options.requestModifier is TestModifier)
+        XCTAssertTrue(options.redirectHandler is TestRedirectHandler)
         XCTAssertEqual(options.processor.identifier, processor.identifier)
         XCTAssertTrue(options.cacheSerializer is FormatIndicatedCacheSerializer)
-        XCTAssertTrue(options.imageModifier is DefaultImageModifier)
+        XCTAssertTrue(options.imageModifier is AnyImageModifier)
         XCTAssertTrue(options.keepCurrentImageWhileLoading)
         XCTAssertTrue(options.onlyLoadFirstFrame)
         XCTAssertTrue(options.cacheOriginalImage)
@@ -135,5 +138,11 @@ class KingfisherOptionsInfoTests: XCTestCase {
 class TestModifier: ImageDownloadRequestModifier {
     func modified(for request: URLRequest) -> URLRequest? {
         return nil
+    }
+}
+
+class TestRedirectHandler: ImageDownloadRedirectHandler {
+    func handleHTTPRedirection(for task: SessionDataTask, response: HTTPURLResponse, newRequest: URLRequest, completionHandler: @escaping (URLRequest?) -> Void) {
+        completionHandler(newRequest)
     }
 }

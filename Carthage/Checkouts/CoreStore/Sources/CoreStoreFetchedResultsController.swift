@@ -33,10 +33,13 @@ import CoreData
 internal final class CoreStoreFetchedResultsController: NSFetchedResultsController<NSManagedObject> {
     
     // MARK: Internal
+
+    @nonobjc
+    internal let typedFetchRequest: CoreStoreFetchRequest<NSManagedObject>
     
     @nonobjc
-    internal convenience init<D>(dataStack: DataStack, fetchRequest: NSFetchRequest<NSManagedObject>, from: From<D>, sectionBy: SectionBy<D>? = nil, applyFetchClauses: @escaping (_ fetchRequest: NSFetchRequest<NSManagedObject>) -> Void) {
-        
+    internal convenience init<D>(dataStack: DataStack, fetchRequest: CoreStoreFetchRequest<NSManagedObject>, from: From<D>, sectionBy: SectionBy<D>? = nil, applyFetchClauses: @escaping (_ fetchRequest: CoreStoreFetchRequest<NSManagedObject>) -> Void) {
+
         self.init(
             context: dataStack.mainContext,
             fetchRequest: fetchRequest,
@@ -47,22 +50,23 @@ internal final class CoreStoreFetchedResultsController: NSFetchedResultsControll
     }
     
     @nonobjc
-    internal init<D>(context: NSManagedObjectContext, fetchRequest: NSFetchRequest<NSManagedObject>, from: From<D>, sectionBy: SectionBy<D>? = nil, applyFetchClauses: @escaping (_ fetchRequest: NSFetchRequest<NSManagedObject>) -> Void) {
+    internal init<D>(context: NSManagedObjectContext, fetchRequest: CoreStoreFetchRequest<NSManagedObject>, from: From<D>, sectionBy: SectionBy<D>? = nil, applyFetchClauses: @escaping (_ fetchRequest: CoreStoreFetchRequest<NSManagedObject>) -> Void) {
         
-        _ = from.applyToFetchRequest(
+        _ = try? from.applyToFetchRequest(
             fetchRequest,
             context: context,
             applyAffectedStores: false
         )
         applyFetchClauses(fetchRequest)
-        
+
+        self.typedFetchRequest = fetchRequest
         self.reapplyAffectedStores = { fetchRequest, context in
             
-            return from.applyAffectedStoresForFetchedRequest(fetchRequest, context: context)
+            try from.applyAffectedStoresForFetchedRequest(fetchRequest, context: context)
         }
         
         super.init(
-            fetchRequest: fetchRequest,
+            fetchRequest: fetchRequest.staticCast(),
             managedObjectContext: context,
             sectionNameKeyPath: sectionBy?.sectionKeyPath,
             cacheName: nil
@@ -71,14 +75,8 @@ internal final class CoreStoreFetchedResultsController: NSFetchedResultsControll
     
     @nonobjc
     internal func performFetchFromSpecifiedStores() throws {
-        
-        if !self.reapplyAffectedStores(self.fetchRequest, self.managedObjectContext) {
-            
-            CoreStore.log(
-                .warning,
-                message: "Attempted to perform a fetch on an \(cs_typeName(self)) but could not find any persistent store for the entity \(cs_typeName(self.fetchRequest.entityName))"
-            )
-        }
+
+        try self.reapplyAffectedStores(self.typedFetchRequest, self.managedObjectContext)
         try self.performFetch()
     }
     
@@ -97,5 +95,5 @@ internal final class CoreStoreFetchedResultsController: NSFetchedResultsControll
     // MARK: Private
     
     @nonobjc
-    private let reapplyAffectedStores: (_ fetchRequest: NSFetchRequest<NSManagedObject>, _ context: NSManagedObjectContext) -> Bool
+    private let reapplyAffectedStores: (_ fetchRequest: CoreStoreFetchRequest<NSManagedObject>, _ context: NSManagedObjectContext) throws -> Void
 }

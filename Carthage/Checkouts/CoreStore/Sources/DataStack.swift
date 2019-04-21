@@ -43,7 +43,7 @@ public final class DataStack: Equatable {
      Convenience initializer for `DataStack` that creates a `SchemaHistory` from the model with the specified `modelName` in the specified `bundle`.
      
      - parameter xcodeModelName: the name of the (.xcdatamodeld) model file. If not specified, the application name (CFBundleName) will be used if it exists, or "CoreData" if it the bundle name was not set (e.g. in Unit Tests).
-     - parameter bundle: an optional bundle to load models from. If not specified, the main bundle will be used.
+     - parameter bundle: an optional bundle to load .xcdatamodeld models from. If not specified, the main bundle will be used.
      - parameter migrationChain: the `MigrationChain` that indicates the sequence of model versions to be used as the order for progressive migrations. If not specified, will default to a non-migrating data stack.
      */
     public convenience init(xcodeModelName: XcodeDataModelFileName = DataStack.applicationName, bundle: Bundle = Bundle.main, migrationChain: MigrationChain = nil) {
@@ -345,6 +345,18 @@ public final class DataStack: Equatable {
                     )
                     return storage
                 }
+                catch let error as NSError where storage.localStorageOptions.contains(.allowSynchronousLightweightMigration) && error.isCoreDataMigrationError {
+
+                    let storeError = CoreStoreError.asynchronousMigrationRequired(
+                        localStoreURL: fileURL,
+                        NSError: error
+                    )
+                    CoreStore.log(
+                        storeError,
+                        "Failed to add \(cs_typeName(storage)) to the stack."
+                    )
+                    throw storeError
+                }
             }
             catch {
                 
@@ -601,58 +613,5 @@ public final class DataStack: Equatable {
                 }
             }
         }
-    }
-    
-    
-    // MARK: Deprecated
-    
-    @available(*, deprecated, renamed: "init(xcodeModelName:bundle:migrationChain:)")
-    public convenience init(modelName: XcodeDataModelFileName, bundle: Bundle = Bundle.main, migrationChain: MigrationChain = nil) {
-        
-        self.init(
-            xcodeModelName: modelName,
-            bundle: bundle,
-            migrationChain: migrationChain
-        )
-    }
-    
-    
-    @available(*, deprecated, message: "Use the new DataStack.init(schemaHistory:) initializer passing an UnsafeDataModelSchema instance as argument")
-    public convenience init(model: NSManagedObjectModel, migrationChain: MigrationChain = nil) {
-        
-        let modelVersion = migrationChain.leafVersions.first!
-        self.init(
-            schemaHistory: SchemaHistory(
-                allSchema: [
-                    UnsafeDataModelSchema(
-                        modelName: modelVersion,
-                        model: model
-                    )
-                ],
-                migrationChain: migrationChain,
-                exactCurrentModelVersion: modelVersion
-            )
-        )
-    }
-    
-    @available(*, deprecated, message: "Use the new DataStack.entityTypesByName(for:) method passing `NSManagedObject.self` as argument.")
-    public var entityTypesByName: [EntityName: NSManagedObject.Type] {
-        
-        return self.entityTypesByName(for: NSManagedObject.self)
-    }
-    
-    
-    // MARK: Obsolete
-    
-    @available(*, obsoleted: 3.1, renamed: "entityDescription(for:)")
-    public func entityDescriptionForType(_ type: NSManagedObject.Type) -> NSEntityDescription? {
-        
-        return self.entityDescription(for: type)
-    }
-    
-    @available(*, obsoleted: 3.1, renamed: "objectID(forURIRepresentation:)")
-    public func objectIDForURIRepresentation(_ url: URL) -> NSManagedObjectID? {
-        
-        return self.objectID(forURIRepresentation: url)
     }
 }

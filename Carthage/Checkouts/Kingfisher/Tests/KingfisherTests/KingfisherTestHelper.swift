@@ -4,7 +4,7 @@
 //
 //  Created by Wei Wang on 15/4/10.
 //
-//  Copyright (c) 2018 Wei Wang <onevcat@gmail.com>
+//  Copyright (c) 2019 Wei Wang <onevcat@gmail.com>
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -213,4 +213,21 @@ extension Data {
 
 extension Bundle {
     static let test: Bundle = Bundle(for: ImageExtensionTests.self)
+}
+
+// Make tests happier with old Result type
+extension Result {
+    var value: Success? {
+        switch self {
+        case .success(let success): return success
+        case .failure: return nil
+        }
+    }
+
+    var error: Failure? {
+        switch self {
+        case .success: return nil
+        case .failure(let failure): return failure
+        }
+    }
 }

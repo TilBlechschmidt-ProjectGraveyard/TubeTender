@@ -30,7 +30,7 @@ import CoreData
 // MARK: - CSDataStack
 
 @available(macOS 10.12, *)
-public extension CSDataStack {
+extension CSDataStack {
     
     /**
      Creates a `CSObjectMonitor` for the specified `NSManagedObject`. Multiple `ObjectObserver`s may then register themselves to be notified when changes are made to the `NSManagedObject`.
@@ -68,7 +68,7 @@ public extension CSDataStack {
             sectionBy: nil,
             applyFetchClauses: { (fetchRequest) in
                 
-                fetchClauses.forEach { $0.applyToFetchRequest(fetchRequest as! NSFetchRequest<NSFetchRequestResult>) }
+                fetchClauses.forEach { $0.applyToFetchRequest(fetchRequest) }
             }
         ).bridgeToObjectiveC
     }
@@ -97,7 +97,7 @@ public extension CSDataStack {
             sectionBy: nil,
             applyFetchClauses: { (fetchRequest) in
                 
-                fetchClauses.forEach { $0.applyToFetchRequest(fetchRequest as! NSFetchRequest<NSFetchRequestResult>) }
+                fetchClauses.forEach { $0.applyToFetchRequest(fetchRequest) }
             },
             createAsynchronously: {
                 
@@ -131,7 +131,7 @@ public extension CSDataStack {
             sectionBy: sectionBy.bridgeToSwift,
             applyFetchClauses: { (fetchRequest) in
                 
-                fetchClauses.forEach { $0.applyToFetchRequest(fetchRequest as! NSFetchRequest<NSFetchRequestResult>) }
+                fetchClauses.forEach { $0.applyToFetchRequest(fetchRequest) }
             }
         ).bridgeToObjectiveC
     }
@@ -160,7 +160,7 @@ public extension CSDataStack {
             sectionBy: sectionBy.bridgeToSwift,
             applyFetchClauses: { (fetchRequest) in
                 
-                fetchClauses.forEach { $0.applyToFetchRequest(fetchRequest as! NSFetchRequest<NSFetchRequestResult>) }
+                fetchClauses.forEach { $0.applyToFetchRequest(fetchRequest) }
             },
             createAsynchronously: {
                 

@@ -235,6 +235,9 @@
                 <a class="nav-group-task-link" href="Protocols/ImageDataProvider.html">ImageDataProvider</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/ImageDownloadRedirectHandler.html">ImageDownloadRedirectHandler</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Protocols/ImageDownloadRequestModifier.html">ImageDownloadRequestModifier</a>
               </li>
               <li class="nav-group-task">
@@ -251,6 +254,9 @@
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Protocols/KingfisherCompatible.html">KingfisherCompatible</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/KingfisherCompatibleValue.html">KingfisherCompatibleValue</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Protocols/Placeholder.html">Placeholder</a>
@@ -271,6 +277,9 @@
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Structs/AnyModifier.html">AnyModifier</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/AnyRedirectHandler.html">AnyRedirectHandler</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Structs/Base64ImageDataProvider.html">Base64ImageDataProvider</a>
@@ -422,6 +431,12 @@
                 <a class="nav-group-task-link" href="Typealiases.html#/s:10Kingfisher23PrefetcherProgressBlocka">PrefetcherProgressBlock</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Typealiases.html#/s:10Kingfisher33PrefetcherSourceCompletionHandlera">PrefetcherSourceCompletionHandler</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Typealiases.html#/s:10Kingfisher29PrefetcherSourceProgressBlocka">PrefetcherSourceProgressBlock</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Typealiases.html#/s:10Kingfisher11Transformera">Transformer</a>
               </li>
               <li class="nav-group-task">
@@ -493,7 +508,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/onevcat/Kingfisher/tree/5.0.1/Sources/General/Kingfisher.swift#L">Show on GitHub</a>
+                        <a href="https://github.com/onevcat/Kingfisher/tree/5.3.1/Sources/General/Kingfisher.swift#L">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -518,7 +533,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">struct</span> <span class="kt">Data</span> <span class="p">:</span> <span class="kt">ReferenceConvertible</span><span class="p">,</span> <span class="kt">Equatable</span><span class="p">,</span> <span class="kt">Hashable</span><span class="p">,</span> <span class="kt">RandomAccessCollection</span><span class="p">,</span> <span class="kt">MutableCollection</span><span class="p">,</span> <span class="kt">RangeReplaceableCollection</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">struct</span> <span class="kt">Data</span> <span class="p">:</span> <span class="kt">ReferenceConvertible</span><span class="p">,</span> <span class="kt">Equatable</span><span class="p">,</span> <span class="kt">Hashable</span><span class="p">,</span> <span class="kt">RandomAccessCollection</span><span class="p">,</span> <span class="kt">MutableCollection</span><span class="p">,</span> <span class="kt">RangeReplaceableCollection</span><span class="p">,</span> <span class="kt">MutableDataProtocol</span><span class="p">,</span> <span class="kt">ContiguousBytes</span></code></pre>
 
                         </div>
                       </div>
@@ -556,7 +571,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">protocol</span> <span class="kt">Collection</span> <span class="p">:</span> <span class="kt">Sequence</span> <span class="k">where</span> <span class="k">Self</span><span class="o">.</span><span class="kt">SubSequence</span> <span class="p">:</span> <span class="kt">Collection</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">protocol</span> <span class="kt">Collection</span> <span class="p">:</span> <span class="kt">Sequence</span></code></pre>
 
                         </div>
                       </div>
@@ -605,7 +620,7 @@ If you need customize the url and/or cache key, use <code><a href="Structs/Image
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2018 <a class="link" href="https://onevcat.com" target="_blank" rel="external">Wei Wang</a>. All rights reserved. (Last updated: 2018-12-17)</p>
+      <p>&copy; 2019 <a class="link" href="https://onevcat.com" target="_blank" rel="external">Wei Wang</a>. All rights reserved. (Last updated: 2019-03-28)</p>
       <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.4</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>

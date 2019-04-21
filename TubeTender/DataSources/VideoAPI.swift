@@ -16,15 +16,15 @@ enum VideoError: Swift.Error {
     case notFound
 }
 
-fileprivate func groupByQuality(_ streams: [StreamMetadata]) -> [StreamQuality : [StreamMetadata]] {
-    return streams.reduce(into: [:]) { result, stream in
-        if result[stream.quality] != nil {
-            result[stream.quality]?.append(stream)
-        } else {
-            result[stream.quality] = [stream]
-        }
-    }
-}
+//fileprivate func groupByQuality(_ streams: [StreamMetadata]) -> [StreamQuality : [StreamMetadata]] {
+//    return streams.reduce(into: [:]) { result, stream in
+//        if result[stream.quality] != nil {
+//            result[stream.quality]?.append(stream)
+//        } else {
+//            result[stream.quality] = [stream]
+//        }
+//    }
+//}
 
 extension Array {
     fileprivate func filterIfPossible(_ predicate: (Element) -> Bool) -> [Element] {
@@ -38,11 +38,11 @@ public class Video: YoutubeClientObject<YoutubeKit.VideoListRequest, YoutubeKit.
 
     let id: ID
 
-    private let streams: APISignalProducer<StreamCollection>
+//    private let streams: APISignalProducer<StreamCollection>
 
     fileprivate init(id: ID, client: YoutubeClient) {
         self.id = id
-        self.streams = VideoStreamAPI.shared.streams(forVideoID: id).cached(lifetime: Constants.cacheLifetime)
+//        self.streams = VideoStreamAPI.shared.streams(forVideoID: id).cached(lifetime: Constants.cacheLifetime)
 
         let channelRequest = VideoListRequest(part: [.contentDetails, .statistics, .snippet], filter: .id(id))
 
@@ -67,9 +67,12 @@ public class Video: YoutubeClientObject<YoutubeKit.VideoListRequest, YoutubeKit.
         return makeProperty { ($0.snippet?.publishedAt).flatMap { DateFormatter.iso8601Full.date(from: $0) } }
     }
 
-    // TODO Make this a TimeInterval
-    var duration: APISignalProducer<String> {
+    var durationString: APISignalProducer<String> {
         return makeProperty { $0.contentDetails?.durationPretty }
+    }
+
+    var duration: APISignalProducer<TimeInterval> {
+        return makeProperty { $0.contentDetails?.durationInterval }
     }
 
     var viewCount: APISignalProducer<Int> {
@@ -108,54 +111,53 @@ extension Video: Equatable {
 
 // MARK: - Stream management
 
-fileprivate let videoInfoPath = "https://www.youtube.com/get_video_info?video_id=%@&asv=3&el=detailpage&ps=default&hl=en_US"
-
-typealias StreamSet = (video: StreamMetadata, audio: StreamMetadata?)
-
-extension Video {
-    func stream(withPreferredQuality preferredQuality: StreamQuality,
-                adaptive: Bool,
-                preferHighFPS: Bool = true,
-                preferHDR: Bool = false) -> SignalProducer<StreamSet, NoError> {
-        return streams.filterMap({ $0.value }).map { streamCollection in
-            let subset = adaptive ? streamCollection.video : streamCollection.mixed
-
-            var bestStream = subset[0]
-
-            for stream in subset[1...] {
-                let hdrMatch = preferHDR && !bestStream.hdr && stream.hdr
-                let fpsMatch = preferHighFPS && !bestStream.highFPS && stream.highFPS
-                let betterSecondaryMatch: Bool
-
-                if fpsMatch {
-                    betterSecondaryMatch = true
-                } else if bestStream.highFPS == stream.highFPS {
-                    betterSecondaryMatch = hdrMatch
-                } else {
-                    betterSecondaryMatch = false
-                }
-
-                if betterSecondaryMatch && bestStream.quality == stream.quality {
-                    bestStream = stream
-                } else if bestStream.quality > preferredQuality && bestStream.quality > stream.quality {
-                    bestStream = stream
-                } else if
-                    bestStream.quality <= preferredQuality
-                        && stream.quality > bestStream.quality
-                        && stream.quality < preferredQuality
-                {
-                    bestStream = stream
-                }
-            }
-
-            let eligibleAudioStreams = streamCollection.audio // .filter { $0.mimeType.contains("mp4") }
-
-            if adaptive, let audioStream = eligibleAudioStreams.first {
-                return (video: bestStream, audio: audioStream)
-            } else {
-                return (video: bestStream, audio: nil)
-            }
-        }
-    }
-}
-
+//fileprivate let videoInfoPath = "https://www.youtube.com/get_video_info?video_id=%@&asv=3&el=detailpage&ps=default&hl=en_US"
+//
+//typealias StreamSet = (video: StreamMetadata, audio: StreamMetadata?)
+//
+//extension Video {
+//    func stream(withPreferredQuality preferredQuality: StreamQuality,
+//                adaptive: Bool,
+//                preferHighFPS: Bool = true,
+//                preferHDR: Bool = false) -> SignalProducer<StreamSet, NoError> {
+//        return streams.filterMap({ $0.value }).map { streamCollection in
+//            let subset = adaptive ? streamCollection.video : streamCollection.mixed
+//
+//            var bestStream = subset[0]
+//
+//            for stream in subset[1...] {
+//                let hdrMatch = preferHDR && !bestStream.hdr && stream.hdr
+//                let fpsMatch = preferHighFPS && !bestStream.highFPS && stream.highFPS
+//                let betterSecondaryMatch: Bool
+//
+//                if fpsMatch {
+//                    betterSecondaryMatch = true
+//                } else if bestStream.highFPS == stream.highFPS {
+//                    betterSecondaryMatch = hdrMatch
+//                } else {
+//                    betterSecondaryMatch = false
+//                }
+//
+//                if betterSecondaryMatch && bestStream.quality == stream.quality {
+//                    bestStream = stream
+//                } else if bestStream.quality > preferredQuality && bestStream.quality > stream.quality {
+//                    bestStream = stream
+//                } else if
+//                    bestStream.quality <= preferredQuality
+//                        && stream.quality > bestStream.quality
+//                        && stream.quality < preferredQuality
+//                {
+//                    bestStream = stream
+//                }
+//            }
+//
+//            let eligibleAudioStreams = streamCollection.audio // .filter { $0.mimeType.contains("mp4") }
+//
+//            if adaptive, let audioStream = eligibleAudioStreams.first {
+//                return (video: bestStream, audio: audioStream)
+//            } else {
+//                return (video: bestStream, audio: nil)
+//            }
+//        }
+//    }
+//}

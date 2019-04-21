@@ -217,6 +217,17 @@ extension CoreStoreError: CoreStoreSwiftType, _ObjectiveCBridgeableError {
                 return
             }
             self = .progressiveMigrationRequired(localStoreURL: localStoreURL)
+
+        case .asynchronousMigrationRequired:
+            guard
+                let localStoreURL = info["localStoreURL"] as? URL,
+                case let nsError as NSError = info["NSError"]
+                else {
+
+                    self = .unknown
+                    return
+            }
+            self = .asynchronousMigrationRequired(localStoreURL: localStoreURL, NSError: nsError)
             
         case .internalError:
             guard case let nsError as NSError = info["NSError"] else {
@@ -236,6 +247,14 @@ extension CoreStoreError: CoreStoreSwiftType, _ObjectiveCBridgeableError {
             
         case .userCancelled:
             self = .userCancelled
+
+        case .persistentStoreNotFound:
+            guard let entity = info["entity"] as? DynamicObject.Type else {
+
+                self = .unknown
+                return
+            }
+            self = .persistentStoreNotFound(entity: entity)
         }
     }
 }
@@ -243,7 +262,7 @@ extension CoreStoreError: CoreStoreSwiftType, _ObjectiveCBridgeableError {
 
 // MARK: Internal
 
-internal extension Error {
+extension Error {
     
     internal var bridgeToSwift: CoreStoreError {
         

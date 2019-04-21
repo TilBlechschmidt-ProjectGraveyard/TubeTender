@@ -103,7 +103,14 @@ class PlayerViewController: UIViewController {
             playerControlView.rightAnchor.constraint(equalTo: videoView.rightAnchor)
         ])
 
-        playerControlView.loadingIndicator.reactive.isAnimating <~ player.status.signal.take(duringLifetimeOf: self).map { $0 == .buffering }
+        let isBuffering = player.status.signal.take(duringLifetimeOf: self).map { $0 == .buffering }
+        playerControlView.loadingIndicator.reactive.isAnimating <~ isBuffering
+        isBuffering.observeValues { buffering in
+            if buffering {
+                self.controlsVisible = false
+            }
+        }
+
         player.pictureInPictureActive.signal.observe(on: QueueScheduler.main).take(duringLifetimeOf: self).observeValues { [unowned self] pipActive in
             self.controlsDisabled = pipActive
             if pipActive {
@@ -119,6 +126,7 @@ class PlayerViewController: UIViewController {
         playerControlView.seekingSlider.addTarget(self, action: #selector(self.seeked), for: .touchDragInside)
         playerControlView.seekingSlider.addTarget(self, action: #selector(self.seeked), for: .touchDragOutside)
         playerControlView.playButton.addTarget(self, action: #selector(self.playButtonTapped), for: .touchUpInside)
+        playerControlView.qualityButton.addTarget(self, action: #selector(self.qualityButtonTapped), for: .touchUpInside)
         playerControlView.pictureInPictureButton.addTarget(self,
                                                            action: #selector(self.pictureInPictureTapped),
                                                            for: .touchUpInside)
@@ -163,7 +171,7 @@ class PlayerViewController: UIViewController {
             return self.playerControlView.controlView.alpha == 1
         }
         set {
-            UIView.animate(withDuration: 0.4, animations: {
+            UIView.animate(withDuration: 0.2, animations: {
                 self.playerControlView.controlView.alpha = newValue ? 1.0 : 0.0
                 return
             })
@@ -172,13 +180,13 @@ class PlayerViewController: UIViewController {
 
     func refreshControlHideTimer() {
         idleTimer?.invalidate()
-        idleTimer = Timer.scheduledTimer(timeInterval: 2, target: self, selector: #selector(self.idleTimerExceeded), userInfo: nil, repeats: false)
+        idleTimer = Timer.scheduledTimer(timeInterval: 2.5, target: self, selector: #selector(self.idleTimerExceeded), userInfo: nil, repeats: false)
     }
 
     @objc func idleTimerExceeded(_ sender: Timer) {
-        if playerControlView.seekingSlider.isTracking {
+        if playerControlView.seekingSlider.isTracking || SwitchablePlayer.shared.status.value != .playing {
             refreshControlHideTimer()
-        } else { // TODO Add check if video is playing
+        } else {
             controlsVisible = false
         }
     }
@@ -211,6 +219,41 @@ class PlayerViewController: UIViewController {
                 isFullscreenActive = false
             }
         }
+    }
+
+    @objc func qualityButtonTapped() {
+        let qualityLabel = SwitchablePlayer.shared.currentQuality.value?.description ?? "--"
+        let alert = UIAlertController(title: "Current quality: \(qualityLabel)", message: nil, preferredStyle: .actionSheet)
+        alert.popoverPresentationController?.sourceView = playerControlView.topRightControlView
+        alert.popoverPresentationController?.sourceRect = playerControlView.bounds
+        alert.popoverPresentationController?.permittedArrowDirections = .any
+        alert.popoverPresentationController?.backgroundColor = Constants.backgroundColor
+        alert.view.tintColor = .lightGray
+
+        let currentQuality = SwitchablePlayer.shared.preferredQuality.value
+
+        let action = UIAlertAction(title: "Automatic", style: .default) { _ in
+            SwitchablePlayer.shared.preferredQuality.value = nil
+        }
+        if currentQuality == nil {
+            action.setValue(true, forKey: "checked")
+        }
+        alert.addAction(action)
+
+        // TODO Filter actually available qualities
+        StreamQuality.ascendingOrder.reversed().forEach { quality in
+            let action = UIAlertAction(title: quality.description, style: .default) { _ in
+                SwitchablePlayer.shared.preferredQuality.value = quality
+            }
+
+            if let currentQuality = currentQuality, quality == currentQuality {
+                action.setValue(true, forKey: "checked")
+            }
+
+            alert.addAction(action)
+        }
+
+        self.present(alert, animated: true, completion: nil)
     }
 
     @objc func fullscreenButtonTapped() {

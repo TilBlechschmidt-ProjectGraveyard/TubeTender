@@ -34,6 +34,7 @@ class NativePlayer: NSObject {
     private var _currentTime: MutableProperty<TimeInterval> = MutableProperty(0)
     private var _duration: MutableProperty<TimeInterval> = MutableProperty(0)
     private var _status: MutableProperty<PlayerStatus> = MutableProperty(.noMediaLoaded)
+    private var _currentQuality: MutableProperty<StreamQuality?> = MutableProperty(nil)
 
     private(set) var playerView = AVPlayerView()
     private var player: AVPlayer?
@@ -42,10 +43,36 @@ class NativePlayer: NSObject {
     lazy var duration: Property<TimeInterval> = Property(_duration)
     lazy var status: Property<PlayerStatus> = Property(_status)
 
+    lazy var currentQuality: Property<StreamQuality?> = Property(_currentQuality)
+    let preferredQuality = MutableProperty<StreamQuality?>(nil)
+
     private(set) var drawable: UIView
 
     override init() {
         drawable = playerView
+    }
+
+    override func observeValue(forKeyPath keyPath: String?,
+                               of object: Any?,
+                               change: [NSKeyValueChangeKey : Any]?,
+                               context: UnsafeMutableRawPointer?) {
+        if keyPath == #keyPath(AVPlayerItem.presentationSize), let presentationSize = player?.currentItem?.presentationSize {
+            _currentQuality.value = StreamQuality.from(videoSize: presentationSize)
+        }
+
+        if keyPath == #keyPath(AVPlayerItem.status), let status = player?.currentItem?.status {
+            DispatchQueue.global().async {
+                // Switch over the status
+                switch status {
+                case .readyToPlay:
+                    self._status.value = .readyToPlay
+                case .failed:
+                    self._status.value = .playbackFailed
+                default:
+                    break
+                }
+            }
+        }
     }
 }
 
@@ -66,6 +93,7 @@ extension NativePlayer: Player {
 
         // Create the player
         player = AVPlayer(playerItem: playerItem)
+        player?.automaticallyWaitsToMinimizeStalling = false
         playerView.player = player
 
         // Observe the time
@@ -88,6 +116,25 @@ extension NativePlayer: Player {
             case .playing:
                 self._status.value = .playing
             }
+        }
+
+        playerItem.addObserver(self, forKeyPath: #keyPath(AVPlayerItem.status), options: [], context: nil)
+
+//        playerItem.preferredMaximumResolution = CGSize(width: 426, height: 240)
+
+        playerItem.addObserver(self, forKeyPath: #keyPath(AVPlayerItem.presentationSize), options: [], context: nil)
+//        playerItem.reactive.signal(for: #keyPath(AVPlayerItem.presentationSize)).observeValues { [unowned self] _ in
+//            print("current resolution", playerItem.presentationSize)
+//        }
+
+        preferredQuality.signal.take(duringLifetimeOf: playerItem).observeValues { preferredQuality in
+            if let maximumResolution = preferredQuality?.resolution {
+                playerItem.preferredMaximumResolution = maximumResolution
+            }
+        }
+
+        if let preferredQuality = preferredQuality.value {
+            playerItem.preferredMaximumResolution = preferredQuality.resolution
         }
     }
 

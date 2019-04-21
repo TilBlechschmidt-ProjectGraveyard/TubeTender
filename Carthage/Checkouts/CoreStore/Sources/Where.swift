@@ -45,7 +45,7 @@ public struct Where<D: DynamicObject>: WhereClauseType, FetchClause, QueryClause
         
         return Where<D>(NSCompoundPredicate(type: .and, subpredicates: [left.predicate, right.predicate]))
     }
-    
+
     /**
      Combines two `Where` predicates together using `OR` operator
      */
@@ -120,6 +120,16 @@ public struct Where<D: DynamicObject>: WhereClauseType, FetchClause, QueryClause
     public init() {
         
         self.init(true)
+    }
+
+    /**
+     Initializes a `Where` clause with an existing `Where` clause.
+
+     - parameter clause: the existing `Where` clause.
+     */
+    public init(_ clause: Where<D>) {
+
+        self.init(clause.predicate)
     }
     
     /**
@@ -297,7 +307,7 @@ public struct Where<D: DynamicObject>: WhereClauseType, FetchClause, QueryClause
 
 // MARK: - Where where D: NSManagedObject
 
-public extension Where where D: NSManagedObject {
+extension Where where D: NSManagedObject {
     
     /**
      Initializes a `Where` clause that compares equality to `nil`
@@ -391,7 +401,7 @@ public extension Where where D: NSManagedObject {
 
 // MARK: - Where where D: CoreStoreObject
 
-public extension Where where D: CoreStoreObject {
+extension Where where D: CoreStoreObject {
     
     /**
      Initializes a `Where` clause that compares equality to `nil`
@@ -517,7 +527,7 @@ public extension Where where D: CoreStoreObject {
 
 // MARK: - Sequence where Iterator.Element: WhereClauseType
 
-public extension Sequence where Iterator.Element: WhereClauseType {
+extension Sequence where Iterator.Element: WhereClauseType {
     
     /**
      Combines multiple `Where` predicates together using `AND` operator
@@ -533,51 +543,5 @@ public extension Sequence where Iterator.Element: WhereClauseType {
     public func combinedByOr() -> Where<Iterator.Element.ObjectType> {
         
         return Where(NSCompoundPredicate(type: .or, subpredicates: self.map({ $0.predicate })))
-    }
-}
-
-
-// MARK: - Deprecated
-
-public extension Where {
-    
-    @available(*, deprecated: 4.0, renamed: "&&?")
-    public static func && (left: Where<D>, right: Where<D>?) -> Where<D> {
-        
-        if let right = right {
-            
-            return left && right
-        }
-        return left
-    }
-    
-    @available(*, deprecated: 4.0, renamed: "&&?")
-    public static func && (left: Where<D>?, right: Where<D>) -> Where<D> {
-        
-        if let left = left {
-            
-            return left && right
-        }
-        return right
-    }
-    
-    @available(*, deprecated: 4.0, renamed: "||?")
-    public static func || (left: Where<D>, right: Where<D>?) -> Where<D> {
-        
-        if let right = right {
-            
-            return left || right
-        }
-        return left
-    }
-    
-    @available(*, deprecated: 4.0, renamed: "||?")
-    public static func || (left: Where<D>?, right: Where<D>) -> Where<D> {
-        
-        if let left = left {
-            
-            return left || right
-        }
-        return right
     }
 }

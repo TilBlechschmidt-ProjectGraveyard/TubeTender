@@ -4,7 +4,7 @@
 //
 //  Created by Wei Wang on 2018/11/12.
 //
-//  Copyright (c) 2018年 Wei Wang <onevcat@gmail.com>
+//  Copyright (c) 2019 Wei Wang <onevcat@gmail.com>
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -154,6 +154,22 @@ class DiskStorageTests: XCTestCase {
         let urls = try! storage.removeSizeExceededValues()
         XCTAssertTrue(urls.count < count)
         XCTAssertTrue(urls.count > 0)
+    }
+
+    func testConfigUsesHashedFileName() {
+        let key = "test"
+
+        // hashed fileName
+        storage.config.usesHashedFileName = true
+        let hashedFileName = storage.cacheFileName(forKey: key)
+        XCTAssertNotEqual(hashedFileName, key)
+        // validation md5 hash of the key
+        XCTAssertEqual(hashedFileName, key.kf.md5)
+
+        // fileName without hash
+        storage.config.usesHashedFileName = false
+        let originalFileName = storage.cacheFileName(forKey: key)
+        XCTAssertEqual(originalFileName, key)
     }
 
     func testFileMetaOrder() {

@@ -51,7 +51,7 @@ class SubscriptionFeedViewTableCell: UIRebindableTableViewCell {
     private func makeBindings() {
         let iconURL = video.channel.get(\.thumbnailURL)
 
-        let stringDuration = video.duration.map { $0.value ?? "--:--" }
+        let stringDuration = video.durationString.map { $0.value ?? "--:--" }
 
         let subtitleData = SignalProducer.zip(
             video.channelTitle.map { $0.value },

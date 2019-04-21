@@ -288,6 +288,10 @@ public final class CoreStoreSchema: DynamicSchema {
                 switch child.value {
                     
                 case let attribute as AttributeProtocol:
+                    CoreStore.assert(
+                        !NSManagedObject.instancesRespond(to: Selector(attribute.keyPath)),
+                        "Attribute Property name \"\(String(reflecting: entity.type)).\(attribute.keyPath)\" is not allowed because it collides with \"\(String(reflecting: NSManagedObject.self)).\(attribute.keyPath)\""
+                    )
                     let description = NSAttributeDescription()
                     description.name = attribute.keyPath
                     description.attributeType = Swift.type(of: attribute).attributeType
@@ -302,6 +306,10 @@ public final class CoreStoreSchema: DynamicSchema {
                     customGetterSetterByKeyPaths[attribute.keyPath] = (attribute.getter, attribute.setter)
                     
                 case let relationship as RelationshipProtocol:
+                    CoreStore.assert(
+                        !NSManagedObject.instancesRespond(to: Selector(relationship.keyPath)),
+                        "Relationship Property name \"\(String(reflecting: entity.type)).\(relationship.keyPath)\" is not allowed because it collides with \"\(String(reflecting: NSManagedObject.self)).\(relationship.keyPath)\""
+                    )
                     let description = NSRelationshipDescription()
                     description.name = relationship.keyPath
                     description.minCount = relationship.minCount
@@ -442,15 +450,18 @@ public final class CoreStoreSchema: DynamicSchema {
             )
         }
         for (entity, entityDescription) in entityDescriptionsByEntity {
-            
-            let uniqueConstraints = entity.uniqueConstraints.filter({ !$0.isEmpty })
-            if !uniqueConstraints.isEmpty {
+
+            if #available(macOS 10.11, *) {
                 
-                CoreStore.assert(
-                    entityDescription.superentity == nil,
-                    "Uniqueness constraints must be defined at the highest level possible."
-                )
-                entityDescription.uniquenessConstraints = entity.uniqueConstraints.map { $0.map { $0 as NSString } }
+                let uniqueConstraints = entity.uniqueConstraints.filter({ !$0.isEmpty })
+                if !uniqueConstraints.isEmpty {
+
+                    CoreStore.assert(
+                        entityDescription.superentity == nil,
+                        "Uniqueness constraints must be defined at the highest level possible."
+                    )
+                    entityDescription.uniquenessConstraints = entity.uniqueConstraints.map { $0.map { $0 as NSString } }
+                }
             }
             guard !entity.indexes.isEmpty else {
                 
@@ -517,7 +528,14 @@ public final class CoreStoreSchema: DynamicSchema {
                 return CoreStoreManagedObject.self
             }
             let managedObjectClass: AnyClass = className.withCString {
-                
+
+                // Xcode 10.1+ users: You may find this comment due to a crash while debugging on an iPhone XR device (or any A12 device).
+                // This is a known issue that should not occur in archived builds, as the AppStore strips away arm64e build architectures from the binary. So while it crashes on DEBUG, it shouldn't be an issue for live users.
+                // In the meantime, please submit a bug report to Apple and refer to similar discussions here:
+                // - https://github.com/realm/realm-cocoa/issues/6013
+                // - https://github.com/wordpress-mobile/WordPress-iOS/pull/10400
+                // - https://github.com/JohnEstropia/CoreStore/issues/291
+                // If you wish to debug with A12 devices, please use Xcode 10.0 for now.
                 return objc_allocateClassPair(superClass, $0, 0)!
             }
             defer {

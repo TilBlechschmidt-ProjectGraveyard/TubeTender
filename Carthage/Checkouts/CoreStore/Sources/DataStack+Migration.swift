@@ -29,7 +29,7 @@ import CoreData
 
 // MARK: - DataStack
 
-public extension DataStack {
+extension DataStack {
     
     /**
      Asynchronously adds a `StorageInterface` to the stack. Migrations are also initiated by default.
@@ -55,7 +55,7 @@ public extension DataStack {
                 
                 DispatchQueue.main.async {
                     
-                    completion(SetupResult(storage))
+                    completion(.success(storage))
                 }
                 return
             }
@@ -70,7 +70,7 @@ public extension DataStack {
                 
                 DispatchQueue.main.async {
                     
-                    completion(SetupResult(storage))
+                    completion(.success(storage))
                 }
             }
             catch {
@@ -82,7 +82,7 @@ public extension DataStack {
                 )
                 DispatchQueue.main.async {
                     
-                    completion(SetupResult(storeError))
+                    completion(.failure(storeError))
                 }
             }
         }
@@ -119,7 +119,7 @@ public extension DataStack {
                 
                 DispatchQueue.main.async {
                     
-                    completion(SetupResult(storage))
+                    completion(.success(storage))
                 }
                 return nil
             }
@@ -131,7 +131,7 @@ public extension DataStack {
                     
                     DispatchQueue.main.async {
                         
-                        completion(SetupResult(existingStorage))
+                        completion(.success(existingStorage))
                     }
                     return nil
                 }
@@ -143,7 +143,7 @@ public extension DataStack {
                 )
                 DispatchQueue.main.async {
                     
-                    completion(SetupResult(error))
+                    completion(.failure(error))
                 }
                 return nil
             }
@@ -181,17 +181,17 @@ public extension DataStack {
                                     
                                     DispatchQueue.main.async {
                                         
-                                        completion(SetupResult(storage))
+                                        completion(.success(storage))
                                     }
                                 }
                                 catch {
                                     
-                                    completion(SetupResult(error))
+                                    completion(.failure(CoreStoreError(error)))
                                 }
                                 return
                             }
                             
-                            completion(SetupResult(error))
+                            completion(.failure(CoreStoreError(error)))
                             return
                         }
                         
@@ -201,12 +201,12 @@ public extension DataStack {
                             
                             DispatchQueue.main.async {
                                 
-                                completion(SetupResult(storage))
+                                completion(.success(storage))
                             }
                         }
                         catch {
                             
-                            completion(SetupResult(error))
+                            completion(.failure(CoreStoreError(error)))
                         }
                     }
                 )
@@ -220,14 +220,14 @@ public extension DataStack {
                         
                         DispatchQueue.main.async {
                             
-                            completion(SetupResult(storage))
+                            completion(.success(storage))
                         }
                     }
                     catch {
                         
                         DispatchQueue.main.async {
                             
-                            completion(SetupResult(error))
+                            completion(.failure(CoreStoreError(error)))
                         }
                     }
                     return nil
@@ -241,7 +241,7 @@ public extension DataStack {
                 )
                 DispatchQueue.main.async {
                     
-                    completion(SetupResult(storeError))
+                    completion(.failure(storeError))
                 }
                 return nil
             }
@@ -284,7 +284,7 @@ public extension DataStack {
                 
                 DispatchQueue.main.async {
                     
-                    completion(SetupResult(storage))
+                    completion(.success(storage))
                 }
                 return
             }
@@ -296,7 +296,7 @@ public extension DataStack {
                     
                     DispatchQueue.main.async {
                         
-                        completion(SetupResult(existingStorage))
+                        completion(.success(existingStorage))
                     }
                     return
                 }
@@ -308,7 +308,7 @@ public extension DataStack {
                 )
                 DispatchQueue.main.async {
                     
-                    completion(SetupResult(error))
+                    completion(.failure(error))
                 }
                 return
             }
@@ -328,7 +328,7 @@ public extension DataStack {
                     )
                     DispatchQueue.main.async {
                         
-                        completion(SetupResult(storage))
+                        completion(.success(storage))
                     }
                 }
                 catch let error as NSError where storage.cloudStorageOptions.contains(.recreateLocalStoreOnModelMismatch) && error.isCoreDataMigrationError {
@@ -358,14 +358,14 @@ public extension DataStack {
                         
                         DispatchQueue.main.async {
                             
-                            completion(SetupResult(storage))
+                            completion(.success(storage))
                         }
                     }
                     catch {
                         
                         DispatchQueue.main.async {
                             
-                            completion(SetupResult(error))
+                            completion(.failure(CoreStoreError(error)))
                         }
                     }
             }
@@ -378,7 +378,7 @@ public extension DataStack {
                 )
                 DispatchQueue.main.async {
                     
-                    completion(SetupResult(storeError))
+                    completion(.failure(storeError))
                 }
             }
         }
@@ -514,7 +514,7 @@ public extension DataStack {
             
             DispatchQueue.main.async {
                 
-                completion(MigrationResult(error))
+                completion(.failure(error))
             }
             return nil
         }
@@ -524,7 +524,7 @@ public extension DataStack {
             
             DispatchQueue.main.async {
                 
-                completion(MigrationResult([]))
+                completion(.success([]))
                 return
             }
             return nil
@@ -538,7 +538,7 @@ public extension DataStack {
             )
             DispatchQueue.main.async {
                 
-                completion(MigrationResult(error))
+                completion(.failure(error))
             }
             return nil
         }
@@ -586,7 +586,7 @@ public extension DataStack {
                                 migrationError,
                                 "Failed to migrate version model \"\(migrationType.sourceVersion)\" to version \"\(migrationType.destinationVersion)\"."
                             )
-                            migrationResult = MigrationResult(migrationError)
+                            migrationResult = .failure(migrationError)
                             cancelled = true
                         }
                     }
@@ -609,7 +609,7 @@ public extension DataStack {
             DispatchQueue.main.async {
                 
                 progress.setProgressHandler(nil)
-                completion(migrationResult ?? MigrationResult(migrationTypes))
+                completion(migrationResult ?? .success(migrationTypes))
                 return
             }
         }
@@ -748,12 +748,20 @@ public extension DataStack {
                 // Lightweight migration failed somehow. Proceed using InferedMappingModel below
             }
         }
+        let fileManager = FileManager.default
+        let systemTemporaryDirectoryURL: URL
+        if #available(macOS 10.12, *) {
 
-        let temporaryDirectoryURL = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
+            systemTemporaryDirectoryURL = fileManager.temporaryDirectory
+        }
+        else {
+
+            systemTemporaryDirectoryURL = URL(fileURLWithPath: NSTemporaryDirectory())
+        }
+        let temporaryDirectoryURL = systemTemporaryDirectoryURL
             .appendingPathComponent(Bundle.main.bundleIdentifier ?? "com.CoreStore.DataStack")
             .appendingPathComponent(ProcessInfo().globallyUniqueString)
-        
-        let fileManager = FileManager.default
+
         try! fileManager.createDirectory(
             at: temporaryDirectoryURL,
             withIntermediateDirectories: true,
@@ -838,7 +846,7 @@ public extension DataStack {
 
 // MARK: - FilePrivate
 
-fileprivate extension Array where Element == SchemaMappingProvider {
+extension Array where Element == SchemaMappingProvider {
     
     func findMapping(sourceSchema: DynamicSchema, destinationSchema: DynamicSchema, storage: LocalStorage) throws -> (mappingModel: NSMappingModel, migrationType: MigrationType) {
         

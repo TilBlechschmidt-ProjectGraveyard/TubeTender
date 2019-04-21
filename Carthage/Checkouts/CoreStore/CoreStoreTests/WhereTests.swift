@@ -56,6 +56,275 @@ final class WhereTests: XCTestCase {
     dynamic func test_ThatDynamicModelKeyPaths_CanBeCreated() {
         
         XCTAssertEqual(String(keyPath: \TestEntity1.testEntityID), "testEntityID")
+        XCTAssertEqual(String(keyPath: \Animal.color), "color")
+    }
+
+    @objc
+    dynamic func test_ThatExpressions_HaveCorrectKeyPaths() {
+
+        do {
+
+            do {
+
+                XCTAssertEqual(
+                    #keyPath(TestEntity1.testToOne.testEntityID),
+                    (\TestEntity1.testToOne ~ \.testEntityID).description,
+                    String(keyPath: \TestEntity1.testToOne ~ \.testEntityID)
+                )
+                XCTAssertEqual(
+                    #keyPath(TestEntity1.testToOne.testToOne.testToManyUnordered),
+                    (\TestEntity1.testToOne ~ \.testToOne ~ \.testToManyUnordered).description,
+                    String(keyPath: \TestEntity1.testToOne ~ \.testToOne ~ \.testToManyUnordered)
+                )
+                XCTAssertEqual(
+                    #keyPath(TestEntity2.testToOne.testToOne.testToManyOrdered),
+                    (\TestEntity2.testToOne ~ \.testToOne ~ \.testToManyOrdered).description,
+                    String(keyPath: \TestEntity2.testToOne ~ \.testToOne ~ \.testToManyOrdered)
+                )
+            }
+            do {
+
+                XCTAssertEqual(
+                    "master.pets",
+                    (\Animal.master ~ \.pets).description,
+                    String(keyPath: \Animal.master ~ \.pets)
+                )
+                XCTAssertEqual(
+                    "master.pets.species",
+                    (\Animal.master ~ \.pets ~ \.species).description,
+                    String(keyPath: \Animal.master ~ \.pets ~ \.species)
+                )
+                XCTAssertEqual(
+                    "master.pets.master",
+                    (\Animal.master ~ \.pets ~ \.master).description,
+                    String(keyPath: \Animal.master ~ \.pets ~ \.master)
+                )
+            }
+        }
+        do {
+
+            do {
+
+                XCTAssertEqual(
+                    #keyPath(TestEntity1.testToOne.testToManyUnordered) + ".@count",
+                    (\TestEntity1.testToOne ~ \.testToManyUnordered).count().description,
+                    String(keyPath: (\TestEntity1.testToOne ~ \.testToManyUnordered).count())
+                )
+                XCTAssertEqual(
+                    #keyPath(TestEntity2.testToOne.testToOne.testToManyOrdered) + ".@count",
+                    (\TestEntity2.testToOne ~ \.testToOne ~ \.testToManyOrdered).count().description,
+                    String(keyPath: (\TestEntity2.testToOne ~ \.testToOne ~ \.testToManyOrdered).count())
+                )
+            }
+            do {
+
+                XCTAssertEqual(
+                    "master.pets.@count",
+                    (\Animal.master ~ \.pets).count().description,
+                    String(keyPath: (\Animal.master ~ \.pets).count())
+                )
+            }
+        }
+        do {
+
+            do {
+
+                XCTAssertEqual(
+                    "ANY " + #keyPath(TestEntity1.testToOne.testToManyUnordered),
+                    (\TestEntity1.testToOne ~ \.testToManyUnordered).any().description,
+                    String(keyPath: (\TestEntity1.testToOne ~ \.testToManyUnordered).any())
+                )
+                XCTAssertEqual(
+                    "ANY " + #keyPath(TestEntity2.testToOne.testToOne.testToManyOrdered),
+                    (\TestEntity2.testToOne ~ \.testToOne ~ \.testToManyOrdered).any().description,
+                    String(keyPath: (\TestEntity2.testToOne ~ \.testToOne ~ \.testToManyOrdered).any())
+                )
+            }
+            do {
+
+                XCTAssertEqual(
+                    "ANY master.pets",
+                    (\Animal.master ~ \.pets).any().description,
+                    String(keyPath: (\Animal.master ~ \.pets).any())
+                )
+                XCTAssertEqual(
+                    "ANY master.pets.species",
+                    (\Animal.master ~ \.pets ~ \.species).any().description,
+                    String(keyPath: (\Animal.master ~ \.pets ~ \.species).any())
+                )
+            }
+        }
+        do {
+
+            do {
+
+                XCTAssertEqual(
+                    "ALL " + #keyPath(TestEntity1.testToOne.testToManyUnordered),
+                    (\TestEntity1.testToOne ~ \.testToManyUnordered).all().description,
+                    String(keyPath: (\TestEntity1.testToOne ~ \.testToManyUnordered).all())
+                )
+                XCTAssertEqual(
+                    "ALL " + #keyPath(TestEntity2.testToOne.testToOne.testToManyOrdered),
+                    (\TestEntity2.testToOne ~ \.testToOne ~ \.testToManyOrdered).all().description,
+                    String(keyPath: (\TestEntity2.testToOne ~ \.testToOne ~ \.testToManyOrdered).all())
+                )
+            }
+            do {
+
+                XCTAssertEqual(
+                    "ALL master.pets",
+                    (\Animal.master ~ \.pets).all().description,
+                    String(keyPath: (\Animal.master ~ \.pets).all())
+                )
+                XCTAssertEqual(
+                    "ALL master.pets.species",
+                    (\Animal.master ~ \.pets ~ \.species).all().description,
+                    String(keyPath: (\Animal.master ~ \.pets ~ \.species).all())
+                )
+            }
+        }
+        do {
+
+            do {
+
+                XCTAssertEqual(
+                    "NONE " + #keyPath(TestEntity1.testToOne.testToManyUnordered),
+                    (\TestEntity1.testToOne ~ \.testToManyUnordered).none().description,
+                    String(keyPath: (\TestEntity1.testToOne ~ \.testToManyUnordered).none())
+                )
+                XCTAssertEqual(
+                    "NONE " + #keyPath(TestEntity2.testToOne.testToOne.testToManyOrdered),
+                    (\TestEntity2.testToOne ~ \.testToOne ~ \.testToManyOrdered).none().description,
+                    String(keyPath: (\TestEntity2.testToOne ~ \.testToOne ~ \.testToManyOrdered).none())
+                )
+            }
+            do {
+
+                XCTAssertEqual(
+                    "NONE master.pets",
+                    (\Animal.master ~ \.pets).none().description,
+                    String(keyPath: (\Animal.master ~ \.pets).none())
+                )
+                XCTAssertEqual(
+                    "NONE master.pets.species",
+                    (\Animal.master ~ \.pets ~ \.species).none().description,
+                    String(keyPath: (\Animal.master ~ \.pets ~ \.species).none())
+                )
+            }
+        }
+    }
+
+    @objc
+    dynamic func test_ThatWhereClauses_CanBeCreatedFromExpressionsCorrectly() {
+
+        do {
+
+            let dummy = "dummy"
+            do {
+
+                let whereClause: Where<TestEntity1> = (\.testToOne ~ \.testString) == dummy
+                let predicate = NSPredicate(format: "\(#keyPath(TestEntity1.testToOne.testString)) == %@", dummy)
+                XCTAssertEqual(whereClause, Where<TestEntity1>(predicate))
+                XCTAssertEqual(whereClause.predicate, predicate)
+            }
+            do {
+
+                let whereClause: Where<Animal> = (\.master ~ \.name) == dummy
+                let predicate = NSPredicate(format: "master.name == %@", dummy)
+                XCTAssertEqual(whereClause, Where<Animal>(predicate))
+                XCTAssertEqual(whereClause.predicate, predicate)
+            }
+        }
+        do {
+
+            let dummy = "dummy"
+            do {
+
+                let whereClause: Where<TestEntity1> = (\.testToOne ~ \.testToOne ~ \.testString) == dummy
+                let predicate = NSPredicate(format: "\(#keyPath(TestEntity1.testToOne.testToOne.testString)) == %@", dummy)
+                XCTAssertEqual(whereClause, Where<TestEntity1>(predicate))
+                XCTAssertEqual(whereClause.predicate, predicate)
+            }
+            do {
+
+                let whereClause: Where<Animal> = (\.master ~ \.spouse ~ \.name) == dummy
+                let predicate = NSPredicate(format: "master.spouse.name == %@", dummy)
+                XCTAssertEqual(whereClause, Where<Animal>(predicate))
+                XCTAssertEqual(whereClause.predicate, predicate)
+            }
+        }
+        do {
+
+            let count = 3
+            do {
+
+                let whereClause: Where<TestEntity1> = (\.testToOne ~ \.testToManyUnordered).count() == count
+                let predicate = NSPredicate(format: "\(#keyPath(TestEntity1.testToOne.testToManyUnordered)).@count == %d", count)
+                XCTAssertEqual(whereClause, Where<TestEntity1>(predicate))
+                XCTAssertEqual(whereClause.predicate, predicate)
+            }
+            do {
+
+                let whereClause: Where<Animal> = (\.master ~ \.pets).count() == count
+                let predicate = NSPredicate(format: "master.pets.@count == %d", count)
+                XCTAssertEqual(whereClause, Where<Animal>(predicate))
+                XCTAssertEqual(whereClause.predicate, predicate)
+            }
+        }
+        do {
+
+            let dummy = "dummy"
+            do {
+
+                let whereClause: Where<TestEntity1> = (\.testToOne ~ \.testToManyUnordered ~ \TestEntity1.testString).any() == dummy
+                let predicate = NSPredicate(format: "ANY \(#keyPath(TestEntity1.testToOne.testToManyUnordered)).\(#keyPath(TestEntity1.testString)) == %@", dummy)
+                XCTAssertEqual(whereClause, Where<TestEntity1>(predicate))
+                XCTAssertEqual(whereClause.predicate, predicate)
+            }
+            do {
+
+                let whereClause: Where<Animal> = (\.master ~ \.pets ~ \.species).any() == dummy
+                let predicate = NSPredicate(format: "ANY master.pets.species == %@", dummy)
+                XCTAssertEqual(whereClause, Where<Animal>(predicate))
+                XCTAssertEqual(whereClause.predicate, predicate)
+            }
+        }
+        do {
+
+            let dummy = "dummy"
+            do {
+
+                let whereClause: Where<TestEntity1> = (\.testToOne ~ \.testToManyUnordered ~ \TestEntity1.testString).all() == dummy
+                let predicate = NSPredicate(format: "ALL \(#keyPath(TestEntity1.testToOne.testToManyUnordered)).\(#keyPath(TestEntity1.testString)) == %@", dummy)
+                XCTAssertEqual(whereClause, Where<TestEntity1>(predicate))
+                XCTAssertEqual(whereClause.predicate, predicate)
+            }
+            do {
+
+                let whereClause: Where<Animal> = (\.master ~ \.pets ~ \.species).all() == dummy
+                let predicate = NSPredicate(format: "ALL master.pets.species == %@", dummy)
+                XCTAssertEqual(whereClause, Where<Animal>(predicate))
+                XCTAssertEqual(whereClause.predicate, predicate)
+            }
+        }
+        do {
+
+            let dummy = "dummy"
+            do {
+
+                let whereClause: Where<TestEntity1> = (\.testToOne ~ \.testToManyUnordered ~ \TestEntity1.testString).none() == dummy
+                let predicate = NSPredicate(format: "NONE \(#keyPath(TestEntity1.testToOne.testToManyUnordered)).\(#keyPath(TestEntity1.testString)) == %@", dummy)
+                XCTAssertEqual(whereClause, Where<TestEntity1>(predicate))
+                XCTAssertEqual(whereClause.predicate, predicate)
+            }
+            do {
+
+                let whereClause: Where<Animal> = (\.master ~ \.pets ~ \.species).none() == dummy
+                let predicate = NSPredicate(format: "NONE master.pets.species == %@", dummy)
+                XCTAssertEqual(whereClause, Where<Animal>(predicate))
+                XCTAssertEqual(whereClause.predicate, predicate)
+            }
+        }
     }
     
     @objc
@@ -314,7 +583,7 @@ final class WhereTests: XCTestCase {
     dynamic func test_ThatWhereClauses_ApplyToFetchRequestsCorrectly() {
         
         let whereClause = Where<NSManagedObject>("key", isEqualTo: "value")
-        let request = CoreStoreFetchRequest()
+        let request = CoreStoreFetchRequest<NSFetchRequestResult>()
         whereClause.applyToFetchRequest(request)
         XCTAssertNotNil(request.predicate)
         XCTAssertEqual(request.predicate, whereClause.predicate)

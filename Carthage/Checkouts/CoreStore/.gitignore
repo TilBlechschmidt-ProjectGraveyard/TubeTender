@@ -7,3 +7,5 @@ CoreStore.xcworkspace/xcuserdata
 .DS_Store
 DerivedData
 *.orig
+build
+Playground_macOS.playground/playground.xcworkspace/xcuserdata

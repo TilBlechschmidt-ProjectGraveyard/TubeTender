@@ -261,7 +261,7 @@ public final class ObjectMonitor<D: DynamicObject>: Equatable {
     private init(context: NSManagedObjectContext, object: ObjectType) {
         
         let objectID = object.cs_id()
-        let fetchRequest = CoreStoreFetchRequest()
+        let fetchRequest = CoreStoreFetchRequest<NSManagedObject>()
         fetchRequest.entity = objectID.entity
         fetchRequest.fetchLimit = 0
         fetchRequest.resultType = .managedObjectResultType
@@ -271,7 +271,7 @@ public final class ObjectMonitor<D: DynamicObject>: Equatable {
         
         let fetchedResultsController = CoreStoreFetchedResultsController(
             context: context,
-            fetchRequest: fetchRequest.dynamicCast(),
+            fetchRequest: fetchRequest,
             from: From<ObjectType>([objectID.persistentStore?.configurationName]),
             applyFetchClauses: Where<ObjectType>("SELF", isEqualTo: objectID).applyToFetchRequest
         )
@@ -385,7 +385,7 @@ extension ObjectMonitor: FetchedResultsControllerHandler {
 // MARK: - Notification.Name
 
 @available(macOS 10.12, *)
-fileprivate extension Notification.Name {
+extension Notification.Name {
     
     fileprivate static let objectMonitorWillChangeObject = Notification.Name(rawValue: "objectMonitorWillChangeObject")
     fileprivate static let objectMonitorDidDeleteObject = Notification.Name(rawValue: "objectMonitorDidDeleteObject")
