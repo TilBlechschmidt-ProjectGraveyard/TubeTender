@@ -23,7 +23,11 @@
                             <outlet property="delegate" destination="zcC-a7-gDv" id="z2N-Yp-Vf6"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Feed" id="upZ-SC-6xb"/>
+                    <navigationItem key="navigationItem" title="Feed" id="upZ-SC-6xb">
+                        <barButtonItem key="leftBarButtonItem" title="Item" image="user" id="OBb-xQ-xUH">
+                            <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        </barButtonItem>
+                    </navigationItem>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="0uN-wV-WkH" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -253,5 +257,6 @@
         <image name="queue" width="30" height="30"/>
         <image name="search" width="30" height="30"/>
         <image name="settings" width="30" height="30"/>
+        <image name="user" width="37.5" height="37.5"/>
     </resources>
 </document>
