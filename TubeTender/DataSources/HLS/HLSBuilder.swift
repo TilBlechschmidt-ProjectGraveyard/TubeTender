@@ -37,8 +37,7 @@ class HLSBuilder {
     func streamsDescriptors(forVideoID videoID: VideoID) -> SignalProducer<[StreamDescriptor], AnyError> {
         // TODO Take cache age into account (after a certain time the cache invalidates because the URLs expire)
         if let descriptors = cache[videoID] {
-            // TODO No idea why the map is necessary. Figure it out.
-            return SignalProducer(value: descriptors.values.map { $0 })
+            return SignalProducer(value: Array(descriptors.values))
         } else {
             return videoStreamAPI.streams(forVideoID: videoID)
         }

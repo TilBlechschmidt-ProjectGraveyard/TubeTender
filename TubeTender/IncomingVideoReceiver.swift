@@ -64,13 +64,13 @@ class IncomingVideoReceiver: NSObject {
             alertControl.view.tintColor = .lightGray
 
             alertControl.addAction(UIAlertAction(title: "Play Now", style: .default) { _ in
-                PlaybackQueue.default.playNow(video)
+                VideoPlayer.shared.playNow(video)
             })
             alertControl.addAction(UIAlertAction(title: "Play Next", style: .default, handler: { _ in
-                PlaybackQueue.default.playNext(video)
+                VideoPlayer.shared.playNext(video)
             }))
             alertControl.addAction(UIAlertAction(title: "Play Later", style: .default, handler: { _ in
-                PlaybackQueue.default.playLater(video)
+                VideoPlayer.shared.playLater(video)
             }))
             alertControl.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
 

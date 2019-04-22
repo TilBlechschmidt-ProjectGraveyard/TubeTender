@@ -9,9 +9,6 @@
 import Foundation
 
 enum StreamQuality: String, Codable, ArrayComparable, CustomStringConvertible {
-    case highres // 4320p
-    case hd2160 // 2160p
-    case hd1440 // 1440p
     case hd1080 // 1080p
     case hd720 // 720p
     case large // 480p
@@ -39,18 +36,12 @@ enum StreamQuality: String, Codable, ArrayComparable, CustomStringConvertible {
             height = 720
         case .hd1080:
             height = 1080
-        case .hd1440:
-            height = 1440
-        case .hd2160:
-            height = 2160
-        case .highres:
-            height = 4320
         }
 
         return CGSize(width: height / 9 * 16, height: height)
     }
 
-    static let ascendingOrder: [StreamQuality] = [.tiny, .small, .medium, .large, .hd720, .hd1080, .hd1440, .hd2160, .highres]
+    static let ascendingOrder: [StreamQuality] = [.tiny, .small, .medium, .large, .hd720, .hd1080]
 
     static func from(videoSize: CGSize) -> StreamQuality? {
         let height = videoSize.height
@@ -68,12 +59,6 @@ enum StreamQuality: String, Codable, ArrayComparable, CustomStringConvertible {
             return .hd720
         case 1080:
             return .hd1080
-        case 1440:
-            return .hd1440
-        case 2160:
-            return .hd2160
-        case 4320:
-            return .highres
         default:
             return nil
         }

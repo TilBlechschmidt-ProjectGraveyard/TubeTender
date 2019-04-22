@@ -51,14 +51,13 @@ class PlayerViewController: UIViewController {
             videoView.rightAnchor.constraint(equalTo: contentView.rightAnchor)
         ])
 
-        videoView.addSubview(SwitchablePlayer.shared)
-        SwitchablePlayer.shared.snp.makeConstraints { make in
-            make.height.equalToSuperview()
-            make.width.equalToSuperview()
+        videoView.addSubview(VideoPlayer.shared.playerView)
+        VideoPlayer.shared.playerView.snp.makeConstraints { make in
+            make.size.equalToSuperview()
             make.center.equalToSuperview()
         }
 
-        let player = SwitchablePlayer.shared
+        let player = VideoPlayer.shared
 
         player.status.combinePrevious(.noMediaLoaded).signal.observeValues { previous, current in
             if previous != .playing && current == .playing {
@@ -111,7 +110,7 @@ class PlayerViewController: UIViewController {
             }
         }
 
-        player.pictureInPictureActive.signal.observe(on: QueueScheduler.main).take(duringLifetimeOf: self).observeValues { [unowned self] pipActive in
+        player.isPictureInPictureActive.signal.observe(on: QueueScheduler.main).take(duringLifetimeOf: self).observeValues { [unowned self] pipActive in
             self.controlsDisabled = pipActive
             if pipActive {
                 self.isFullscreenActive = false
@@ -184,7 +183,7 @@ class PlayerViewController: UIViewController {
     }
 
     @objc func idleTimerExceeded(_ sender: Timer) {
-        if playerControlView.seekingSlider.isTracking || SwitchablePlayer.shared.status.value != .playing {
+        if playerControlView.seekingSlider.isTracking || VideoPlayer.shared.status.value != .playing {
             refreshControlHideTimer()
         } else {
             controlsVisible = false
@@ -204,9 +203,9 @@ class PlayerViewController: UIViewController {
         // TODO Add animation to indicate seeking visually
         let tapPoint = sender.location(in: self.view)
         if tapPoint.x > self.view.bounds.width / 2 {
-            SwitchablePlayer.shared.seek(by: 10)
+            VideoPlayer.shared.seek(by: 10)
         } else {
-            SwitchablePlayer.shared.seek(by: -10)
+            VideoPlayer.shared.seek(by: -10)
         }
     }
 
@@ -222,18 +221,19 @@ class PlayerViewController: UIViewController {
     }
 
     @objc func qualityButtonTapped() {
-        let qualityLabel = SwitchablePlayer.shared.currentQuality.value?.description ?? "--"
-        let alert = UIAlertController(title: "Current quality: \(qualityLabel)", message: nil, preferredStyle: .actionSheet)
+        let alert = UIAlertController(title: "Current quality: --", message: nil, preferredStyle: .actionSheet)
         alert.popoverPresentationController?.sourceView = playerControlView.topRightControlView
-        alert.popoverPresentationController?.sourceRect = playerControlView.bounds
+//        alert.popoverPresentationController?.sourceRect = playerControlView.bounds
         alert.popoverPresentationController?.permittedArrowDirections = .any
         alert.popoverPresentationController?.backgroundColor = Constants.backgroundColor
         alert.view.tintColor = .lightGray
 
-        let currentQuality = SwitchablePlayer.shared.preferredQuality.value
+        alert.reactive.attributedTitle <~ VideoPlayer.shared.currentQuality.map { NSAttributedString(string: "Current quality: \($0?.description ?? "--")") }
+
+        let currentQuality = VideoPlayer.shared.preferredQuality.value
 
         let action = UIAlertAction(title: "Automatic", style: .default) { _ in
-            SwitchablePlayer.shared.preferredQuality.value = nil
+            VideoPlayer.shared.preferredQuality.value = nil
         }
         if currentQuality == nil {
             action.setValue(true, forKey: "checked")
@@ -243,7 +243,7 @@ class PlayerViewController: UIViewController {
         // TODO Filter actually available qualities
         StreamQuality.ascendingOrder.reversed().forEach { quality in
             let action = UIAlertAction(title: quality.description, style: .default) { _ in
-                SwitchablePlayer.shared.preferredQuality.value = quality
+                VideoPlayer.shared.preferredQuality.value = quality
             }
 
             if let currentQuality = currentQuality, quality == currentQuality {

@@ -35,8 +35,6 @@
 			<string>hd1080</string>
 			<key>Titles</key>
 			<array>
-				<string>4K</string>
-				<string>1440p</string>
 				<string>1080p</string>
 				<string>720p</string>
 				<string>480p</string>
@@ -46,8 +44,6 @@
 			</array>
 			<key>Values</key>
 			<array>
-				<string>hd2160</string>
-				<string>hd1440</string>
 				<string>hd1080</string>
 				<string>hd720</string>
 				<string>large</string>
@@ -67,8 +63,6 @@
 			<string>medium</string>
 			<key>Titles</key>
 			<array>
-				<string>4K</string>
-				<string>1440p</string>
 				<string>1080p</string>
 				<string>720p</string>
 				<string>480p</string>
@@ -78,8 +72,6 @@
 			</array>
 			<key>Values</key>
 			<array>
-				<string>hd2160</string>
-				<string>hd1440</string>
 				<string>hd1080</string>
 				<string>hd720</string>
 				<string>large</string>
@@ -123,6 +115,16 @@
 			<string>playback_background</string>
 			<key>DefaultValue</key>
 			<true/>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>Enter PiP automatically</string>
+			<key>Key</key>
+			<string>background_pip</string>
+			<key>DefaultValue</key>
+			<false/>
 		</dict>
 	</array>
 </dict>

@@ -17,6 +17,7 @@ enum Settings: SettingsKit {
 
     // Playback
     case BackgroundPlayback
+    case BackgroundPiP
 
     // App details
     case AppVersion
@@ -35,6 +36,8 @@ enum Settings: SettingsKit {
             return "quality_highFps"
         case .BackgroundPlayback:
             return "playback_background"
+        case .BackgroundPiP:
+            return "background_pip"
         }
     }
 }
@@ -51,10 +54,10 @@ public protocol SettingsKit: CustomStringConvertible {
 public extension SettingsKit {
 
     /// Convenience typealias for subscribe() onChange closure
-    public typealias SettingChangeHandler = (_ newValue: AnyObject?) -> Void
+    typealias SettingChangeHandler = (_ newValue: AnyObject?) -> Void
 
     /// String description of the enum value
-    public var description: String {
+    var description: String {
 
         //guard let value = Self.get(self) else {
         guard let value = self.get() else {
@@ -77,7 +80,7 @@ public extension SettingsKit {
 
      - Returns: The current setting value
      */
-    public static func get(setting: Self) -> AnyObject? {
+    static func get(setting: Self) -> AnyObject? {
         return setting.get()
     }
 
@@ -88,7 +91,7 @@ public extension SettingsKit {
      - setting: The setting to update
      - value:   The value to store for the setting
      */
-    public static func set<T>(setting: Self, _ value: T) {
+    static func set<T>(setting: Self, _ value: T) {
         setting.set(value: value)
     }
 
@@ -101,7 +104,7 @@ public extension SettingsKit {
      - setting:  The setting to observe
      - onChange: The closure to call when the setting's value is updated
      */
-    public static func subscribe(setting: Self, onChange: @escaping SettingChangeHandler) {
+    static func subscribe(setting: Self, onChange: @escaping SettingChangeHandler) {
         setting.subscribe(onChange: onChange)
     }
 

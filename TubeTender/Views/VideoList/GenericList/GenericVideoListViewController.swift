@@ -182,7 +182,7 @@ extension GenericVideoListViewController {
         let video = videos[indexPath.section][indexPath.row]
 
         self.showDetailViewController(VideoViewController(), sender: self)
-        PlaybackQueue.default.playNow(video)
+        VideoPlayer.shared.playNow(video)
 
         return nil
     }

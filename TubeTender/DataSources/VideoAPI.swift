@@ -90,6 +90,10 @@ public class Video: YoutubeClientObject<YoutubeKit.VideoListRequest, YoutubeKit.
     var isPremium: APISignalProducer<Bool> {
         return makeProperty { $0.statistics?.viewCount == nil }
     }
+
+    var hlsURL: URL {
+        return URL(string: "http://localhost:\(Constants.hlsServerPort)/\(self.id).m3u8")!
+    }
 }
 
 extension YoutubeClient {

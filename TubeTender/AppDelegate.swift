@@ -68,7 +68,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             print(error)
         }
 
-        NotificationCenter.default.reactive.notifications(forName: .flagsChanged).signal.take(duringLifetimeOf: self).observeValues { [unowned self] _ in
+        NotificationCenter.default.reactive.notifications(forName: .flagsChanged).signal.take(duringLifetimeOf: self).observeValues { _ in
             guard let status = Network.reachability?.status else { return }
             print("\n\n\nReachability Summary")
             print("Status:", status)
@@ -94,8 +94,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationWillResignActive(_ application: UIApplication) {
-        if !(Settings.get(setting: .BackgroundPlayback) as? Bool ?? true) {
-            SwitchablePlayer.shared.pause()
+        if Settings.get(setting: .BackgroundPiP) as? Bool ?? false && VideoPlayer.shared.status.value == .playing {
+            VideoPlayer.shared.startPictureInPicture()
+        } else if !(Settings.get(setting: .BackgroundPlayback) as? Bool ?? true) {
+            VideoPlayer.shared.pause()
         }
     }
 }

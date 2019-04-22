@@ -13,9 +13,9 @@ class QueueListViewController: GenericVideoListViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         let data = SignalProducer.zip(
-            PlaybackQueue.default.history,
-            PlaybackQueue.default.currentItem,
-            PlaybackQueue.default.queue)
+            VideoPlayer.shared.history,
+            VideoPlayer.shared.currentItem,
+            VideoPlayer.shared.queue)
 
         data.startWithValues { [weak self] data in
             self?.replace(videos: [
