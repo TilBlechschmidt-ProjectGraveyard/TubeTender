@@ -35,7 +35,6 @@
 		30ABE21F21905F5800E4FEA4 /* Queue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30ABE21E21905F5800E4FEA4 /* Queue.swift */; };
 		30ABE2212190B48E00E4FEA4 /* PlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30ABE2202190B48E00E4FEA4 /* PlayerViewController.swift */; };
 		30B03AC221E68A45007B3E38 /* UIRebindableTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30B03AC121E68A45007B3E38 /* UIRebindableTableViewCell.swift */; };
-		30B03AC421E68E6D007B3E38 /* PlaybackQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30B03AC321E68E6D007B3E38 /* PlaybackQueue.swift */; };
 		30B1EB4B21DC0E9800B16CA2 /* DownloadButton.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B1EB4A21DC0E9800B16CA2 /* DownloadButton.framework */; };
 		30B1EB4C21DC0EA300B16CA2 /* DownloadButton.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 30B1EB4A21DC0E9800B16CA2 /* DownloadButton.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		30B338B521E27F66001FC825 /* ReactiveCocoa.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 30B338B421E27F65001FC825 /* ReactiveCocoa.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -163,7 +162,6 @@
 		30ABE21E21905F5800E4FEA4 /* Queue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Queue.swift; sourceTree = "<group>"; };
 		30ABE2202190B48E00E4FEA4 /* PlayerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerViewController.swift; sourceTree = "<group>"; };
 		30B03AC121E68A45007B3E38 /* UIRebindableTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIRebindableTableViewCell.swift; sourceTree = "<group>"; };
-		30B03AC321E68E6D007B3E38 /* PlaybackQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackQueue.swift; sourceTree = "<group>"; };
 		30B1EB4A21DC0E9800B16CA2 /* DownloadButton.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DownloadButton.framework; path = Carthage/Build/iOS/DownloadButton.framework; sourceTree = "<group>"; };
 		30B338B421E27F65001FC825 /* ReactiveCocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReactiveCocoa.framework; path = Carthage/Build/iOS/ReactiveCocoa.framework; sourceTree = "<group>"; };
 		30B338B721E28021001FC825 /* SnapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SnapKit.framework; path = Carthage/Build/iOS/SnapKit.framework; sourceTree = "<group>"; };
@@ -364,7 +362,6 @@
 		3067715621DA5681009AA051 /* Playback */ = {
 			isa = PBXGroup;
 			children = (
-				30B03AC321E68E6D007B3E38 /* PlaybackQueue.swift */,
 				30D0490921E754EE0077E80C /* CommandCenter.swift */,
 				3004A2AB226DF8FE00E3A826 /* VideoPlayer.swift */,
 			);
@@ -616,7 +613,6 @@
 				30BAB76B2178B47A00B01953 /* SubscriptionFeedViewController.swift in Sources */,
 				30C2112E226BA57B00892173 /* SegmentInformation.swift in Sources */,
 				30E3063B21E90AAF008C6ECB /* RadialGradientLayer.swift in Sources */,
-				30B03AC421E68E6D007B3E38 /* PlaybackQueue.swift in Sources */,
 				30A81A3E21D53E9500FBE8EE /* VideoMetadataView.swift in Sources */,
 				30D0490A21E754EE0077E80C /* CommandCenter.swift in Sources */,
 				300F296721D59F2900C9B0B0 /* Video.swift in Sources */,
