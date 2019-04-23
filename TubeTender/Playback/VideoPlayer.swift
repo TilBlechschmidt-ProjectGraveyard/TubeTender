@@ -141,6 +141,7 @@ class VideoPlayer: NSObject {
     }
 
     var playerTimeControlStatusObserver: NSKeyValueObservation?
+
     private func setupObservers() {
         // Player related
         player.addPeriodicTimeObserver(forInterval: CMTime(seconds: 0.5, preferredTimescale: 1000), queue: DispatchQueue.main) { time in
@@ -206,12 +207,12 @@ class VideoPlayer: NSObject {
         _status.value = .buffering
 
         currentItemStatusObserver?.invalidate()
-        currentItemStatusObserver = futureVideos.first?.playerItem.observe(\.status, options: []) { [unowned self] playerItem, change in
+        currentItemStatusObserver = futureVideos.first?.playerItem.observe(\.status, options: []) { [unowned self] playerItem, _ in
             self.updateStatus(from: playerItem)
         }
 
         currentItemPresentationSizeObserver?.invalidate()
-        currentItemPresentationSizeObserver = futureVideos.first?.playerItem.observe(\.presentationSize, options: []) { [unowned self] playerItem, change in
+        currentItemPresentationSizeObserver = futureVideos.first?.playerItem.observe(\.presentationSize, options: []) { [unowned self] playerItem, _ in
             self.updatePresentationSize(from: playerItem)
         }
     }

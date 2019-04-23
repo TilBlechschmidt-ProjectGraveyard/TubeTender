@@ -62,8 +62,8 @@ class PlayButton: UIButton {
     fileprivate let rightTriangleToBarAnimation = CABasicAnimation(keyPath: "path")
     fileprivate let rightBarToTriangleAnimation = CABasicAnimation(keyPath: "path")
 
+    //swiftlint:disable:next function_body_length
     fileprivate func createLayers(_ frame: CGRect) {
-
         let triangleSideLength = sqrt(pow(bounds.width, 2) + pow(bounds.height / 2, 2))
 
         let halfTriangleTop = round(sqrt(

@@ -56,29 +56,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let versionString = "\(Bundle.main.releaseVersionNumber ?? "0") (\(Bundle.main.buildVersionNumber ?? "0"))"
         Settings.set(setting: .appVersion, versionString)
 
-        do {
-            Network.reachability = try Reachability(hostname: "www.youtube.com")
-            do {
-                try Network.reachability?.start()
-            } catch let error as Network.Error {
-                print(error)
-            } catch {
-                print(error)
-            }
-        } catch {
-            print(error)
-        }
-
-        NotificationCenter.default.reactive.notifications(forName: .flagsChanged).signal.take(duringLifetimeOf: self).observeValues { _ in
-            guard let status = Network.reachability?.status else { return }
-            print("\n\n\nReachability Summary")
-            print("Status:", status)
-            print("HostName:", Network.reachability?.hostname ?? "nil")
-            print("Reachable:", Network.reachability?.isReachable ?? "nil")
-            print("Wifi:", Network.reachability?.isReachableViaWiFi ?? "nil")
-            print("Cellular:", Network.reachability?.isWWAN ?? "nil")
-        }
-
+        setupNetworkMonitoring()
         hlsServer?.listen()
 
         return true
@@ -106,6 +84,31 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             VideoPlayer.shared.startPictureInPicture()
         } else if !(Settings.get(setting: .backgroundPlayback) as? Bool ?? true) {
             VideoPlayer.shared.pause()
+        }
+    }
+
+    private func setupNetworkMonitoring() {
+        do {
+            Network.reachability = try Reachability(hostname: "www.youtube.com")
+            do {
+                try Network.reachability?.start()
+            } catch let error as Network.Error {
+                print(error)
+            } catch {
+                print(error)
+            }
+        } catch {
+            print(error)
+        }
+
+        NotificationCenter.default.reactive.notifications(forName: .flagsChanged).signal.take(duringLifetimeOf: self).observeValues { _ in
+            guard let status = Network.reachability?.status else { return }
+            print("\n\n\nReachability Summary")
+            print("Status:", status)
+            print("HostName:", Network.reachability?.hostname ?? "nil")
+            print("Reachable:", Network.reachability?.isReachable ?? "nil")
+            print("Wifi:", Network.reachability?.isReachableViaWiFi ?? "nil")
+            print("Cellular:", Network.reachability?.isWWAN ?? "nil")
         }
     }
 }
