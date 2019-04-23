@@ -90,6 +90,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationDidBecomeActive(_ application: UIApplication) {
+        if Settings.get(setting: .BackgroundPiP) as? Bool ?? false && VideoPlayer.shared.status.value == .playing {
+            DispatchQueue.global().asyncAfter(deadline: .now() + 0.25) {
+                VideoPlayer.shared.stopPictureInPicture()
+            }
+        }
+
+        VideoPlayer.shared.refreshState()
         IncomingVideoReceiver.default.scanPasteboardForURL()
     }
 

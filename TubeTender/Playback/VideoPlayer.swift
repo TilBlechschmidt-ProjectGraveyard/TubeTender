@@ -134,23 +134,21 @@ class VideoPlayer: NSObject {
         fatalError("init(coder:) has not been implemented")
     }
 
+    deinit {
+        playerTimeControlStatusObserver?.invalidate()
+        currentItemPresentationSizeObserver?.invalidate()
+        currentItemStatusObserver?.invalidate()
+    }
+
+    var playerTimeControlStatusObserver: NSKeyValueObservation?
     private func setupObservers() {
         // Player related
         player.addPeriodicTimeObserver(forInterval: CMTime(seconds: 0.5, preferredTimescale: 1000), queue: DispatchQueue.main) { time in
             self._currentTime.value = time.seconds
         }
 
-        player.reactive.signal(forKeyPath: #keyPath(AVPlayer.timeControlStatus)).observeValues { [unowned self] _ in
-            switch self.player.timeControlStatus {
-            case .paused:
-                self._status.value = .paused
-            case .waitingToPlayAtSpecifiedRate:
-                self._status.value = .buffering
-            case .playing:
-                self._status.value = .playing
-            @unknown default:
-                fatalError("Unexpected timeControlStatus")
-            }
+        playerTimeControlStatusObserver = player.observe(\.timeControlStatus, options: []) { [unowned self] player, _ in
+            self.updateStatus(from: player)
         }
 
         preferredQuality.signal.take(duringLifetimeOf: self).observeValues { [unowned self] preferredQuality in
@@ -208,21 +206,51 @@ class VideoPlayer: NSObject {
 
         currentItemStatusObserver?.invalidate()
         currentItemStatusObserver = futureVideos.first?.playerItem.observe(\.status, options: []) { [unowned self] playerItem, change in
-            switch playerItem.status {
-            case .readyToPlay:
-                self._duration.value = playerItem.duration.seconds
-                self.play()
-            case .failed:
-                // TODO Show this in the UI
-                break
-            default:
-                break
-            }
+            self.updateStatus(from: playerItem)
         }
 
         currentItemPresentationSizeObserver?.invalidate()
         currentItemPresentationSizeObserver = futureVideos.first?.playerItem.observe(\.presentationSize, options: []) { [unowned self] playerItem, change in
-            self._currentQuality.value = StreamQuality.from(videoSize: playerItem.presentationSize)
+            self.updatePresentationSize(from: playerItem)
+        }
+    }
+
+    func updatePresentationSize(from playerItem: AVPlayerItem) {
+        self._currentQuality.value = StreamQuality.from(videoSize: playerItem.presentationSize)
+    }
+
+    func updateStatus(from playerItem: AVPlayerItem) {
+        switch playerItem.status {
+        case .readyToPlay:
+            self._duration.value = playerItem.duration.seconds
+            self.play()
+        case .failed:
+            // TODO Show this in the UI
+            break
+        default:
+            break
+        }
+    }
+
+    func updateStatus(from player: AVPlayer) {
+        switch self.player.timeControlStatus {
+        case .paused:
+            self._status.value = .paused
+        case .waitingToPlayAtSpecifiedRate:
+            self._status.value = .buffering
+        case .playing:
+            self._status.value = .playing
+        @unknown default:
+            fatalError("Unexpected timeControlStatus")
+        }
+    }
+
+    func refreshState() {
+        updateStatus(from: player)
+
+        if let currentPlayerItem = player.currentItem {
+            updateStatus(from: currentPlayerItem)
+            updatePresentationSize(from: currentPlayerItem)
         }
     }
 
