@@ -9,9 +9,9 @@
 import struct YoutubeKit.SearchResult
 import struct YoutubeKit.SearchList
 import struct YoutubeKit.SearchListRequest
-import Result
-import ReactiveSwift
 import ReactiveCocoa
+import ReactiveSwift
+import Result
 
 struct PagedResult<Value> {
     let nextPageToken: String?
@@ -38,7 +38,7 @@ public class SearchResult: YoutubeClientObject<YoutubeKit.SearchListRequest, You
         return makeProperty {
             PagedResult(
                 nextPageToken: $0.nextPageToken,
-                values: $0.items.compactMap({ $0.id.videoID }).map { self.client.video(withID: $0) }
+                values: $0.items.compactMap { $0.id.videoID }.map { self.client.video(withID: $0) }
             )
         }
     }
@@ -47,7 +47,7 @@ public class SearchResult: YoutubeClientObject<YoutubeKit.SearchListRequest, You
         return makeProperty {
             PagedResult(
                 nextPageToken: $0.nextPageToken,
-                values: $0.items.compactMap({ $0.id.channelID }).map { self.client.channel(withID: $0) }
+                values: $0.items.compactMap { $0.id.channelID }.map { self.client.channel(withID: $0) }
             )
         }
     }

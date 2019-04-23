@@ -15,7 +15,7 @@ struct SimpleRegexMatch {
 struct SimpleRegexMatcher {
 
     static func matches(forPattern pattern: String, in string: String) -> [SimpleRegexMatch]? {
-        let range = NSMakeRange(0, string.count)
+        let range = NSRange(location: 0, length: string.count)
 
         guard let regex = try? NSRegularExpression(pattern: pattern, options: NSRegularExpression.Options()) else {
             return nil
@@ -29,7 +29,7 @@ struct SimpleRegexMatcher {
     }
 
     static func firstMatch(forPattern pattern: String, in string: String) -> SimpleRegexMatch? {
-        let range = NSMakeRange(0, string.count)
+        let range = NSRange(location: 0, length: string.count)
 
         guard let regex = try? NSRegularExpression(pattern: pattern, options: NSRegularExpression.Options()) else {
             return nil

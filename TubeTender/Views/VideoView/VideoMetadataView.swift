@@ -6,8 +6,8 @@
 //  Copyright © 2018 Til Blechschmidt. All rights reserved.
 //
 
-import UIKit
 import DownloadButton
+import UIKit
 
 class VideoMetadataView: UIView {
     let channelIconSize: CGFloat = Constants.smallChannelIconSize
@@ -112,7 +112,7 @@ class VideoMetadataView: UIView {
             viewCount.topAnchor.constraint(equalTo: videoTitle.bottomAnchor, constant: Constants.uiPadding / 2),
             viewCount.leftAnchor.constraint(equalTo: videoTitle.leftAnchor),
             viewCount.rightAnchor.constraint(equalTo: videoTitle.rightAnchor),
-            viewCount.bottomAnchor.constraint(equalTo: detailView.bottomAnchor, constant: -Constants.uiPadding),
+            viewCount.bottomAnchor.constraint(equalTo: detailView.bottomAnchor, constant: -Constants.uiPadding)
         ])
 
         detailButtonView.translatesAutoresizingMaskIntoConstraints = false
@@ -131,7 +131,7 @@ class VideoMetadataView: UIView {
         metaView.addConstraints([
             channelView.topAnchor.constraint(equalTo: detailView.bottomAnchor),
             channelView.leftAnchor.constraint(equalTo: metaView.leftAnchor),
-            channelView.rightAnchor.constraint(equalTo: metaView.rightAnchor),
+            channelView.rightAnchor.constraint(equalTo: metaView.rightAnchor)
         ])
 
         let topBorder = UIView()

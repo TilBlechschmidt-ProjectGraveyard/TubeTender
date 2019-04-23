@@ -6,9 +6,9 @@
 //  Copyright © 2019 Til Blechschmidt. All rights reserved.
 //
 
-import ReactiveSwift
-import MediaPlayer
 import AVKit
+import MediaPlayer
+import ReactiveSwift
 import Result
 
 typealias QueueEntry = (video: Video, playerItem: AVPlayerItem)
@@ -24,6 +24,7 @@ class AVPlayerView: UIView {
     }
 
     var playerLayer: AVPlayerLayer {
+        //swiftlint:disable:next force_cast
         return layer as! AVPlayerLayer
     }
 
@@ -107,7 +108,7 @@ class VideoPlayer: NSObject {
         playerView.player = player
         pictureInPictureController = AVPictureInPictureController(playerLayer: playerView.playerLayer)
 
-        currentItem = Property(currentIndex.map { $0.map({ videos.value[$0] }).map { $0.video } })
+        currentItem = Property(currentIndex.map { $0.map { videos.value[$0] }.map { $0.video } })
         queue = Property(currentIndex.map { videos.value[(($0 + 1) ?? videos.value.count)...].map { $0.video } })
         history = Property(currentIndex.map { videos.value[..<($0 ?? videos.value.count)].map { $0.video } })
 
@@ -118,7 +119,7 @@ class VideoPlayer: NSObject {
         super.init()
 
         // Setup signals
-        changeSetSignal = Signal { observer, lifetime in
+        changeSetSignal = Signal { observer, _ in
             self.changeSetObserver = observer
         }
 
@@ -170,10 +171,10 @@ class VideoPlayer: NSObject {
 
         // Command center related
         commandCenter.hasNext <~ self.currentIndex.map { index in
-            return index.flatMap({ $0 < self.videos.value.count - 1  }) ?? false
+            return index.flatMap { $0 < self.videos.value.count - 1 } ?? false
         }
         commandCenter.hasPrevious <~ self.currentIndex.map { index in
-            return index.flatMap({ $0 > 0 && self.videos.value.count > 0 }) ?? (self.videos.value.count > 0)
+            return index.flatMap { $0 > 0 && !self.videos.value.isEmpty } ?? !self.videos.value.isEmpty
         }
 
         commandCenter.elapsedTime <~ self.currentTime
@@ -193,6 +194,7 @@ class VideoPlayer: NSObject {
 
     private var currentItemStatusObserver: NSKeyValueObservation?
     private var currentItemPresentationSizeObserver: NSKeyValueObservation?
+
     private func load(videoAtQueueIndex index: Int) {
         let futureVideos = videos.value[index...]
 
@@ -207,7 +209,7 @@ class VideoPlayer: NSObject {
         _status.value = .buffering
 
         currentItemStatusObserver?.invalidate()
-        currentItemStatusObserver = futureVideos.first?.playerItem.observe(\.status, options: []) { [unowned self] playerItem, change in
+        currentItemStatusObserver = futureVideos.first?.playerItem.observe(\.status, options: []) { [unowned self] playerItem, _ in
             switch playerItem.status {
             case .readyToPlay:
                 self._duration.value = playerItem.duration.seconds
@@ -221,7 +223,7 @@ class VideoPlayer: NSObject {
         }
 
         currentItemPresentationSizeObserver?.invalidate()
-        currentItemPresentationSizeObserver = futureVideos.first?.playerItem.observe(\.presentationSize, options: []) { [unowned self] playerItem, change in
+        currentItemPresentationSizeObserver = futureVideos.first?.playerItem.observe(\.presentationSize, options: []) { [unowned self] playerItem, _ in
             self._currentQuality.value = StreamQuality.from(videoSize: playerItem.presentationSize)
         }
     }
@@ -334,6 +336,8 @@ extension VideoPlayer: AVPictureInPictureControllerDelegate {
     }
 }
 
-fileprivate func +(lhs: Int?, rhs: Int) -> Int? {
-    return lhs.map { $0 + rhs }
+extension Int {
+    fileprivate static func + (lhs: Int?, rhs: Int) -> Int? {
+        return lhs.map { $0 + rhs }
+    }
 }

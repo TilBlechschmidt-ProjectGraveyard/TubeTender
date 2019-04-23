@@ -22,7 +22,7 @@ enum StreamQuality: String, Codable, ArrayComparable, CustomStringConvertible {
 
     var resolution: CGSize {
         let height: CGFloat
-        
+
         switch self {
         case .tiny:
             height = 144
@@ -125,10 +125,10 @@ enum StreamQuality: String, Codable, ArrayComparable, CustomStringConvertible {
 
 extension StreamQuality {
     static var `default`: StreamQuality {
-        return (Settings.get(setting: .DefaultQuality) as? String).flatMap { StreamQuality(rawValue: $0) } ?? .hd720
+        return (Settings.get(setting: .defaultQuality) as? String).flatMap { StreamQuality(rawValue: $0) } ?? .hd720
     }
 
     static var mobile: StreamQuality {
-        return (Settings.get(setting: .MobileQuality) as? String).flatMap { StreamQuality(rawValue: $0) } ?? .medium
+        return (Settings.get(setting: .mobileQuality) as? String).flatMap { StreamQuality(rawValue: $0) } ?? .medium
     }
 }

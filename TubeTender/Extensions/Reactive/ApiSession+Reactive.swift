@@ -6,10 +6,10 @@
 //  Copyright © 2019 Til Blechschmidt. All rights reserved.
 //
 
-import YoutubeKit
 import ReactiveCocoa
 import ReactiveSwift
 import Result
+import YoutubeKit
 
 extension ApiSession: ReactiveExtensionsProvider {}
 

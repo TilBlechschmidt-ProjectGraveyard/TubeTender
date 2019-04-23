@@ -32,7 +32,6 @@
 		30A81A3E21D53E9500FBE8EE /* VideoMetadataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30A81A3D21D53E9500FBE8EE /* VideoMetadataView.swift */; };
 		30ABE214218F928A00E4FEA4 /* ArrayComparable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30ABE213218F928A00E4FEA4 /* ArrayComparable.swift */; };
 		30ABE219218F965500E4FEA4 /* OldVideoStreamAPIResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30ABE218218F965500E4FEA4 /* OldVideoStreamAPIResponse.swift */; };
-		30ABE21F21905F5800E4FEA4 /* Queue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30ABE21E21905F5800E4FEA4 /* Queue.swift */; };
 		30ABE2212190B48E00E4FEA4 /* PlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30ABE2202190B48E00E4FEA4 /* PlayerViewController.swift */; };
 		30B03AC221E68A45007B3E38 /* UIRebindableTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30B03AC121E68A45007B3E38 /* UIRebindableTableViewCell.swift */; };
 		30B03AC421E68E6D007B3E38 /* PlaybackQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30B03AC321E68E6D007B3E38 /* PlaybackQueue.swift */; };
@@ -160,7 +159,6 @@
 		30A81A3D21D53E9500FBE8EE /* VideoMetadataView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoMetadataView.swift; sourceTree = "<group>"; };
 		30ABE213218F928A00E4FEA4 /* ArrayComparable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayComparable.swift; sourceTree = "<group>"; };
 		30ABE218218F965500E4FEA4 /* OldVideoStreamAPIResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OldVideoStreamAPIResponse.swift; sourceTree = "<group>"; };
-		30ABE21E21905F5800E4FEA4 /* Queue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Queue.swift; sourceTree = "<group>"; };
 		30ABE2202190B48E00E4FEA4 /* PlayerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerViewController.swift; sourceTree = "<group>"; };
 		30B03AC121E68A45007B3E38 /* UIRebindableTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIRebindableTableViewCell.swift; sourceTree = "<group>"; };
 		30B03AC321E68E6D007B3E38 /* PlaybackQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackQueue.swift; sourceTree = "<group>"; };
@@ -342,7 +340,6 @@
 		30370F662177E05D00B35ACF /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
-				30ABE21E21905F5800E4FEA4 /* Queue.swift */,
 				30E3063421E7E13A008C6ECB /* Settings.swift */,
 				30E3063621E8C2C3008C6ECB /* Reachability.swift */,
 				30E3063A21E90AAF008C6ECB /* RadialGradientLayer.swift */,
@@ -523,6 +520,7 @@
 				302D03F9216E197A009FC2E5 /* Resources */,
 				30370F58217735EF00B35ACF /* CopyFiles */,
 				302D08F021E1725400B28767 /* Strip unwanted architectures from Frameworks */,
+				40D7E0E1226F42EA0057D0D0 /* SwiftLint */,
 			);
 			buildRules = (
 			);
@@ -606,6 +604,24 @@
 			shellPath = /bin/sh;
 			shellScript = "APP_PATH=\"${TARGET_BUILD_DIR}/${WRAPPER_NAME}\"\n\n# This script loops through the frameworks embedded in the application and\n# removes unused architectures.\nfind \"$APP_PATH\" -name '*.framework' -type d | while read -r FRAMEWORK\ndo\nFRAMEWORK_EXECUTABLE_NAME=$(defaults read \"$FRAMEWORK/Info.plist\" CFBundleExecutable)\nFRAMEWORK_EXECUTABLE_PATH=\"$FRAMEWORK/$FRAMEWORK_EXECUTABLE_NAME\"\necho \"Executable is $FRAMEWORK_EXECUTABLE_PATH\"\n\nEXTRACTED_ARCHS=()\n\nfor ARCH in $ARCHS\ndo\necho \"Extracting $ARCH from $FRAMEWORK_EXECUTABLE_NAME\"\nlipo -extract \"$ARCH\" \"$FRAMEWORK_EXECUTABLE_PATH\" -o \"$FRAMEWORK_EXECUTABLE_PATH-$ARCH\"\nEXTRACTED_ARCHS+=(\"$FRAMEWORK_EXECUTABLE_PATH-$ARCH\")\ndone\n\necho \"Merging extracted architectures: ${ARCHS}\"\nlipo -o \"$FRAMEWORK_EXECUTABLE_PATH-merged\" -create \"${EXTRACTED_ARCHS[@]}\"\nrm \"${EXTRACTED_ARCHS[@]}\"\n\necho \"Replacing original executable with thinned version\"\nrm \"$FRAMEWORK_EXECUTABLE_PATH\"\nmv \"$FRAMEWORK_EXECUTABLE_PATH-merged\" \"$FRAMEWORK_EXECUTABLE_PATH\"\n\ndone\n";
 		};
+		40D7E0E1226F42EA0057D0D0 /* SwiftLint */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = SwiftLint;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if which swiftlint >/dev/null; then\n    swiftlint\nelse\n    echo \"error: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -665,7 +681,6 @@
 				3005DC64219B767D0002F6A1 /* PlayerControlView.swift in Sources */,
 				4021444321E5F7FB00AAC670 /* UIAlertController+Reactive.swift in Sources */,
 				30BE79BB216FF73F00E6B281 /* AnimatablePlayButton.swift in Sources */,
-				30ABE21F21905F5800E4FEA4 /* Queue.swift in Sources */,
 				40E2E1EF21E28D21007EA359 /* ApiSession+Reactive.swift in Sources */,
 				3034ACC321E529C7000F06A9 /* YoutubeURLParser.swift in Sources */,
 				30BAB7752178BBC500B01953 /* VideoListTableCell.swift in Sources */,

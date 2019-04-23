@@ -1,4 +1,3 @@
-
 //
 //  String+FancyFormatting.swift
 //  Pivo
@@ -9,9 +8,9 @@
 
 import Foundation
 
-fileprivate let thousandLimit = 1000
-fileprivate let millionLimit = 1000 * 1000
-fileprivate let billionLimit = 1000 * 1000 * 1000
+private let thousandLimit = 1000
+private let millionLimit = 1000 * 1000
+private let billionLimit = 1000 * 1000 * 1000
 
 extension Int {
     var withThousandSeparators: String {

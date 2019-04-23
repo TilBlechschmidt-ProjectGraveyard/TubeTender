@@ -55,9 +55,9 @@ class HLSBuilder {
             .flatten()
             .filter { $0.mimeType.contains("mp4") } // Since HLS only supports fMP4 streams we can dump all the webm streams
             // TODO We probably need to filter the codecs to not include vp9
-            .on(value: { streamDescriptor in
+            .on { streamDescriptor in
                 self.addToCache(streamDescriptor, videoID: videoID)
-            })
+            }
             .map { streamDescriptor in
                 let streamManifestURL = "\(videoID)/\(streamDescriptor.itag ?? "invalidITag").m3u8"
                 if streamDescriptor.audioChannels != nil {
@@ -92,11 +92,11 @@ class HLSBuilder {
                 let url = URL(string: descriptor.url)!
                 let index = descriptor.index!
 
-                return SignalProducer { observer, lifetime in
+                return SignalProducer { observer, _ in
                     var request = URLRequest(url: url)
                     request.setValue("bytes=\(index.lowerBound)-\(index.upperBound)", forHTTPHeaderField: "Range")
 
-                    let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
+                    let task = URLSession.shared.dataTask(with: request) { (data, _, error) in
                         guard let data = data else {
                             observer.send(error: AnyError(HLSBuilderError.unableToReadSegmentData))
                             return

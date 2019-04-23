@@ -6,16 +6,16 @@
 //  Copyright © 2019 Til Blechschmidt. All rights reserved.
 //
 
+import Network
 import ReactiveSwift
 import Result
-import Network
 
 class HLSServer {
     let listener: NWListener
     let hlsBuilder = HLSBuilder()
 
     init(port: UInt16) throws {
-        listener = try! NWListener(using: .tcp, on: NWEndpoint.Port(integerLiteral: port))
+        listener = try NWListener(using: .tcp, on: NWEndpoint.Port(integerLiteral: port))
     }
 
     func response(status: String, contentType: String = "application/vnd.apple.mpegurl", contentLength: Int = 0, body: String = "") -> String {
@@ -49,7 +49,7 @@ class HLSServer {
 
     func process(httpRequest request: String) -> SignalProducer<String, AnyError> {
         let parts = request.components(separatedBy: "\r\n\r\n")
-        guard parts.count > 0 else { return badRequest("Invalid HTTP request") }
+        guard !parts.isEmpty else { return badRequest("Invalid HTTP request") }
         var headers = parts[0].components(separatedBy: "\r\n")
 
         let requestSpecification = headers[0].components(separatedBy: " ")
@@ -84,7 +84,7 @@ class HLSServer {
         let maximumReceiveLength = 1000
 
         listener.newConnectionHandler = { connection in
-            connection.receive(minimumIncompleteLength: 10, maximumLength: maximumReceiveLength) { data, contentContext, bool, error in
+            connection.receive(minimumIncompleteLength: 10, maximumLength: maximumReceiveLength) { data, _, _, _ in
                 guard let data = data, let request = String(data: data, encoding: .utf8) else { return }
 
                 self.process(httpRequest: request).startWithResult { result in

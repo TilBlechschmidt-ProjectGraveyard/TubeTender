@@ -49,7 +49,7 @@ extension SignalProducer {
     func cached(lifetime: TimeInterval) -> SignalProducer<Result<Value, Error>, NoError> {
         let cache = SignalProducerCache(lifetime: lifetime, self)
 
-        return SignalProducer<SignalProducer<Result<Value, Error>, NoError>, NoError>() { observable, _ in
+        return SignalProducer<SignalProducer<Result<Value, Error>, NoError>, NoError> { observable, _ in
             observable.send(value: cache.fetch())
         }.flatten(.latest)
     }

@@ -6,8 +6,8 @@
 //  Copyright © 2018 Til Blechschmidt. All rights reserved.
 //
 
-import UIKit
 import ReactiveSwift
+import UIKit
 
 protocol PlayerViewControllerDelegate: class {
     func playerViewController(_ playerViewController: PlayerViewController, didChangeFullscreenStatus: Bool)
@@ -29,7 +29,7 @@ class PlayerViewController: UIViewController {
             contentView.topAnchor.constraint(equalTo: view.topAnchor),
             contentView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             contentView.leftAnchor.constraint(equalTo: view.leftAnchor),
-            contentView.rightAnchor.constraint(equalTo: view.rightAnchor),
+            contentView.rightAnchor.constraint(equalTo: view.rightAnchor)
         ])
     }
 
@@ -82,7 +82,7 @@ class PlayerViewController: UIViewController {
 
         // Duration & Elapsed time
         // TODO Different value when .noMediaLoaded
-        playerControlView.elapsedTime.reactive.text <~ player.currentTime.map { PlayerViewController.stringRepresentation(ofTime: $0) }
+        playerControlView.elapsedTimeLabel.reactive.text <~ player.currentTime.map { PlayerViewController.stringRepresentation(ofTime: $0) }
         playerControlView.durationLabel.reactive.text <~ player.duration.map { PlayerViewController.stringRepresentation(ofTime: $0) }
 
         // Slider & Progress bar
@@ -170,10 +170,9 @@ class PlayerViewController: UIViewController {
             return self.playerControlView.controlView.alpha == 1
         }
         set {
-            UIView.animate(withDuration: 0.2, animations: {
+            UIView.animate(withDuration: 0.1) {
                 self.playerControlView.controlView.alpha = newValue ? 1.0 : 0.0
-                return
-            })
+            }
         }
     }
 
@@ -191,7 +190,9 @@ class PlayerViewController: UIViewController {
     }
 
     @objc func viewTapped() {
+        //swiftlint:disable:next toggle_bool
         controlsVisible = !controlsVisible && !controlsDisabled
+
         if controlsVisible {
             refreshControlHideTimer()
         }
@@ -257,7 +258,7 @@ class PlayerViewController: UIViewController {
     }
 
     @objc func fullscreenButtonTapped() {
-        isFullscreenActive = !isFullscreenActive
+        isFullscreenActive.toggle()
     }
 
     @objc func seeked() {

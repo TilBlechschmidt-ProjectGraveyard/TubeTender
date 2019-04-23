@@ -16,6 +16,7 @@ class Reachability {
     var reachability: SCNetworkReachability?
     var reachabilityFlags = SCNetworkReachabilityFlags()
     let reachabilitySerialQueue = DispatchQueue(label: "ReachabilityQueue")
+
     init?(hostname: String) throws {
         guard let reachability = SCNetworkReachabilityCreateWithName(nil, hostname) else {
             throw Network.Error.failedToCreateWith(hostname)
@@ -24,6 +25,7 @@ class Reachability {
         self.hostname = hostname
         isReachableOnWWAN = true
     }
+
     init?() throws {
         var zeroAddress = sockaddr_in()
         zeroAddress.sin_len = UInt8(MemoryLayout<sockaddr_in>.size)
@@ -37,6 +39,7 @@ class Reachability {
         self.reachability = reachability
         isReachableOnWWAN = true
     }
+
     var status: Network.Status {
         return  !isConnectedToNetwork ? .unreachable :
             isReachableViaWiFi    ? .wifi :
@@ -49,7 +52,10 @@ class Reachability {
         return true
         #endif
     }()
-    deinit { stop() }
+
+    deinit {
+        stop()
+    }
 }
 
 extension Reachability {
@@ -66,6 +72,7 @@ extension Reachability {
         reachabilitySerialQueue.async { self.flagsChanged() }
         isRunning = true
     }
+
     func stop() {
         defer { isRunning = false }
         guard let reachability = reachability else { return }
@@ -73,11 +80,13 @@ extension Reachability {
         SCNetworkReachabilitySetDispatchQueue(reachability, nil)
         self.reachability = nil
     }
+
     var isConnectedToNetwork: Bool {
         return isReachable &&
-            !isConnectionRequiredAndTransientConnection &&
+            !isConnectionRequiredAndTransient &&
             !(isRunningOnDevice && isWWAN && !isReachableOnWWAN)
     }
+
     var isReachableViaWiFi: Bool {
         return isReachable && isRunningOnDevice && !isWWAN
     }
@@ -104,7 +113,10 @@ extension Reachability {
     /// The specified node name or address can be reached using the current network configuration.
     var isReachable: Bool { return flags?.contains(.reachable) == true }
 
-    /// The specified node name or address can be reached using the current network configuration, but a connection must first be established. If this flag is set, the kSCNetworkReachabilityFlagsConnectionOnTraffic flag, kSCNetworkReachabilityFlagsConnectionOnDemand flag, or kSCNetworkReachabilityFlagsIsWWAN flag is also typically set to indicate the type of connection required. If the user must manually make the connection, the kSCNetworkReachabilityFlagsInterventionRequired flag is also set.
+    /// The specified node name or address can be reached using the current network configuration, but a connection must first be established.
+    /// If this flag is set, the kSCNetworkReachabilityFlagsConnectionOnTraffic flag, kSCNetworkReachabilityFlagsConnectionOnDemand flag, or
+    /// kSCNetworkReachabilityFlagsIsWWAN flag is also typically set to indicate the type of connection required. If the user must manually
+    /// make the connection, the kSCNetworkReachabilityFlagsInterventionRequired flag is also set.
     var connectionRequired: Bool { return flags?.contains(.connectionRequired) == true }
 
     /// The specified node name or address can be reached using the current network configuration, but a connection must first be established. Any traffic directed to the specified name or address will initiate the connection.
@@ -113,7 +125,9 @@ extension Reachability {
     /// The specified node name or address can be reached using the current network configuration, but a connection must first be established.
     var interventionRequired: Bool { return flags?.contains(.interventionRequired) == true }
 
-    /// The specified node name or address can be reached using the current network configuration, but a connection must first be established. The connection will be established "On Demand" by the CFSocketStream programming interface (see CFStream Socket Additions for information on this). Other functions will not establish the connection.
+    /// The specified node name or address can be reached using the current network configuration, but a connection must first be established.
+    /// The connection will be established "On Demand" by the CFSocketStream programming interface (see CFStream Socket Additions for information on this).
+    /// Other functions will not establish the connection.
     var connectionOnDemand: Bool { return flags?.contains(.connectionOnDemand) == true }
 
     /// The specified node name or address is one that is associated with a network interface on the current system.
@@ -127,7 +141,7 @@ extension Reachability {
 
     /// The specified node name or address can be reached using the current network configuration, but a connection must first be established. If this flag is set
     /// The specified node name or address can be reached via a transient connection, such as PPP.
-    var isConnectionRequiredAndTransientConnection: Bool {
+    var isConnectionRequiredAndTransient: Bool {
         return (flags?.intersection([.connectionRequired, .transientConnection]) == [.connectionRequired, .transientConnection]) == true
     }
 }
@@ -145,10 +159,15 @@ extension Notification.Name {
 
 struct Network {
     static var reachability: Reachability?
+
     enum Status: String, CustomStringConvertible {
         case unreachable, wifi, wwan
-        var description: String { return rawValue }
+
+        var description: String {
+            return rawValue
+        }
     }
+
     enum Error: Swift.Error {
         case failedToSetCallout
         case failedToSetDispatchQueue

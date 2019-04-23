@@ -6,9 +6,9 @@
 //  Copyright © 2018 Noah Peeters. All rights reserved.
 //
 
-import Result
 import Alamofire
 import ReactiveSwift
+import Result
 
 /// Queue used for alamofire completion handler.
 private let alamofireQueue = DispatchQueue(label: "Alamofire queue")

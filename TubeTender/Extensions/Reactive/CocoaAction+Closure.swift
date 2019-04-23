@@ -6,23 +6,21 @@
 //  Copyright © 2019 Til Blechschmidt. All rights reserved.
 //
 
-import Result
-import ReactiveSwift
 import ReactiveCocoa
+import ReactiveSwift
+import Result
 
 extension CocoaAction {
-    convenience init(action: @escaping (Sender) -> ()) {
-        let a = Action<Sender, Never, AnyError> { input in
-            print("creating signal producer")
-            return SignalProducer() { _, _ in action(input) }
+    convenience init(action: @escaping (Sender) -> Void) {
+        let wrappedAction = Action<Sender, Never, AnyError> { input in
+            return SignalProducer { _, _ in action(input) }
         }
-        self.init(a, { $0 })
+        self.init(wrappedAction) { $0 }
     }
 
-    convenience init(action: @autoclosure @escaping () -> ()) {
-        self.init(action: { _ in
-            print("executing action")
+    convenience init(action: @autoclosure @escaping () -> Void) {
+        self.init { _ in
             action()
-        })
+        }
     }
 }

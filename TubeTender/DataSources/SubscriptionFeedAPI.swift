@@ -7,12 +7,13 @@
 //
 
 import Foundation
-import YoutubeKit
 import ReactiveSwift
 import Result
+import YoutubeKit
 
 class SubscriptionFeedAPI {
     static let shared = SubscriptionFeedAPI()
+
     private init() {}
 
     private func fetchSubscribedChannels(pageToken: String? = nil) -> SignalProducer<[Channel.ID], AnyError> {
@@ -51,7 +52,7 @@ class SubscriptionFeedAPI {
         }.collect().map { videoSets in
             // Calculate the date of the most recent of the least recent videos
             let cutoffDate: Date = videoSets.compactMap { videoSet in
-                videoSet.min(by: { $0.publishedAt < $1.publishedAt })?.publishedAt
+                videoSet.min { $0.publishedAt < $1.publishedAt }?.publishedAt
             }.max { $0 < $1 }!
 
             // Remove videos after the cutoff date from each set and flatten the sets into one

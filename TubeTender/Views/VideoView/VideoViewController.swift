@@ -6,8 +6,8 @@
 //  Copyright © 2018 Til Blechschmidt. All rights reserved.
 //
 
-import UIKit
 import ReactiveSwift
+import UIKit
 
 class VideoViewController: UIViewController {
     private let emptyStateView = EmptyStateView(image: #imageLiteral(resourceName: "camera"), text: "No video selected")

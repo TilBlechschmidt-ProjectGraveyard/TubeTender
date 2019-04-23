@@ -29,7 +29,7 @@ struct SegmentInformation {
         let sidx = DataReader(data: data.subdata(in: indexRange))
 
         // No idea what data is in there but lets just skip it.
-        sidx.advance(by: 8)
+        sidx.advance(byBytes: 8)
 
         version = sidx.readByte()
         flags = sidx.read(bytes: 3)
@@ -38,12 +38,12 @@ struct SegmentInformation {
         earliestPresentationTime = sidx.read(bytes: version == 0 ? 4 : 8)
         firstOffset = sidx.read(bytes: 4)
 
-        sidx.advance(by: 2) // reserved
+        sidx.advance(byBytes: 2) // reserved
 
         segments = (0..<sidx.read(bytes: 2)).map { _ in
             let referencedSize = sidx.read(bytes: 4)
             let subSegmentDuration = sidx.read(bytes: 4)
-            sidx.advance(by: 4) // unused
+            sidx.advance(byBytes: 4) // unused
             return Segment(referencedSize: referencedSize, subSegmentDuration: subSegmentDuration)
         }
 

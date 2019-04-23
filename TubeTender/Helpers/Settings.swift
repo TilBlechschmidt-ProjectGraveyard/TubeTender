@@ -10,33 +10,33 @@ import Foundation
 
 enum Settings: SettingsKit {
     // Quality
-    case DefaultQuality
-    case MobileQuality
-    case HDR
-    case HighFPS
+    case defaultQuality
+    case mobileQuality
+    case hdr
+    case highFPS
 
     // Playback
-    case BackgroundPlayback
-    case BackgroundPiP
+    case backgroundPlayback
+    case backgroundPictureInPicture
 
     // App details
-    case AppVersion
+    case appVersion
 
     var identifier: String {
         switch self {
-        case .AppVersion:
+        case .appVersion:
             return "app_version"
-        case .DefaultQuality:
+        case .defaultQuality:
             return "quality_default"
-        case .MobileQuality:
+        case .mobileQuality:
             return "quality_mobile"
-        case .HDR:
+        case .hdr:
             return "quality_hdr"
-        case .HighFPS:
+        case .highFPS:
             return "quality_highFps"
-        case .BackgroundPlayback:
+        case .backgroundPlayback:
             return "playback_background"
-        case .BackgroundPiP:
+        case .backgroundPictureInPicture:
             return "background_pip"
         }
     }
@@ -69,7 +69,6 @@ public extension SettingsKit {
 
     /// Local defaults reference
     private var defaults: UserDefaults { return UserDefaults.standard }
-
 
     // MARK: - Static Convenience Methods
 
@@ -139,7 +138,6 @@ public extension SettingsKit {
             defaults.set(value, forKey: identifier)
         }
     }
-
 
     /**
      Observe a given setting for changes. The `onChange` closure will be called,

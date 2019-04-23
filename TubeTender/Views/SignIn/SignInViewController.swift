@@ -6,8 +6,8 @@
 //  Copyright © 2018 Til Blechschmidt. All rights reserved.
 //
 
-import UIKit
 import GoogleSignIn
+import UIKit
 
 class SignInViewController: UIViewController, GIDSignInUIDelegate {
     override func viewDidLoad() {

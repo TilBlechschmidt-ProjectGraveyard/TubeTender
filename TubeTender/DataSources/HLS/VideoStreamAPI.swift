@@ -37,9 +37,9 @@ final class VideoStreamAPI {
 
             // Send the request
             let session = URLSession(configuration: URLSessionConfiguration.default)
-            session.dataTask(with: req) { data, response, error in
+            session.dataTask(with: req) { data, _, error in
                 // Convert the response to a string
-                guard let data = data, data.count > 0, let urlParameters = String(data: data, encoding: .utf8) else {
+                guard let data = data, !data.isEmpty, let urlParameters = String(data: data, encoding: .utf8) else {
                     observer.send(error: AnyError(VideoStreamAPIError.invalidResponse))
                     return
                 }
@@ -52,7 +52,7 @@ final class VideoStreamAPI {
                     observer.send(error: AnyError(VideoStreamAPIError.invalidResponse))
                     return
                 }
-                
+
                 let streams = adaptiveFormats.components(separatedBy: ",")
                 let formattedStreamDictionaries = streams.map { stream in
                     return dictionaryFromURL(parameterStrings: stream.split(separator: "&").map { String($0) })
@@ -68,7 +68,7 @@ final class VideoStreamAPI {
     }
 }
 
-fileprivate func dictionaryFromURL(parameterStrings: [String]) -> [String: String] {
+private func dictionaryFromURL(parameterStrings: [String]) -> [String: String] {
     return parameterStrings.reduce(into: [:]) { result, variable in
         let keyValue = variable.components(separatedBy: "=")
         if keyValue.count == 2, let decoded = keyValue[1].removingPercentEncoding {

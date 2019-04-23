@@ -6,8 +6,8 @@
 //  Copyright © 2019 Til Blechschmidt. All rights reserved.
 //
 
-import UIKit
 import ReactiveSwift
+import UIKit
 
 class GenericVideoListViewController: UITableViewController {
     override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -18,7 +18,7 @@ class GenericVideoListViewController: UITableViewController {
 
     public var videos: [[Video]] = [] {
         didSet {
-            emptyStateView.isHidden = videos.count > 0
+            emptyStateView.isHidden = !videos.isEmpty
         }
     }
 

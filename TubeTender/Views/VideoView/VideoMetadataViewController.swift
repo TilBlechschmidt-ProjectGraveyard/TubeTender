@@ -6,10 +6,10 @@
 //  Copyright © 2018 Til Blechschmidt. All rights reserved.
 //
 
-import UIKit
-import YoutubeKit
 import ReactiveSwift
 import Result
+import UIKit
+import YoutubeKit
 
 class VideoMetadataViewController: UIViewController {
     let videoMetadataView = VideoMetadataView()
@@ -40,10 +40,9 @@ class VideoMetadataViewController: UIViewController {
             videoMetadataView.topAnchor.constraint(equalTo: view.topAnchor),
             videoMetadataView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             videoMetadataView.leftAnchor.constraint(equalTo: view.leftAnchor),
-            videoMetadataView.rightAnchor.constraint(equalTo: view.rightAnchor),
+            videoMetadataView.rightAnchor.constraint(equalTo: view.rightAnchor)
         ])
     }
-
 
     func fetchVideoDetails() {
         videoMetadataView.videoTitle.reactive.text <~ video.title.map { $0.value ?? "Loading..." }

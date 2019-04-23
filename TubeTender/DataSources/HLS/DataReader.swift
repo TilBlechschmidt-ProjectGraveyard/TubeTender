@@ -17,14 +17,15 @@ class DataReader {
         self.offset = offset
     }
 
-    func advance(by: Int) {
-        offset += by
+    func advance(byBytes bytes: Int) {
+        offset += bytes
     }
 
     func readByte() -> UInt8 {
-        let byte = data[offset]
-        offset += 1
-        return byte
+        defer {
+            offset += 1
+        }
+        return data[offset]
     }
 
     func read(bytes: UInt8) -> UInt64 {

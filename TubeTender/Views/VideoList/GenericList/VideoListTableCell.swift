@@ -6,11 +6,11 @@
 //  Copyright © 2018 Til Blechschmidt. All rights reserved.
 //
 
-import UIKit
 import Kingfisher
 import ReactiveSwift
 import Result
 import SnapKit
+import UIKit
 
 class SubscriptionFeedViewTableCell: UIRebindableTableViewCell {
     static let identifier = "SubscriptionFeedViewTableCell"
@@ -71,7 +71,7 @@ class SubscriptionFeedViewTableCell: UIRebindableTableViewCell {
                 self.hideThumbnail ? duration : nil
             ]
 
-            return displayData.compactMap({ $0 }).joined(separator: " ∙ ")
+            return displayData.compactMap { $0 }.joined(separator: " ∙ ")
         }
 
         makeDisposableBindings { bindings in

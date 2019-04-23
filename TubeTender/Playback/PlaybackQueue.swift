@@ -55,7 +55,7 @@
 //        }
 //
 //        // TODO Don't bind the elapsed time but instead just set it when the status changes.
-//        commandCenter.elapsedTime <~ self.player.currentTime
+//        commandCenter.elapsedTimeLabel <~ self.player.currentTime
 //        commandCenter.duration <~ self.player.duration
 //
 //        commandCenter.hasNext <~ self.currentIndex.map { index in
@@ -69,7 +69,6 @@
 //
 //        player.status.signal.observeValues { status in
 //            if status == .playbackFinished {
-//                print("playing next video in 2 seconds")
 //                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
 //                    self.next()
 //                }

@@ -25,9 +25,9 @@ class RadialGradientLayer: CALayer {
     }
 
     var cgColors: [CGColor] {
-        return colors.map({ (color) -> CGColor in
+        return colors.map { (color) -> CGColor in
             return color.cgColor
-        })
+        }
     }
 
     override init() {
@@ -55,8 +55,6 @@ class RadialGradientLayer: CALayer {
     }
 
 }
-
-
 
 //class RadialGradientView: UIView {
 //

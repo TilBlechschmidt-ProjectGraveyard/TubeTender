@@ -7,14 +7,15 @@
 //
 
 import Alamofire
-import ReactiveSwift
-import YoutubeKit
 import CoreStore
+import ReactiveSwift
 import Result
+import YoutubeKit
 
-fileprivate struct Static {
+private struct Static {
     static let downloadManagerStack: DataStack = {
         let dataStack = DataStack()
+        //swiftlint:disable:next force_try
         try! dataStack.addStorageAndWait(
             SQLiteStore(
                 fileName: "DownloadManager.sqlite",
@@ -25,7 +26,7 @@ fileprivate struct Static {
     }()
 }
 
-fileprivate func downloadedContentDirectory() -> URL? {
+private func downloadedContentDirectory() -> URL? {
     let applicationSupportURL = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first
     let bundleID = Bundle.main.bundleIdentifier
     let directoryName = "DownloadedContent"
@@ -39,7 +40,7 @@ fileprivate func downloadedContentDirectory() -> URL? {
 
 extension DataStack {
     func createSignalProducer<T>(asynchronous task: @escaping (AsynchronousDataTransaction) throws -> T) -> SignalProducer<T, CoreStoreError> {
-        return SignalProducer<T, CoreStoreError>() { observer, _ in
+        return SignalProducer<T, CoreStoreError> { observer, _ in
             self.perform(
                 asynchronous: task,
                 success: { value in
@@ -91,7 +92,7 @@ class DownloadManager {
 
     private init() { }
 
-    var currentlyDownloading: [Video.ID : Signal<Double, DownloadManagerError>] = [:]
+    var currentlyDownloading: [Video.ID: Signal<Double, DownloadManagerError>] = [:]
 
     public func status(forVideoWithID videoID: Video.ID) -> DownloadStatus {
         return .notStored
@@ -201,7 +202,6 @@ class DownloadManager {
 //                    observer.send(value: progress.fractionCompleted)
 //                }
 //                .response { response in
-////                    print("Error: \(response.error)")
 //                    // TODO Handle error if it occurs
 //                    observer.sendCompleted()
 //            }
