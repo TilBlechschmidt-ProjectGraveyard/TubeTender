@@ -6,8 +6,8 @@
 //  Copyright © 2019 Til Blechschmidt. All rights reserved.
 //
 
-import UIKit
 import ReactiveSwift
+import UIKit
 
 class GenericVideoListViewController: UITableViewController {
     override var preferredStatusBarStyle: UIStatusBarStyle {

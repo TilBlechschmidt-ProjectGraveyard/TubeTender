@@ -1,15 +1,14 @@
 //
 //  VideoMetadataViewController.swift
-//  Pivo
+//  TubeTender
 //
 //  Created by Til Blechschmidt on 27.12.18.
-//  Copyright © 2018 Til Blechschmidt. All rights reserved.
+//  Copyright © 2019 Til Blechschmidt. All rights reserved.
 //
 
+import ReactiveSwift
 import UIKit
 import YoutubeKit
-import ReactiveSwift
-import Result
 
 class VideoMetadataViewController: UIViewController {
     let videoMetadataView = VideoMetadataView()
@@ -40,10 +39,9 @@ class VideoMetadataViewController: UIViewController {
             videoMetadataView.topAnchor.constraint(equalTo: view.topAnchor),
             videoMetadataView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             videoMetadataView.leftAnchor.constraint(equalTo: view.leftAnchor),
-            videoMetadataView.rightAnchor.constraint(equalTo: view.rightAnchor),
+            videoMetadataView.rightAnchor.constraint(equalTo: view.rightAnchor)
         ])
     }
-
 
     func fetchVideoDetails() {
         videoMetadataView.videoTitle.reactive.text <~ video.title.map { $0.value ?? "Loading..." }

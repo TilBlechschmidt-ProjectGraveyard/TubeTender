@@ -6,9 +6,9 @@
 //  Copyright © 2019 Til Blechschmidt. All rights reserved.
 //
 
-import UIKit
 import DownloadButton
 import ReactiveSwift
+import UIKit
 
 class VideoDownloadButtonViewController: UIViewController {
     var video: Video! {
@@ -33,7 +33,7 @@ class VideoDownloadButtonViewController: UIViewController {
         willSet {
             let signalVideoID = video.id
             newValue
-                .take(while: { _ in signalVideoID == self.video.id })
+                .take { _ in signalVideoID == self.video.id }
                 .take(duringLifetimeOf: self)
                 .observeResult { [unowned self] result in
                     switch result {
@@ -66,13 +66,13 @@ class VideoDownloadButtonViewController: UIViewController {
     func deleteDownload() {
         let alert = UIAlertController(title: "Delete video", message: "Do you want to remove the downloaded video?", preferredStyle: UIAlertController.Style.alert)
 
-        alert.addAction(UIAlertAction(title: "Delete", style: UIAlertAction.Style.destructive, handler: { _ in
+        alert.addAction(UIAlertAction(title: "Delete", style: UIAlertAction.Style.destructive) { _ in
             if DownloadManager.shared.removeDownload(withID: self.video.id) == nil {
                 DispatchQueue.main.async {
                     self.downloadButton.downloadState = .toDownload
                 }
             }
-        }))
+        })
         alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertAction.Style.cancel, handler: nil))
 
         self.present(alert, animated: true, completion: nil)
@@ -82,12 +82,12 @@ class VideoDownloadButtonViewController: UIViewController {
         switch DownloadManager.shared.status(forVideoWithID: video.id) {
         case .downloaded:
             deleteDownload()
-        case .inProgress(_):
+        case .inProgress:
             // TODO Cancel the download
-            print("TODO Implement download cancellation")
+            break
         case .stalled:
             // TODO Resume or delete the download
-            print("TODO Implement stall action")
+            break
         case .notStored:
             downloadButton.downloadState = .willDownload
             downloadProgressSignal = DownloadManager.shared.downloadVideo(withID: video.id)

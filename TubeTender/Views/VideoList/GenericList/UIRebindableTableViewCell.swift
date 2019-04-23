@@ -6,8 +6,8 @@
 //  Copyright © 2019 Til Blechschmidt. All rights reserved.
 //
 
-import UIKit
 import ReactiveSwift
+import UIKit
 
 class UIRebindableTableViewCell: UITableViewCell {
     private let disposable = SerialDisposable()
@@ -17,7 +17,7 @@ class UIRebindableTableViewCell: UITableViewCell {
         disposeBindings()
     }
 
-    func makeDisposableBindings(_ closure: (CompositeDisposable) -> ()) {
+    func makeDisposableBindings(_ closure: (CompositeDisposable) -> Void) {
         if disposable.inner == nil {
             disposable.inner = disposeBag
         }

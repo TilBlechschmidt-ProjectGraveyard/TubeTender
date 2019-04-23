@@ -1,13 +1,13 @@
 //
 //  SignInViewController.swift
-//  Pivo
+//  TubeTender
 //
 //  Created by Til Blechschmidt on 18.10.18.
-//  Copyright © 2018 Til Blechschmidt. All rights reserved.
+//  Copyright © 2019 Til Blechschmidt. All rights reserved.
 //
 
-import UIKit
 import GoogleSignIn
+import UIKit
 
 class SignInViewController: UIViewController, GIDSignInUIDelegate {
     override func viewDidLoad() {

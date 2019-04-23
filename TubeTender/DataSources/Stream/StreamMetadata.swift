@@ -1,12 +1,12 @@
 //
-//  StreamQuality.swift
+//  StreamMetadata.swift
 //  TubeTender
 //
 //  Created by Til Blechschmidt on 04.11.18.
-//  Copyright © 2018 Til Blechschmidt. All rights reserved.
+//  Copyright © 2019 Til Blechschmidt. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 enum StreamQuality: String, Codable, ArrayComparable, CustomStringConvertible {
     case hd1080 // 1080p
@@ -22,7 +22,7 @@ enum StreamQuality: String, Codable, ArrayComparable, CustomStringConvertible {
 
     var resolution: CGSize {
         let height: CGFloat
-        
+
         switch self {
         case .tiny:
             height = 144
@@ -67,10 +67,10 @@ enum StreamQuality: String, Codable, ArrayComparable, CustomStringConvertible {
 
 extension StreamQuality {
     static var `default`: StreamQuality {
-        return (Settings.get(setting: .DefaultQuality) as? String).flatMap { StreamQuality(rawValue: $0) } ?? .hd720
+        return (Settings.get(setting: .defaultQuality) as? String).flatMap { StreamQuality(rawValue: $0) } ?? .hd720
     }
 
     static var mobile: StreamQuality {
-        return (Settings.get(setting: .MobileQuality) as? String).flatMap { StreamQuality(rawValue: $0) } ?? .medium
+        return (Settings.get(setting: .mobileQuality) as? String).flatMap { StreamQuality(rawValue: $0) } ?? .medium
     }
 }

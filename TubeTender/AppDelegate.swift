@@ -1,15 +1,15 @@
 //
 //  AppDelegate.swift
-//  Pivo
+//  TubeTender
 //
 //  Created by Til Blechschmidt on 10.10.18.
-//  Copyright © 2018 Til Blechschmidt. All rights reserved.
+//  Copyright © 2019 Til Blechschmidt. All rights reserved.
 //
 
+import AVKit
+import GoogleSignIn
 import UIKit
 import YoutubeKit
-import GoogleSignIn
-import AVKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -40,6 +40,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         GIDSignIn.sharedInstance()?.signInSilently()
 
+        //swiftlint:disable:next force_cast
         let splitViewController = window!.rootViewController as! UISplitViewController
         splitViewController.delegate = self
 
@@ -53,7 +54,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UIVisualEffectView.appearance().effect = UIBlurEffect(style: .dark)
 
         let versionString = "\(Bundle.main.releaseVersionNumber ?? "0") (\(Bundle.main.buildVersionNumber ?? "0"))"
-        Settings.set(setting: .AppVersion, versionString)
+        Settings.set(setting: .appVersion, versionString)
 
         do {
             Network.reachability = try Reachability(hostname: "www.youtube.com")
@@ -83,14 +84,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
 
-    func application(_ app: UIApplication, handleOpen url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
+    func application(_ app: UIApplication, handleOpen url: URL, options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
         return GIDSignIn.sharedInstance().handle(url as URL?,
                                                  sourceApplication: options[UIApplication.OpenURLOptionsKey.sourceApplication] as? String,
                                                  annotation: options[UIApplication.OpenURLOptionsKey.annotation])
     }
 
-    func applicationWillEnterForeground(_ application: UIApplication) {
-        if Settings.get(setting: .BackgroundPiP) as? Bool ?? false && VideoPlayer.shared.status.value == .playing {
+    func applicationDidBecomeActive(_ application: UIApplication) {
+        if Settings.get(setting: .backgroundPictureInPicture) as? Bool ?? false && VideoPlayer.shared.status.value == .playing {
             DispatchQueue.global().asyncAfter(deadline: .now() + 0.25) {
                 VideoPlayer.shared.stopPictureInPicture()
             }
@@ -100,17 +101,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         IncomingVideoReceiver.default.scanPasteboardForURL()
     }
 
-    func applicationDidEnterBackground(_ application: UIApplication) {
-        if Settings.get(setting: .BackgroundPiP) as? Bool ?? false && VideoPlayer.shared.status.value == .playing {
+    func applicationWillResignActive(_ application: UIApplication) {
+        if Settings.get(setting: .backgroundPictureInPicture) as? Bool ?? false && VideoPlayer.shared.status.value == .playing {
             VideoPlayer.shared.startPictureInPicture()
-        } else if !(Settings.get(setting: .BackgroundPlayback) as? Bool ?? true) {
+        } else if !(Settings.get(setting: .backgroundPlayback) as? Bool ?? true) {
             VideoPlayer.shared.pause()
         }
     }
 }
 
 extension AppDelegate: UISplitViewControllerDelegate {
-    func splitViewController(_ splitViewController: UISplitViewController, collapseSecondary secondaryViewController:UIViewController, onto primaryViewController:UIViewController) -> Bool {
+    func splitViewController(_ splitViewController: UISplitViewController, collapseSecondary secondaryViewController: UIViewController, onto primaryViewController: UIViewController) -> Bool {
         return true
     }
 }

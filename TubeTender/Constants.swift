@@ -6,7 +6,7 @@
 //  Copyright © 2019 Til Blechschmidt. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 struct Constants {
     static let cacheLifetime: TimeInterval = 5 * 60

@@ -15,7 +15,7 @@ class SimpleVideoListViewController: GenericVideoListViewController {
         super.dataSource = self
         super.viewDidLoad()
     }
-        
+
     func append(videos: [Video], toSection section: Int = 0) {
         let previousLength = self.videos[section].count
 

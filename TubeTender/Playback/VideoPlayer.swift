@@ -6,10 +6,9 @@
 //  Copyright © 2019 Til Blechschmidt. All rights reserved.
 //
 
-import ReactiveSwift
-import MediaPlayer
 import AVKit
-import Result
+import MediaPlayer
+import ReactiveSwift
 
 //typealias QueueEntry = (video: Video, playerItem: AVPlayerItem)
 
@@ -24,6 +23,7 @@ class AVPlayerView: UIView {
     }
 
     var playerLayer: AVPlayerLayer {
+        //swiftlint:disable:next force_cast
         return layer as! AVPlayerLayer
     }
 
@@ -62,8 +62,8 @@ class VideoPlayer: NSObject {
     let playerView: AVPlayerView
     private let commandCenter: CommandCenter
 
-    private var changeSetObserver: Signal<VideoPlayerQueueChangeSet, NoError>.Observer!
-    private(set) var changeSetSignal: Signal<VideoPlayerQueueChangeSet, NoError>!
+    private var changeSetObserver: Signal<VideoPlayerQueueChangeSet, Never>.Observer!
+    private(set) var changeSetSignal: Signal<VideoPlayerQueueChangeSet, Never>!
 
     let currentIndex: Property<Int?>
     let currentItem: Property<Video?>
@@ -106,7 +106,7 @@ class VideoPlayer: NSObject {
         playerView.player = player
         pictureInPictureController = AVPictureInPictureController(playerLayer: playerView.playerLayer)
 
-        currentItem = Property(currentIndex.map { $0.map({ videos.value[$0] }) })
+        currentItem = Property(currentIndex.map { $0.map { videos.value[$0] } })
 
         // Other properties
         self.commandCenter = commandCenter
@@ -115,7 +115,7 @@ class VideoPlayer: NSObject {
         super.init()
 
         // Setup signals
-        changeSetSignal = Signal { observer, lifetime in
+        changeSetSignal = Signal { observer, _ in
             self.changeSetObserver = observer
         }
 
@@ -140,6 +140,7 @@ class VideoPlayer: NSObject {
     private var playerTimeControlStatusObserver: NSKeyValueObservation?
     private var currentItemStatusObserver: NSKeyValueObservation?
     private var currentItemPresentationSizeObserver: NSKeyValueObservation?
+
     private func setupObservers() {
         // Player related
         player.addPeriodicTimeObserver(forInterval: CMTime(seconds: 0.5, preferredTimescale: 1000), queue: DispatchQueue.main) { time in
@@ -160,10 +161,10 @@ class VideoPlayer: NSObject {
 
         // Command center related
         commandCenter.hasNext <~ currentIndex.combineLatest(with: videos).map { index, videos in
-            return index.flatMap({ $0 < videos.count - 1  }) ?? false
+            return index.flatMap { $0 < videos.count - 1 } ?? false
         }
         commandCenter.hasPrevious <~ currentIndex.combineLatest(with: videos).map { index, videos in
-            return index.flatMap({ $0 > 0 && videos.count > 0 }) ?? (videos.count > 0)
+            return index.flatMap { $0 > 0 && !videos.isEmpty } ?? (!videos.isEmpty)
         }
 
         commandCenter.elapsedTime <~ self.currentTime
@@ -176,7 +177,7 @@ class VideoPlayer: NSObject {
                 let currentItem = self.player.items().first
 
                 self.commandCenter.load(video: currentVideo)
-
+                
                 self.currentItemStatusObserver?.invalidate()
                 self.currentItemStatusObserver = currentItem?.observe(\.status, options: []) { [unowned self] playerItem, change in
                     self.updateStatus(from: playerItem)
@@ -188,7 +189,7 @@ class VideoPlayer: NSObject {
                 }
 
                 if let currentItem = currentItem {
-                    NotificationCenter.default.removeObserver(self)
+                    NotificationCenter.default.removeObserver(self, name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: currentItem)
                     NotificationCenter.default.addObserver(self, selector: #selector(self.playerItemDidPlayToEndTime), name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: currentItem)
                 }
             }
@@ -221,7 +222,6 @@ class VideoPlayer: NSObject {
             self.play()
         case .failed:
             self._status.value = .playbackFailed
-            break
         default:
             break
         }
@@ -424,6 +424,8 @@ extension VideoPlayer: AVPictureInPictureControllerDelegate {
     }
 }
 
-fileprivate func +(lhs: Int?, rhs: Int) -> Int? {
-    return lhs.map { $0 + rhs }
+extension Int {
+    fileprivate static func + (lhs: Int?, rhs: Int) -> Int? {
+        return lhs.map { $0 + rhs }
+    }
 }

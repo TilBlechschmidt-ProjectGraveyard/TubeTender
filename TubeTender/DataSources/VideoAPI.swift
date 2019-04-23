@@ -1,35 +1,24 @@
 //
 //  VideoAPI.swift
-//  Pivo
+//  TubeTender
 //
 //  Created by Til Blechschmidt on 27.12.18.
-//  Copyright © 2018 Til Blechschmidt. All rights reserved.
+//  Copyright © 2019 Til Blechschmidt. All rights reserved.
 //
 
 import struct YoutubeKit.Video
 import struct YoutubeKit.VideoListRequest
-import Result
-import ReactiveSwift
 import ReactiveCocoa
+import ReactiveSwift
 
 enum VideoError: Swift.Error {
     case notFound
 }
 
-//fileprivate func groupByQuality(_ streams: [StreamMetadata]) -> [StreamQuality : [StreamMetadata]] {
-//    return streams.reduce(into: [:]) { result, stream in
-//        if result[stream.quality] != nil {
-//            result[stream.quality]?.append(stream)
-//        } else {
-//            result[stream.quality] = [stream]
-//        }
-//    }
-//}
-
 extension Array {
     fileprivate func filterIfPossible(_ predicate: (Element) -> Bool) -> [Element] {
         let filtered = self.filter(predicate)
-        return filtered.count > 0 ? filtered : self
+        return !filtered.isEmpty ? filtered : self
     }
 }
 
@@ -38,11 +27,8 @@ public class Video: YoutubeClientObject<YoutubeKit.VideoListRequest, YoutubeKit.
 
     let id: ID
 
-//    private let streams: APISignalProducer<StreamCollection>
-
     fileprivate init(id: ID, client: YoutubeClient) {
         self.id = id
-//        self.streams = VideoStreamAPI.shared.streams(forVideoID: id).cached(lifetime: Constants.cacheLifetime)
 
         let channelRequest = VideoListRequest(part: [.contentDetails, .statistics, .snippet], filter: .id(id))
 
@@ -111,7 +97,6 @@ extension Video: Equatable {
         return lhs.id == rhs.id
     }
 }
-
 
 // MARK: - Stream management
 

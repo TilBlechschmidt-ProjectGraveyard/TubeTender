@@ -20,7 +20,6 @@
 		302FB83E21D5886B00A82363 /* DateFormatter+ISO8601Full.swift in Sources */ = {isa = PBXBuildFile; fileRef = 302FB83D21D5886B00A82363 /* DateFormatter+ISO8601Full.swift */; };
 		302FB84021D58A8A00A82363 /* VideoAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 302FB83F21D58A8A00A82363 /* VideoAPI.swift */; };
 		3034ACC321E529C7000F06A9 /* YoutubeURLParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3034ACC221E529C7000F06A9 /* YoutubeURLParser.swift */; };
-		30370F5521763F6000B35ACF /* VLCTime+Float.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30370F5421763F6000B35ACF /* VLCTime+Float.swift */; };
 		30370F57217735A200B35ACF /* YoutubeKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 30370F56217735A200B35ACF /* YoutubeKit.framework */; };
 		30370F59217735FB00B35ACF /* YoutubeKit.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 30370F56217735A200B35ACF /* YoutubeKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		30370F612177769800B35ACF /* String+FancyFormatting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30370F602177769800B35ACF /* String+FancyFormatting.swift */; };
@@ -32,8 +31,7 @@
 		30A81A3A21D53A7D00FBE8EE /* VideoMetadataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30A81A3921D53A7D00FBE8EE /* VideoMetadataViewController.swift */; };
 		30A81A3E21D53E9500FBE8EE /* VideoMetadataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30A81A3D21D53E9500FBE8EE /* VideoMetadataView.swift */; };
 		30ABE214218F928A00E4FEA4 /* ArrayComparable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30ABE213218F928A00E4FEA4 /* ArrayComparable.swift */; };
-		30ABE219218F965500E4FEA4 /* StreamQuality.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30ABE218218F965500E4FEA4 /* StreamQuality.swift */; };
-		30ABE21F21905F5800E4FEA4 /* Queue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30ABE21E21905F5800E4FEA4 /* Queue.swift */; };
+		30ABE219218F965500E4FEA4 /* StreamMetadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30ABE218218F965500E4FEA4 /* StreamMetadata.swift */; };
 		30ABE2212190B48E00E4FEA4 /* PlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30ABE2202190B48E00E4FEA4 /* PlayerViewController.swift */; };
 		30B03AC221E68A45007B3E38 /* UIRebindableTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30B03AC121E68A45007B3E38 /* UIRebindableTableViewCell.swift */; };
 		30B1EB4B21DC0E9800B16CA2 /* DownloadButton.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B1EB4A21DC0E9800B16CA2 /* DownloadButton.framework */; };
@@ -54,16 +52,14 @@
 		30BAB77A2178CDFF00B01953 /* Date+Since.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30BAB7792178CDFF00B01953 /* Date+Since.swift */; };
 		30BE79BB216FF73F00E6B281 /* AnimatablePlayButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30BE79BA216FF73F00E6B281 /* AnimatablePlayButton.swift */; };
 		30C2112C226BA57B00892173 /* DataReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30C21126226BA56900892173 /* DataReader.swift */; };
-		30C2112D226BA57B00892173 /* StreamAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30C21127226BA56D00892173 /* StreamAPI.swift */; };
+		30C2112D226BA57B00892173 /* VideoStreamAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30C21127226BA56D00892173 /* VideoStreamAPI.swift */; };
 		30C2112E226BA57B00892173 /* SegmentInformation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30C21128226BA57100892173 /* SegmentInformation.swift */; };
 		30C2112F226BA57B00892173 /* HLSBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30C21129226BA57400892173 /* HLSBuilder.swift */; };
 		30C21130226BA57B00892173 /* StreamDescriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30C2112A226BA57700892173 /* StreamDescriptor.swift */; };
 		30C21131226BA57B00892173 /* HLSServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30C2112B226BA57B00892173 /* HLSServer.swift */; };
 		30D0490A21E754EE0077E80C /* CommandCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30D0490921E754EE0077E80C /* CommandCenter.swift */; };
 		30D91B70218F6C810020C814 /* ReactiveSwift.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 30D91B6E218F6C810020C814 /* ReactiveSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		30D91B71218F6C810020C814 /* Result.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 30D91B6F218F6C810020C814 /* Result.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		30D91B72218F6CB40020C814 /* ReactiveSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 30D91B6E218F6C810020C814 /* ReactiveSwift.framework */; };
-		30D91B73218F6CB40020C814 /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 30D91B6F218F6C810020C814 /* Result.framework */; };
 		30DA13E721E3C593000B2638 /* SignalProducer+Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DA13E621E3C593000B2638 /* SignalProducer+Cache.swift */; };
 		30DA13E921E3C6EB000B2638 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DA13E821E3C6EB000B2638 /* Constants.swift */; };
 		30E3063521E7E13A008C6ECB /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30E3063421E7E13A008C6ECB /* Settings.swift */; };
@@ -106,7 +102,6 @@
 				30F2E38A21DD05A5005EFCA9 /* Alamofire.framework in CopyFiles */,
 				30B1EB4C21DC0EA300B16CA2 /* DownloadButton.framework in CopyFiles */,
 				30D91B70218F6C810020C814 /* ReactiveSwift.framework in CopyFiles */,
-				30D91B71218F6C810020C814 /* Result.framework in CopyFiles */,
 				30BAB7782178C96C00B01953 /* Kingfisher.framework in CopyFiles */,
 				30BAB76121787D1700B01953 /* GoogleSignIn.framework in CopyFiles */,
 				30370F59217735FB00B35ACF /* YoutubeKit.framework in CopyFiles */,
@@ -128,8 +123,6 @@
 		302D0408216E197C009FC2E5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		302D040A216E197C009FC2E5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		302D0416216E7535009FC2E5 /* SimpleRegexMatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleRegexMatcher.swift; sourceTree = "<group>"; };
-		302D0424216F3D98009FC2E5 /* MobileVLCKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileVLCKit.framework; path = Carthage/Build/iOS/MobileVLCKit.framework; sourceTree = "<group>"; };
-		302D0427216F3DD0009FC2E5 /* Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Bridging-Header.h"; sourceTree = "<group>"; };
 		302D0428216F3F17009FC2E5 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		302D042A216F3F21009FC2E5 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		302D042C216F3F2B009FC2E5 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
@@ -150,7 +143,6 @@
 		302FB83D21D5886B00A82363 /* DateFormatter+ISO8601Full.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DateFormatter+ISO8601Full.swift"; sourceTree = "<group>"; };
 		302FB83F21D58A8A00A82363 /* VideoAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoAPI.swift; sourceTree = "<group>"; };
 		3034ACC221E529C7000F06A9 /* YoutubeURLParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YoutubeURLParser.swift; sourceTree = "<group>"; };
-		30370F5421763F6000B35ACF /* VLCTime+Float.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VLCTime+Float.swift"; sourceTree = "<group>"; };
 		30370F56217735A200B35ACF /* YoutubeKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = YoutubeKit.framework; path = Carthage/Build/iOS/YoutubeKit.framework; sourceTree = "<group>"; };
 		30370F602177769800B35ACF /* String+FancyFormatting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+FancyFormatting.swift"; sourceTree = "<group>"; };
 		3066682721E7D057001B01C7 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
@@ -160,7 +152,7 @@
 		30A81A3921D53A7D00FBE8EE /* VideoMetadataViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoMetadataViewController.swift; sourceTree = "<group>"; };
 		30A81A3D21D53E9500FBE8EE /* VideoMetadataView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoMetadataView.swift; sourceTree = "<group>"; };
 		30ABE213218F928A00E4FEA4 /* ArrayComparable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayComparable.swift; sourceTree = "<group>"; };
-		30ABE218218F965500E4FEA4 /* StreamQuality.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamQuality.swift; sourceTree = "<group>"; };
+		30ABE218218F965500E4FEA4 /* StreamMetadata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamMetadata.swift; sourceTree = "<group>"; };
 		30ABE21E21905F5800E4FEA4 /* Queue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Queue.swift; sourceTree = "<group>"; };
 		30ABE2202190B48E00E4FEA4 /* PlayerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerViewController.swift; sourceTree = "<group>"; };
 		30B03AC121E68A45007B3E38 /* UIRebindableTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIRebindableTableViewCell.swift; sourceTree = "<group>"; };
@@ -177,14 +169,13 @@
 		30BAB7792178CDFF00B01953 /* Date+Since.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Since.swift"; sourceTree = "<group>"; };
 		30BE79BA216FF73F00E6B281 /* AnimatablePlayButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatablePlayButton.swift; sourceTree = "<group>"; };
 		30C21126226BA56900892173 /* DataReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataReader.swift; sourceTree = "<group>"; };
-		30C21127226BA56D00892173 /* StreamAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamAPI.swift; sourceTree = "<group>"; };
+		30C21127226BA56D00892173 /* VideoStreamAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoStreamAPI.swift; sourceTree = "<group>"; };
 		30C21128226BA57100892173 /* SegmentInformation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SegmentInformation.swift; sourceTree = "<group>"; };
 		30C21129226BA57400892173 /* HLSBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HLSBuilder.swift; sourceTree = "<group>"; };
 		30C2112A226BA57700892173 /* StreamDescriptor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamDescriptor.swift; sourceTree = "<group>"; };
 		30C2112B226BA57B00892173 /* HLSServer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HLSServer.swift; sourceTree = "<group>"; };
 		30D0490921E754EE0077E80C /* CommandCenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandCenter.swift; sourceTree = "<group>"; };
 		30D91B6E218F6C810020C814 /* ReactiveSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReactiveSwift.framework; path = Carthage/Build/iOS/ReactiveSwift.framework; sourceTree = "<group>"; };
-		30D91B6F218F6C810020C814 /* Result.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Result.framework; path = Carthage/Build/iOS/Result.framework; sourceTree = "<group>"; };
 		30DA13E621E3C593000B2638 /* SignalProducer+Cache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SignalProducer+Cache.swift"; sourceTree = "<group>"; };
 		30DA13E821E3C6EB000B2638 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		30E3063421E7E13A008C6ECB /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
@@ -224,7 +215,6 @@
 				30F2E38921DD059D005EFCA9 /* Alamofire.framework in Frameworks */,
 				30B1EB4B21DC0E9800B16CA2 /* DownloadButton.framework in Frameworks */,
 				30D91B72218F6CB40020C814 /* ReactiveSwift.framework in Frameworks */,
-				30D91B73218F6CB40020C814 /* Result.framework in Frameworks */,
 				30BAB7772178C96300B01953 /* Kingfisher.framework in Frameworks */,
 				30BAB76021787D0D00B01953 /* GoogleSignIn.framework in Frameworks */,
 				30370F57217735A200B35ACF /* YoutubeKit.framework in Frameworks */,
@@ -284,7 +274,6 @@
 				302D0407216E197C009FC2E5 /* LaunchScreen.storyboard */,
 				300F296821D6C80600C9B0B0 /* Default-568h@2x.png */,
 				302D040A216E197C009FC2E5 /* Info.plist */,
-				302D0427216F3DD0009FC2E5 /* Bridging-Header.h */,
 				30988C1D21DEBF5C0070D14A /* TubeTender.xcdatamodeld */,
 				3066682721E7D057001B01C7 /* Settings.bundle */,
 			);
@@ -313,7 +302,6 @@
 				30F2E38821DD059D005EFCA9 /* Alamofire.framework */,
 				30B1EB4A21DC0E9800B16CA2 /* DownloadButton.framework */,
 				30D91B6E218F6C810020C814 /* ReactiveSwift.framework */,
-				30D91B6F218F6C810020C814 /* Result.framework */,
 				30BAB7762178C96300B01953 /* Kingfisher.framework */,
 				30BAB75F21787D0D00B01953 /* GoogleSignIn.framework */,
 				30370F56217735A200B35ACF /* YoutubeKit.framework */,
@@ -334,7 +322,6 @@
 				302D042C216F3F2B009FC2E5 /* CFNetwork.framework */,
 				302D042A216F3F21009FC2E5 /* AVFoundation.framework */,
 				302D0428216F3F17009FC2E5 /* AudioToolbox.framework */,
-				302D0424216F3D98009FC2E5 /* MobileVLCKit.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -354,9 +341,9 @@
 		3038424A226F49FD00D7BF7F /* Stream */ = {
 			isa = PBXGroup;
 			children = (
-				30C21127226BA56D00892173 /* StreamAPI.swift */,
+				30C21127226BA56D00892173 /* VideoStreamAPI.swift */,
 				30C2112A226BA57700892173 /* StreamDescriptor.swift */,
-				30ABE218218F965500E4FEA4 /* StreamQuality.swift */,
+				30ABE218218F965500E4FEA4 /* StreamMetadata.swift */,
 			);
 			path = Stream;
 			sourceTree = "<group>";
@@ -496,7 +483,6 @@
 			isa = PBXGroup;
 			children = (
 				302D0416216E7535009FC2E5 /* SimpleRegexMatcher.swift */,
-				30370F5421763F6000B35ACF /* VLCTime+Float.swift */,
 				30ABE213218F928A00E4FEA4 /* ArrayComparable.swift */,
 				3034ACC221E529C7000F06A9 /* YoutubeURLParser.swift */,
 			);
@@ -523,6 +509,7 @@
 				302D03F9216E197A009FC2E5 /* Resources */,
 				30370F58217735EF00B35ACF /* CopyFiles */,
 				302D08F021E1725400B28767 /* Strip unwanted architectures from Frameworks */,
+				40D7E0E1226F42EA0057D0D0 /* SwiftLint */,
 			);
 			buildRules = (
 			);
@@ -606,6 +593,24 @@
 			shellPath = /bin/sh;
 			shellScript = "APP_PATH=\"${TARGET_BUILD_DIR}/${WRAPPER_NAME}\"\n\n# This script loops through the frameworks embedded in the application and\n# removes unused architectures.\nfind \"$APP_PATH\" -name '*.framework' -type d | while read -r FRAMEWORK\ndo\nFRAMEWORK_EXECUTABLE_NAME=$(defaults read \"$FRAMEWORK/Info.plist\" CFBundleExecutable)\nFRAMEWORK_EXECUTABLE_PATH=\"$FRAMEWORK/$FRAMEWORK_EXECUTABLE_NAME\"\necho \"Executable is $FRAMEWORK_EXECUTABLE_PATH\"\n\nEXTRACTED_ARCHS=()\n\nfor ARCH in $ARCHS\ndo\necho \"Extracting $ARCH from $FRAMEWORK_EXECUTABLE_NAME\"\nlipo -extract \"$ARCH\" \"$FRAMEWORK_EXECUTABLE_PATH\" -o \"$FRAMEWORK_EXECUTABLE_PATH-$ARCH\"\nEXTRACTED_ARCHS+=(\"$FRAMEWORK_EXECUTABLE_PATH-$ARCH\")\ndone\n\necho \"Merging extracted architectures: ${ARCHS}\"\nlipo -o \"$FRAMEWORK_EXECUTABLE_PATH-merged\" -create \"${EXTRACTED_ARCHS[@]}\"\nrm \"${EXTRACTED_ARCHS[@]}\"\n\necho \"Replacing original executable with thinned version\"\nrm \"$FRAMEWORK_EXECUTABLE_PATH\"\nmv \"$FRAMEWORK_EXECUTABLE_PATH-merged\" \"$FRAMEWORK_EXECUTABLE_PATH\"\n\ndone\n";
 		};
+		40D7E0E1226F42EA0057D0D0 /* SwiftLint */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = SwiftLint;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if which swiftlint >/dev/null; then\n    swiftlint\nelse\n    echo \"error: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -643,19 +648,18 @@
 				30C2112C226BA57B00892173 /* DataReader.swift in Sources */,
 				408C524C21E54554007B2DD2 /* IncomingVideoReceiver.swift in Sources */,
 				30C21130226BA57B00892173 /* StreamDescriptor.swift in Sources */,
-				30ABE219218F965500E4FEA4 /* StreamQuality.swift in Sources */,
+				30ABE219218F965500E4FEA4 /* StreamMetadata.swift in Sources */,
 				30A81A3A21D53A7D00FBE8EE /* VideoMetadataViewController.swift in Sources */,
 				30988C1F21DEBF5C0070D14A /* TubeTender.xcdatamodeld in Sources */,
 				302FB84021D58A8A00A82363 /* VideoAPI.swift in Sources */,
 				30F2E38C21DD4D14005EFCA9 /* Alamofire+Reactive.swift in Sources */,
 				302182BF226F5EE600EDE0D2 /* SimpleVideoListViewController.swift in Sources */,
 				30A81A3721D539F600FBE8EE /* VideoViewController.swift in Sources */,
-				30C2112D226BA57B00892173 /* StreamAPI.swift in Sources */,
+				30C2112D226BA57B00892173 /* VideoStreamAPI.swift in Sources */,
 				30F48900219CD3E1002FAE36 /* SplitViewController.swift in Sources */,
 				30E3063721E8C2C3008C6ECB /* Reachability.swift in Sources */,
 				30B03AC221E68A45007B3E38 /* UIRebindableTableViewCell.swift in Sources */,
 				40E2E1F321E292D5007EA359 /* YoutubeClient.swift in Sources */,
-				30370F5521763F6000B35ACF /* VLCTime+Float.swift in Sources */,
 				40E2E1F921E3E7AE007EA359 /* Optional+Error.swift in Sources */,
 				302D03FF216E197A009FC2E5 /* AppDelegate.swift in Sources */,
 				30BAB76321787EB100B01953 /* SignInViewController.swift in Sources */,
@@ -665,7 +669,6 @@
 				3005DC64219B767D0002F6A1 /* PlayerControlView.swift in Sources */,
 				4021444321E5F7FB00AAC670 /* UIAlertController+Reactive.swift in Sources */,
 				30BE79BB216FF73F00E6B281 /* AnimatablePlayButton.swift in Sources */,
-				30ABE21F21905F5800E4FEA4 /* Queue.swift in Sources */,
 				40E2E1EF21E28D21007EA359 /* ApiSession+Reactive.swift in Sources */,
 				3034ACC321E529C7000F06A9 /* YoutubeURLParser.swift in Sources */,
 				30BAB7752178BBC500B01953 /* VideoListTableCell.swift in Sources */,
@@ -835,7 +838,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = de.blechschmidt.TubeTender;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "TubeTender Debug";
-				SWIFT_OBJC_BRIDGING_HEADER = "TubeTender/Support Files/Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -864,7 +866,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = de.blechschmidt.TubeTender;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "TubeTender Release";
-				SWIFT_OBJC_BRIDGING_HEADER = "TubeTender/Support Files/Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

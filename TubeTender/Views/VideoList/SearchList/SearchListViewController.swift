@@ -25,8 +25,8 @@ class SearchListViewController: SimpleVideoListViewController {
         definesPresentationContext = true
     }
 
-    private func loadVideos(pageToken: String?, action: @escaping ([Video]) -> ()) {
-        guard let searchString = currentSearchString, searchString != "" else {
+    private func loadVideos(pageToken: String?, action: @escaping ([Video]) -> Void) {
+        guard let searchString = currentSearchString, !searchString.isEmpty else {
             notUpdating()
             return
         }
