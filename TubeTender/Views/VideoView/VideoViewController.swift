@@ -1,9 +1,9 @@
 //
 //  VideoViewController.swift
-//  Pivo
+//  TubeTender
 //
 //  Created by Til Blechschmidt on 13.11.18.
-//  Copyright © 2018 Til Blechschmidt. All rights reserved.
+//  Copyright © 2019 Til Blechschmidt. All rights reserved.
 //
 
 import ReactiveSwift

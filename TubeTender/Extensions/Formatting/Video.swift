@@ -1,9 +1,9 @@
 //
 //  Snippet.VideoList.swift
-//  Pivo
+//  TubeTender
 //
 //  Created by Til Blechschmidt on 28.12.18.
-//  Copyright © 2018 Til Blechschmidt. All rights reserved.
+//  Copyright © 2019 Til Blechschmidt. All rights reserved.
 //
 
 import YoutubeKit

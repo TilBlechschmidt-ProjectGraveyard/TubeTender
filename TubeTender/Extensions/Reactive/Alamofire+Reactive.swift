@@ -3,7 +3,7 @@
 //  TubeTender
 //
 //  Created by Noah Peeters on 20.05.18.
-//  Copyright © 2018 Noah Peeters. All rights reserved.
+//  Copyright © 2019 Noah Peeters. All rights reserved.
 //
 
 import Alamofire
