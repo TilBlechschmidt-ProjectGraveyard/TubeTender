@@ -125,81 +125,74 @@ class VideoMetadataView: UIView {
         ])
     }
 
+    //swiftlint:disable:next function_body_length
     func setupChannelDetails() {
-        channelView.translatesAutoresizingMaskIntoConstraints = false
         metaView.addSubview(channelView)
-        metaView.addConstraints([
-            channelView.topAnchor.constraint(equalTo: detailView.bottomAnchor),
-            channelView.leftAnchor.constraint(equalTo: metaView.leftAnchor),
-            channelView.rightAnchor.constraint(equalTo: metaView.rightAnchor)
-        ])
+        channelView.snp.makeConstraints { make in
+            make.top.equalTo(detailView.snp.bottom)
+            make.left.equalToSuperview()
+            make.right.equalToSuperview()
+        }
 
         let topBorder = UIView()
         topBorder.backgroundColor = Constants.borderColor
-        topBorder.translatesAutoresizingMaskIntoConstraints = false
         channelView.addSubview(topBorder)
-        channelView.addConstraints([
-            topBorder.topAnchor.constraint(equalTo: channelView.topAnchor),
-            topBorder.widthAnchor.constraint(equalTo: channelView.widthAnchor),
-            topBorder.heightAnchor.constraint(equalToConstant: 1)
-        ])
+        topBorder.snp.makeConstraints { make in
+            make.top.equalToSuperview()
+            make.width.equalToSuperview()
+            make.height.equalTo(1)
+        }
 
         let bottomBorder = UIView()
         bottomBorder.backgroundColor = Constants.borderColor
-        bottomBorder.translatesAutoresizingMaskIntoConstraints = false
         channelView.addSubview(bottomBorder)
-        channelView.addConstraints([
-            bottomBorder.bottomAnchor.constraint(equalTo: channelView.bottomAnchor),
-            bottomBorder.widthAnchor.constraint(equalTo: channelView.widthAnchor),
-            bottomBorder.heightAnchor.constraint(equalToConstant: 1)
-        ])
+        bottomBorder.snp.makeConstraints { make in
+            make.bottom.equalToSuperview()
+            make.width.equalToSuperview()
+            make.height.equalTo(1)
+        }
 
         channelThumbnail.backgroundColor = UIColor.lightGray
         channelThumbnail.layer.cornerRadius = channelIconSize / 2
         channelThumbnail.layer.masksToBounds = false
         channelThumbnail.clipsToBounds = true
         channelThumbnail.kf.indicatorType = .activity
-        channelThumbnail.translatesAutoresizingMaskIntoConstraints = false
         channelView.addSubview(channelThumbnail)
-        channelView.addConstraints([
-            channelThumbnail.widthAnchor.constraint(equalToConstant: channelIconSize),
-            channelThumbnail.heightAnchor.constraint(equalToConstant: channelIconSize),
-            channelThumbnail.topAnchor.constraint(equalTo: channelView.topAnchor, constant: Constants.uiPadding),
-            channelThumbnail.leftAnchor.constraint(equalTo: channelView.leftAnchor, constant: Constants.uiPadding),
-            channelThumbnail.bottomAnchor.constraint(equalTo: channelView.bottomAnchor, constant: -Constants.uiPadding)
-        ])
+        channelThumbnail.snp.makeConstraints { make in
+            make.size.equalTo(CGSize(width: channelIconSize, height: channelIconSize))
+            make.top.equalToSuperview().offset(Constants.uiPadding)
+            make.left.equalToSuperview().offset(Constants.uiPadding)
+            make.bottom.equalToSuperview().offset(-Constants.uiPadding)
+        }
 
         let channelDetailLabelView = UIView()
-        channelDetailLabelView.translatesAutoresizingMaskIntoConstraints = false
         channelView.addSubview(channelDetailLabelView)
-        channelView.addConstraints([
-            channelDetailLabelView.leftAnchor.constraint(equalTo: channelThumbnail.rightAnchor, constant: Constants.uiPadding),
-            channelDetailLabelView.rightAnchor.constraint(equalTo: channelView.rightAnchor, constant: -Constants.uiPadding),
-            channelDetailLabelView.centerYAnchor.constraint(equalTo: channelThumbnail.centerYAnchor)
-        ])
+        channelDetailLabelView.snp.makeConstraints { make in
+            make.centerY.equalTo(channelThumbnail)
+            make.left.equalTo(channelThumbnail.snp.right).offset(Constants.uiPadding)
+            make.right.equalToSuperview().offset(-Constants.uiPadding)
+        }
 
         channelTitle.font = channelTitle.font.withSize(13)
         channelTitle.textColor = UIColor.white
         channelTitle.lineBreakMode = .byTruncatingTail
-        channelTitle.translatesAutoresizingMaskIntoConstraints = false
         channelDetailLabelView.addSubview(channelTitle)
-        channelDetailLabelView.addConstraints([
-            channelTitle.leftAnchor.constraint(equalTo: channelDetailLabelView.leftAnchor),
-            channelTitle.rightAnchor.constraint(equalTo: channelDetailLabelView.rightAnchor),
-            channelTitle.topAnchor.constraint(equalTo: channelDetailLabelView.topAnchor)
-        ])
+        channelTitle.snp.makeConstraints { make in
+            make.left.equalToSuperview()
+            make.right.equalToSuperview()
+            make.top.equalToSuperview()
+        }
 
         channelSubscriberCount.font = channelTitle.font.withSize(11)
         channelSubscriberCount.textColor = UIColor.lightGray
         channelSubscriberCount.lineBreakMode = .byTruncatingTail
-        channelSubscriberCount.translatesAutoresizingMaskIntoConstraints = false
         channelDetailLabelView.addSubview(channelSubscriberCount)
-        channelDetailLabelView.addConstraints([
-            channelSubscriberCount.leftAnchor.constraint(equalTo: channelDetailLabelView.leftAnchor),
-            channelSubscriberCount.rightAnchor.constraint(equalTo: channelDetailLabelView.rightAnchor),
-            channelSubscriberCount.bottomAnchor.constraint(equalTo: channelDetailLabelView.bottomAnchor),
-            channelSubscriberCount.topAnchor.constraint(equalTo: channelTitle.bottomAnchor, constant: Constants.uiPadding / 4)
-        ])
+        channelSubscriberCount.snp.makeConstraints { make in
+            make.left.equalToSuperview()
+            make.right.equalToSuperview()
+            make.bottom.equalToSuperview()
+            make.top.equalTo(channelTitle.snp.bottom).offset(Constants.uiPadding / 4)
+        }
     }
 
     func setupVideoDescription() {
