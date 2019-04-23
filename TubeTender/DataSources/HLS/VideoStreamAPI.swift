@@ -8,7 +8,6 @@
 
 import Foundation
 import ReactiveSwift
-import Result
 
 enum VideoStreamAPIError: Error {
     case invalidRequestURL
@@ -22,12 +21,12 @@ final class VideoStreamAPI {
 
     private init() {}
 
-    func streams(forVideoID videoID: String) -> SignalProducer<[StreamDescriptor], AnyError> {
+    func streams(forVideoID videoID: String) -> SignalProducer<[StreamDescriptor], Error> {
         return SignalProducer { observer, _ in
             // Build the request URL
             let path = String(format: VideoStreamAPI.videoInfoPath, videoID)
             guard let url = URL(string: path) else {
-                observer.send(error: AnyError(VideoStreamAPIError.invalidRequestURL))
+                observer.send(error: VideoStreamAPIError.invalidRequestURL)
                 return
             }
 
@@ -40,7 +39,7 @@ final class VideoStreamAPI {
             session.dataTask(with: req) { data, _, error in
                 // Convert the response to a string
                 guard let data = data, !data.isEmpty, let urlParameters = String(data: data, encoding: .utf8) else {
-                    observer.send(error: AnyError(VideoStreamAPIError.invalidResponse))
+                    observer.send(error: VideoStreamAPIError.invalidResponse)
                     return
                 }
 
@@ -49,7 +48,7 @@ final class VideoStreamAPI {
 
                 // Extract the list of streams and convert them to dictionaries
                 guard let adaptiveFormats = dictionary["adaptive_fmts"] else {
-                    observer.send(error: AnyError(VideoStreamAPIError.invalidResponse))
+                    observer.send(error: VideoStreamAPIError.invalidResponse)
                     return
                 }
 

@@ -7,7 +7,6 @@
 //
 
 import ReactiveSwift
-import Result
 
 class SignalProducerCache<Value, ErrorType: Error> {
     private var mutableProperty = MutableProperty<Result<Value, ErrorType>?>(nil)
@@ -22,7 +21,7 @@ class SignalProducerCache<Value, ErrorType: Error> {
         self.signalProducerClosure = signalProducerClosure
     }
 
-    func fetch() -> SignalProducer<Result<Value, ErrorType>, NoError> {
+    func fetch() -> SignalProducer<Result<Value, ErrorType>, Never> {
         // Value is not available and or cache is outdated
         if mutableProperty.value == nil || Date() > expirationDate {
             refresh()
@@ -46,10 +45,10 @@ class SignalProducerCache<Value, ErrorType: Error> {
 }
 
 extension SignalProducer {
-    func cached(lifetime: TimeInterval) -> SignalProducer<Result<Value, Error>, NoError> {
+    func cached(lifetime: TimeInterval) -> SignalProducer<Result<Value, Error>, Never> {
         let cache = SignalProducerCache(lifetime: lifetime, self)
 
-        return SignalProducer<SignalProducer<Result<Value, Error>, NoError>, NoError> { observable, _ in
+        return SignalProducer<SignalProducer<Result<Value, Error>, Never>, Never> { observable, _ in
             observable.send(value: cache.fetch())
         }.flatten(.latest)
     }

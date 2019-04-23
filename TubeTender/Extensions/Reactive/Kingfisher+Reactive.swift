@@ -9,7 +9,6 @@
 import Kingfisher
 import ReactiveCocoa
 import ReactiveSwift
-import Result
 import UIKit
 
 extension Reactive where Base: UIImageView {

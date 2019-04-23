@@ -8,7 +8,6 @@
 
 import Network
 import ReactiveSwift
-import Result
 
 class HLSServer {
     let listener: NWListener
@@ -30,11 +29,11 @@ class HLSServer {
         """
     }
 
-    func notFound() -> SignalProducer<String, AnyError> {
+    func notFound() -> SignalProducer<String, Error> {
         return SignalProducer(value: response(status: "404 Not Found", contentType: "text/html"))
     }
 
-    func badRequest(_ reason: String = "") -> SignalProducer<String, AnyError> {
+    func badRequest(_ reason: String = "") -> SignalProducer<String, Error> {
         return SignalProducer(value: response(status: "400 Bad Request", contentType: "text/html"))
     }
 
@@ -47,7 +46,7 @@ class HLSServer {
         }
     }
 
-    func process(httpRequest request: String) -> SignalProducer<String, AnyError> {
+    func process(httpRequest request: String) -> SignalProducer<String, Error> {
         let parts = request.components(separatedBy: "\r\n\r\n")
         guard !parts.isEmpty else { return badRequest("Invalid HTTP request") }
         var headers = parts[0].components(separatedBy: "\r\n")

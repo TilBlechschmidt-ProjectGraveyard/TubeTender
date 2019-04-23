@@ -10,7 +10,6 @@ import struct YoutubeKit.Video
 import struct YoutubeKit.VideoListRequest
 import ReactiveCocoa
 import ReactiveSwift
-import Result
 
 enum VideoError: Swift.Error {
     case notFound

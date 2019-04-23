@@ -8,11 +8,10 @@
 
 import ReactiveCocoa
 import ReactiveSwift
-import Result
 
 extension CocoaAction {
     convenience init(action: @escaping (Sender) -> Void) {
-        let wrappedAction = Action<Sender, Never, AnyError> { input in
+        let wrappedAction = Action<Sender, Never, Error> { input in
             return SignalProducer { _, _ in action(input) }
         }
         self.init(wrappedAction) { $0 }

@@ -9,7 +9,6 @@
 import AVKit
 import MediaPlayer
 import ReactiveSwift
-import Result
 
 typealias QueueEntry = (video: Video, playerItem: AVPlayerItem)
 
@@ -63,8 +62,8 @@ class VideoPlayer: NSObject {
     let playerView: AVPlayerView
     private let commandCenter: CommandCenter
 
-    private var changeSetObserver: Signal<VideoPlayerQueueChangeSet, NoError>.Observer!
-    private(set) var changeSetSignal: Signal<VideoPlayerQueueChangeSet, NoError>!
+    private var changeSetObserver: Signal<VideoPlayerQueueChangeSet, Never>.Observer!
+    private(set) var changeSetSignal: Signal<VideoPlayerQueueChangeSet, Never>!
 
     // Queue: Latest item will be played next
     let currentIndex: Property<Int?>

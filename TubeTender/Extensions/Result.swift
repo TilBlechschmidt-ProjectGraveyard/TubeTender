@@ -7,13 +7,24 @@
 //
 
 import ReactiveSwift
-import Result
 
-typealias APIResult<Value> = Result<Value, AnyError>
-typealias APISignalProducer<Value> = SignalProducer<APIResult<Value>, NoError>
-typealias APIValueSignalProducer<Value> = SignalProducer<Value, NoError>
+typealias APIResult<Value> = Result<Value, Swift.Error>
+typealias APISignalProducer<Value> = SignalProducer<APIResult<Value>, Never>
+typealias APIValueSignalProducer<Value> = SignalProducer<Value, Never>
 
-extension SignalProducer where Error == NoError {
+extension Result where Failure == Swift.Error {
+    func tryMap<NewSuccess>(mapper: @escaping (Success) throws -> NewSuccess) -> Result<NewSuccess, Swift.Error> {
+        return self.flatMap {
+            do {
+                return try Result<NewSuccess, Failure>.success(mapper($0))
+            } catch {
+                return Result<NewSuccess, Failure>(failure: error)
+            }
+        }
+    }
+}
+
+extension SignalProducer where Error == Never {
     func tryMap<T, U, E: Swift.Error>(_ error: E, _ mapper: @escaping (T) -> U?) -> APISignalProducer<U> where Value == APIResult<T> {
         return self.map { value in
             value.tryMap {
@@ -28,7 +39,7 @@ extension SignalProducer where Error == NoError {
             case let .success(value):
                 return mapper(value)
             case let .failure(error):
-                return APISignalProducer(value: APIResult(error: error))
+                return APISignalProducer(value: APIResult(failure: error))
             }
         }
     }

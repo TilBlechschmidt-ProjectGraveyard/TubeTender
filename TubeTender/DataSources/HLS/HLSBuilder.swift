@@ -7,7 +7,6 @@
 //
 
 import ReactiveSwift
-import Result
 
 typealias VideoID = String
 typealias ITag = String
@@ -34,7 +33,7 @@ class HLSBuilder {
         cache[videoID]?[streamDescriptor.itag] = streamDescriptor
     }
 
-    func streamsDescriptors(forVideoID videoID: VideoID) -> SignalProducer<[StreamDescriptor], AnyError> {
+    func streamsDescriptors(forVideoID videoID: VideoID) -> SignalProducer<[StreamDescriptor], Error> {
         // TODO Take cache age into account (after a certain time the cache invalidates because the URLs expire)
         if let descriptors = cache[videoID] {
             return SignalProducer(value: Array(descriptors.values))
@@ -43,7 +42,7 @@ class HLSBuilder {
         }
     }
 
-    func masterPlaylist(forVideoID videoID: VideoID) -> SignalProducer<String, AnyError> {
+    func masterPlaylist(forVideoID videoID: VideoID) -> SignalProducer<String, Error> {
         let m3u8Header = """
         #EXTM3U
         #EXT-X-VERSION:4
@@ -75,19 +74,19 @@ class HLSBuilder {
             .map { m3u8Header + $0.joined(separator: "\n") }
     }
 
-    func playlist(forVideoID videoID: VideoID, itag: ITag) -> SignalProducer<String, AnyError> {
+    func playlist(forVideoID videoID: VideoID, itag: ITag) -> SignalProducer<String, Error> {
         return streamsDescriptors(forVideoID: videoID)
             .flatten()
             .filter { $0.itag == itag }
             .collect()
             .attemptMap { descriptors in
                 guard descriptors.count == 1, let descriptor = descriptors.first else {
-                    throw AnyError(HLSBuilderError.itagDescriptorNotFound)
+                    throw HLSBuilderError.itagDescriptorNotFound
                 }
 
                 return descriptor
             }
-            .flatMap(.merge) { (descriptor: StreamDescriptor) -> SignalProducer<String, AnyError> in
+            .flatMap(.merge) { (descriptor: StreamDescriptor) -> SignalProducer<String, Error> in
                 let path = descriptor.url!
                 let url = URL(string: descriptor.url)!
                 let index = descriptor.index!
@@ -98,7 +97,7 @@ class HLSBuilder {
 
                     let task = URLSession.shared.dataTask(with: request) { (data, _, error) in
                         guard let data = data else {
-                            observer.send(error: AnyError(HLSBuilderError.unableToReadSegmentData))
+                            observer.send(error: HLSBuilderError.unableToReadSegmentData)
                             return
                         }
 

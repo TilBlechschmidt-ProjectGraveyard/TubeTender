@@ -7,6 +7,7 @@
 //
 
 import ReactiveSwift
+import UIKit
 
 extension Reactive where Base: UIAlertController {
     var message: BindingTarget<String?> {

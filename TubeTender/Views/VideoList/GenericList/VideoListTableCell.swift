@@ -8,7 +8,6 @@
 
 import Kingfisher
 import ReactiveSwift
-import Result
 import SnapKit
 import UIKit
 
@@ -61,7 +60,7 @@ class SubscriptionFeedViewTableCell: UIRebindableTableViewCell {
             stringDuration
         )
 
-        let subtitle: SignalProducer<String, NoError> = subtitleData.map { [unowned self] data in
+        let subtitle: SignalProducer<String, Never> = subtitleData.map { [unowned self] data in
             let (channelTitle, viewCount, published, isPremium, duration) = data
 
             let displayData = [

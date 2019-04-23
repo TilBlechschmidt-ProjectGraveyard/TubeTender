@@ -9,7 +9,6 @@
 import Alamofire
 import CoreStore
 import ReactiveSwift
-import Result
 import YoutubeKit
 
 private struct Static {

@@ -11,7 +11,6 @@ import struct YoutubeKit.SearchList
 import struct YoutubeKit.SearchListRequest
 import ReactiveCocoa
 import ReactiveSwift
-import Result
 
 struct PagedResult<Value> {
     let nextPageToken: String?

@@ -6,7 +6,7 @@
 //  Copyright © 2018 Til Blechschmidt. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 enum StreamQuality: String, Codable, ArrayComparable, CustomStringConvertible {
     case hd1080 // 1080p

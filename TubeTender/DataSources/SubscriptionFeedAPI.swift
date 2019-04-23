@@ -8,7 +8,6 @@
 
 import Foundation
 import ReactiveSwift
-import Result
 import YoutubeKit
 
 class SubscriptionFeedAPI {
@@ -16,7 +15,7 @@ class SubscriptionFeedAPI {
 
     private init() {}
 
-    private func fetchSubscribedChannels(pageToken: String? = nil) -> SignalProducer<[Channel.ID], AnyError> {
+    private func fetchSubscribedChannels(pageToken: String? = nil) -> SignalProducer<[Channel.ID], Error> {
         let subscriptionRequest = SubscriptionsListRequest(part: [.snippet],
                                                            filter: .mine(true),
                                                            forChannelID: nil,
@@ -26,7 +25,7 @@ class SubscriptionFeedAPI {
                                                            order: nil,
                                                            pageToken: pageToken)
 
-        return ApiSession.shared.reactive.send(subscriptionRequest).flatMap(.concat) { response -> SignalProducer<[Channel.ID], AnyError> in
+        return ApiSession.shared.reactive.send(subscriptionRequest).flatMap(.concat) { response -> SignalProducer<[Channel.ID], Error> in
             var channelIDs = response.items.compactMap { $0.snippet?.resourceID.channelID }
 
             if let nextPageToken = response.nextPageToken {
@@ -40,13 +39,13 @@ class SubscriptionFeedAPI {
         }
     }
 
-    func fetchSubscriptionFeed(publishedBefore: Date? = nil) -> SignalProducer<(videos: [Video], endDate: Date), AnyError> {
+    func fetchSubscriptionFeed(publishedBefore: Date? = nil) -> SignalProducer<(videos: [Video], endDate: Date), Error> {
         return fetchSubscribedChannels().flatMap(.latest) {
             self.fetchSubscriptionFeed(forChannels: $0, publishedBefore: publishedBefore)
         }
     }
 
-    private func fetchSubscriptionFeed(forChannels channelIDs: [Channel.ID], publishedBefore: Date?) -> SignalProducer<(videos: [Video], endDate: Date), AnyError> {
+    private func fetchSubscriptionFeed(forChannels channelIDs: [Channel.ID], publishedBefore: Date?) -> SignalProducer<(videos: [Video], endDate: Date), Error> {
         return SignalProducer(channelIDs).flatMap(.concurrent(limit: 25)) {
             self.fetchSubscriptionFeed(forChannel: $0, publishedBefore: publishedBefore)
         }.collect().map { videoSets in
@@ -67,7 +66,7 @@ class SubscriptionFeedAPI {
         }
     }
 
-    private func fetchSubscriptionFeed(forChannel channelID: Channel.ID, publishedBefore: Date?) -> SignalProducer<[(video: Video, publishedAt: Date)], AnyError> {
+    private func fetchSubscriptionFeed(forChannel channelID: Channel.ID, publishedBefore: Date?) -> SignalProducer<[(video: Video, publishedAt: Date)], Error> {
         let activityFeedRequest = ActivityListRequest(part: [.contentDetails, .snippet],
                                                       filter: .channelID(channelID),
                                                       maxResults: 50,
