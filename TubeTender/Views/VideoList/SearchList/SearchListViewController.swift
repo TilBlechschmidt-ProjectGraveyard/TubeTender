@@ -44,7 +44,7 @@ class SearchListViewController: SimpleVideoListViewController {
     }
 
     override func loadNextVideos() {
-        loadVideos(pageToken: nextPageToken) { self.append(videos: $0) }
+        loadVideos(pageToken: nextPageToken) { self.append(videos: $0, toSection: 0) }
     }
 
     override func createEmptyStateView() -> UIView {

@@ -67,10 +67,10 @@ enum StreamQuality: String, Codable, ArrayComparable, CustomStringConvertible {
 
 extension StreamQuality {
     static var `default`: StreamQuality {
-        return (Settings.get(setting: .defaultQuality) as? String).flatMap { StreamQuality(rawValue: $0) } ?? .hd720
+        return (Settings.get(setting: .defaultQuality) as? String).flatMap(StreamQuality.init) ?? .hd720
     }
 
     static var mobile: StreamQuality {
-        return (Settings.get(setting: .mobileQuality) as? String).flatMap { StreamQuality(rawValue: $0) } ?? .medium
+        return (Settings.get(setting: .mobileQuality) as? String).flatMap(StreamQuality.init) ?? .medium
     }
 }

@@ -40,20 +40,20 @@ struct StreamDescriptor {
             codecs = nil
         }
 
-        if let indexComponents = data["index"]?.components(separatedBy: "-").compactMap({ Int($0) }) {
+        if let indexComponents = data["index"]?.components(separatedBy: "-").compactMap(Int.init) {
             index = indexComponents[0]..<indexComponents[1]
         } else {
             index = nil
         }
 
-        if let initComponents = data["init"]?.components(separatedBy: "-").compactMap({ Int($0) }) {
+        if let initComponents = data["init"]?.components(separatedBy: "-").compactMap(Int.init) {
             initRange = initComponents[0]..<initComponents[1]
         } else {
             initRange = nil
         }
 
-        bitrate = data["bitrate"].flatMap { UInt32($0) }
-        fps = data["fps"].flatMap { UInt8($0) }
+        bitrate = data["bitrate"].flatMap(UInt32.init)
+        fps = data["fps"].flatMap(UInt8.init)
 
         if let sizeComponents = data["size"]?.components(separatedBy: "x") {
             width = UInt16(sizeComponents[0])
@@ -65,7 +65,7 @@ struct StreamDescriptor {
 
         qualityLabel = data["quality_label"]
 
-        audioSampleRate = data["audio_sample_rate"].flatMap { UInt32($0) }
-        audioChannels = data["audio_channels"].flatMap { UInt8($0) }
+        audioSampleRate = data["audio_sample_rate"].flatMap(UInt32.init)
+        audioChannels = data["audio_channels"].flatMap(UInt8.init)
     }
 }

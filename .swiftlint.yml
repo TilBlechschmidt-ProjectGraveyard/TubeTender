@@ -29,6 +29,11 @@ custom_rules:
     regex: '[^\w]print\('
     message: 'Only use print for debugging purpose'
     severity: warning
+  use_function_reference:
+    name: Use a function reference instead of a new closure
+    regex: '[( :)\(]\$0\) \}'
+    message: 'Use a closure instead of a function reference'
+    severity: warning
 
 disabled_rules:
   - nesting

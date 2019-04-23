@@ -87,7 +87,7 @@ class CommandCenter: NSObject {
         let thumbnail = video.channel.get(\.thumbnailURL).filterMap { thumbnailURL in
             return thumbnailURL.value.map { (url: URL) -> UIImage? in
                 let data = try? Data(contentsOf: url)
-                return data.flatMap { UIImage(data: $0) }
+                return data.flatMap(UIImage.init(data:))
             }
         }
         return SignalProducer.zip(video.title, video.channelTitle, thumbnail).startWithValues { result in
@@ -102,7 +102,7 @@ class CommandCenter: NSObject {
         command.isEnabled = true
         command.addTarget { (event: MPRemoteCommandEvent) in
             let castedEvent = event as? CommandEvent
-            return castedEvent.flatMap { closure($0) } ?? .commandFailed
+            return castedEvent.flatMap(closure) ?? .commandFailed
         }
     }
 

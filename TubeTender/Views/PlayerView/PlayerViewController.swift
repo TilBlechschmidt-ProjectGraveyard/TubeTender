@@ -49,15 +49,15 @@ class PlayerViewController: UIViewController {
             }
         }
 
-        // PiP button
+        // Picture in picture button
         playerControlView.pictureInPictureButton.reactive.controlEvents(.touchUpInside).observeValues { _ in
             player.startPictureInPicture()
         }
 
         // Duration & Elapsed time
         // TODO Different value when .noMediaLoaded
-        playerControlView.elapsedTimeLabel.reactive.text <~ player.currentTime.map { PlayerViewController.stringRepresentation(ofTime: $0) }
-        playerControlView.durationLabel.reactive.text <~ player.duration.map { PlayerViewController.stringRepresentation(ofTime: $0) }
+        playerControlView.elapsedTimeLabel.reactive.text <~ player.currentTime.map(PlayerViewController.stringRepresentation(ofTime:))
+        playerControlView.durationLabel.reactive.text <~ player.duration.map(PlayerViewController.stringRepresentation(ofTime:))
 
         // Slider & Progress bar
         playerControlView.progressBar.reactive.progress <~ player.currentTime.map { return Float($0 / player.duration.value) }

@@ -30,7 +30,7 @@ public class Channel: YoutubeClientObject<YoutubeKit.ChannelListRequest, Youtube
     }
 
     var thumbnailURL: APISignalProducer<URL> {
-        return makeProperty { $0.snippet?.thumbnails.high.url.flatMap { URL(string: $0) } }
+        return makeProperty { $0.snippet?.thumbnails.high.url.flatMap(URL.init(string:)) }
     }
 
     var title: APISignalProducer<String> {
@@ -38,7 +38,7 @@ public class Channel: YoutubeClientObject<YoutubeKit.ChannelListRequest, Youtube
     }
 
     var subscriptionCount: APISignalProducer<Int> {
-        return makeProperty { ($0.statistics?.subscriberCount).flatMap { Int($0) } }
+        return makeProperty { ($0.statistics?.subscriberCount).flatMap(Int.init) }
     }
 }
 

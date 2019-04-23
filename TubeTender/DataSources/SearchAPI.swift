@@ -37,7 +37,7 @@ public class SearchResult: YoutubeClientObject<YoutubeKit.SearchListRequest, You
         return makeProperty {
             PagedResult(
                 nextPageToken: $0.nextPageToken,
-                values: $0.items.compactMap { $0.id.videoID }.map { self.client.video(withID: $0) }
+                values: $0.items.compactMap { $0.id.videoID }.map(self.client.video(withID:))
             )
         }
     }
@@ -46,7 +46,7 @@ public class SearchResult: YoutubeClientObject<YoutubeKit.SearchListRequest, You
         return makeProperty {
             PagedResult(
                 nextPageToken: $0.nextPageToken,
-                values: $0.items.compactMap { $0.id.channelID }.map { self.client.channel(withID: $0) }
+                values: $0.items.compactMap { $0.id.channelID }.map(self.client.channel(withID:))
             )
         }
     }

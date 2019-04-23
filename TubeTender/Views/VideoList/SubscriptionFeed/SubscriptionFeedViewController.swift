@@ -45,7 +45,7 @@ class SubscriptionFeedViewController: SimpleVideoListViewController {
     override func loadNextVideos() {
         fetchFeed(cutoffDate: cutoffDate) { videos, cutoffDate in
             self.cutoffDate = cutoffDate
-            self.append(videos: videos)
+            self.append(videos: videos, toSection: 0)
         }
     }
 

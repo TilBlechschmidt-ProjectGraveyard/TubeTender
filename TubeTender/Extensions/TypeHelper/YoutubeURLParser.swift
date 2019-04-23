@@ -27,11 +27,11 @@ struct YoutubeURL {
                 return nil
         }
 
-        self.urlProtocol = match.groups[1].flatMap { String($0) }
-        self.subdomain = match.groups[2].flatMap { String($0) }
+        self.urlProtocol = match.groups[1].flatMap(String.init)
+        self.subdomain = match.groups[2].flatMap(String.init)
         self.domain = String(domain)
         self.path = String(path)
         self.videoID = String(videoID)
-        self.queryParameters = match.groups[6].flatMap { String($0) }
+        self.queryParameters = match.groups[6].flatMap(String.init)
     }
 }

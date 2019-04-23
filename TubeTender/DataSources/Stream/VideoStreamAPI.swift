@@ -55,11 +55,11 @@ final class VideoStreamAPI {
 
                 let streams = adaptiveFormats.components(separatedBy: ",")
                 let formattedStreamDictionaries = streams.map { stream in
-                    return dictionaryFromURL(parameterStrings: stream.split(separator: "&").map { String($0) })
+                    return dictionaryFromURL(parameterStrings: stream.split(separator: "&").map(String.init))
                 }
 
                 // Parse the dictionaries into structs
-                let streamDescriptors = formattedStreamDictionaries.map { StreamDescriptor(fromDict: $0) }
+                let streamDescriptors = formattedStreamDictionaries.map(StreamDescriptor.init(fromDict:))
 
                 observer.send(value: streamDescriptors)
                 observer.sendCompleted()

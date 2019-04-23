@@ -38,7 +38,7 @@ public class Video: YoutubeClientObject<YoutubeKit.VideoListRequest, YoutubeKit.
     }
 
     var thumbnailURL: APISignalProducer<URL> {
-        return makeProperty { $0.snippet?.thumbnails.high.url.flatMap { URL(string: $0) } }
+        return makeProperty { $0.snippet?.thumbnails.high.url.flatMap(URL.init(string:)) }
     }
 
     var title: APISignalProducer<String> {
@@ -50,7 +50,7 @@ public class Video: YoutubeClientObject<YoutubeKit.VideoListRequest, YoutubeKit.
     }
 
     var published: APISignalProducer<Date> {
-        return makeProperty { ($0.snippet?.publishedAt).flatMap { DateFormatter.iso8601Full.date(from: $0) } }
+        return makeProperty { ($0.snippet?.publishedAt).flatMap(DateFormatter.iso8601Full.date) }
     }
 
     var durationString: APISignalProducer<String> {
@@ -62,11 +62,11 @@ public class Video: YoutubeClientObject<YoutubeKit.VideoListRequest, YoutubeKit.
     }
 
     var viewCount: APISignalProducer<Int> {
-        return makeProperty { ($0.statistics?.viewCount).flatMap { Int($0) } }
+        return makeProperty { ($0.statistics?.viewCount).flatMap(Int.init) }
     }
 
     var channel: APISignalProducer<Channel> {
-        return makeProperty { ($0.snippet?.channelID).flatMap { self.client.channel(withID: $0) } }
+        return makeProperty { ($0.snippet?.channelID).flatMap(self.client.channel(withID:)) }
     }
 
     var channelTitle: APISignalProducer<String> {
@@ -88,7 +88,7 @@ extension YoutubeClient {
     }
 
     func videos(withIDs ids: [Video.ID]) -> [Video] {
-        return ids.map { video(withID: $0) }
+        return ids.map(video(withID:))
     }
 }
 

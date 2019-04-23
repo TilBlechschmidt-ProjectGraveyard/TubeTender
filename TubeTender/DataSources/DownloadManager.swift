@@ -214,7 +214,7 @@ class DownloadManager {
 //            path.flatMap { try? data?.write(to: $0, options: []) }
 //            return metadata
 //        }
-//            .mapError { DownloadManagerError.videoMetadataAPI(error: $0) }
+//            .mapError(DownloadManagerError.videoMetadataAPI)
 //            .flatMap(.concat) { videoMetadata in
 //                self.downloadThumbnail(forVideo: videoMetadata, withID: videoID)
 //                    .then(self.downloadMetadataForChannel(withID: videoMetadata.snippet!.channelID, withVideoID: videoID))
@@ -241,7 +241,7 @@ class DownloadManager {
 //            path.flatMap { try? data?.write(to: $0, options: []) }
 //            return metadata
 //        }
-//            .mapError { DownloadManagerError.channelMetadataAPI(error: $0) }
+//            .mapError(DownloadManagerError.videoMetadataAPI)
 //            .flatMap(.concat) {
 //                self.downloadThumbnail(forChannel: $0, withVideoID: videoID)
 //            }
