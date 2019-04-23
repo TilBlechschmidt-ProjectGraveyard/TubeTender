@@ -103,8 +103,12 @@ public extension SettingsKit {
      - setting:  The setting to observe
      - onChange: The closure to call when the setting's value is updated
      */
-    static func subscribe(setting: Self, onChange: @escaping SettingChangeHandler) {
-        setting.subscribe(onChange: onChange)
+    static func subscribe(setting: Self, onChange: @escaping SettingChangeHandler) -> SettingsObserver {
+        return setting.subscribe(onChange: onChange)
+    }
+
+    static func unsubscribe(setting: Self, observer: SettingsObserver) {
+        setting.unsubscribe(observer: observer)
     }
 
     // MARK: - Instance Methods
@@ -149,14 +153,28 @@ public extension SettingsKit {
 
      - Parameter onChange: The closure to call when the setting's value is updated
      */
-    private func subscribe(onChange: @escaping SettingChangeHandler) {
+    private func subscribe(onChange: @escaping SettingChangeHandler) -> SettingsObserver {
         let center = NotificationCenter.default
 
-        center.addObserver(forName: UserDefaults.didChangeNotification, object: defaults, queue: nil) { (notif) -> Void in
+        let observerObject = center.addObserver(forName: UserDefaults.didChangeNotification, object: defaults, queue: nil) { (notif) -> Void in
             if let defaults = notif.object as? UserDefaults {
                 onChange(defaults.object(forKey: self.identifier) as AnyObject?)
             }
         }
+
+        return SettingsObserver(observerObject: observerObject)
     }
 
+    private func unsubscribe(observer: SettingsObserver) {
+        observer.unsubscribe()
+    }
+}
+
+public struct SettingsObserver {
+    fileprivate let observerObject: NSObjectProtocol
+
+    public func unsubscribe() {
+        let center = NotificationCenter.default
+        center.removeObserver(observerObject)
+    }
 }
