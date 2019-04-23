@@ -8,7 +8,6 @@
 
 import ReactiveSwift
 import UIKit
-import YoutubeKit
 
 class VideoMetadataViewController: UIViewController {
     let videoMetadataView = VideoMetadataView()
