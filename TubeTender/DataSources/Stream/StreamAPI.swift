@@ -1,5 +1,5 @@
 //
-//  VideoStreamAPI.swift
+//  StreamAPI.swift
 //  Pivo
 //
 //  Created by Til Blechschmidt on 04.11.18.

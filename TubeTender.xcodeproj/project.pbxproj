@@ -31,7 +31,7 @@
 		30A81A3A21D53A7D00FBE8EE /* VideoMetadataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30A81A3921D53A7D00FBE8EE /* VideoMetadataViewController.swift */; };
 		30A81A3E21D53E9500FBE8EE /* VideoMetadataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30A81A3D21D53E9500FBE8EE /* VideoMetadataView.swift */; };
 		30ABE214218F928A00E4FEA4 /* ArrayComparable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30ABE213218F928A00E4FEA4 /* ArrayComparable.swift */; };
-		30ABE219218F965500E4FEA4 /* OldVideoStreamAPIResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30ABE218218F965500E4FEA4 /* OldVideoStreamAPIResponse.swift */; };
+		30ABE219218F965500E4FEA4 /* StreamQuality.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30ABE218218F965500E4FEA4 /* StreamQuality.swift */; };
 		30ABE21F21905F5800E4FEA4 /* Queue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30ABE21E21905F5800E4FEA4 /* Queue.swift */; };
 		30ABE2212190B48E00E4FEA4 /* PlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30ABE2202190B48E00E4FEA4 /* PlayerViewController.swift */; };
 		30B03AC221E68A45007B3E38 /* UIRebindableTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30B03AC121E68A45007B3E38 /* UIRebindableTableViewCell.swift */; };
@@ -54,7 +54,7 @@
 		30BAB77A2178CDFF00B01953 /* Date+Since.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30BAB7792178CDFF00B01953 /* Date+Since.swift */; };
 		30BE79BB216FF73F00E6B281 /* AnimatablePlayButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30BE79BA216FF73F00E6B281 /* AnimatablePlayButton.swift */; };
 		30C2112C226BA57B00892173 /* DataReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30C21126226BA56900892173 /* DataReader.swift */; };
-		30C2112D226BA57B00892173 /* VideoStreamAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30C21127226BA56D00892173 /* VideoStreamAPI.swift */; };
+		30C2112D226BA57B00892173 /* StreamAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30C21127226BA56D00892173 /* StreamAPI.swift */; };
 		30C2112E226BA57B00892173 /* SegmentInformation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30C21128226BA57100892173 /* SegmentInformation.swift */; };
 		30C2112F226BA57B00892173 /* HLSBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30C21129226BA57400892173 /* HLSBuilder.swift */; };
 		30C21130226BA57B00892173 /* StreamDescriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30C2112A226BA57700892173 /* StreamDescriptor.swift */; };
@@ -159,7 +159,7 @@
 		30A81A3921D53A7D00FBE8EE /* VideoMetadataViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoMetadataViewController.swift; sourceTree = "<group>"; };
 		30A81A3D21D53E9500FBE8EE /* VideoMetadataView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoMetadataView.swift; sourceTree = "<group>"; };
 		30ABE213218F928A00E4FEA4 /* ArrayComparable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayComparable.swift; sourceTree = "<group>"; };
-		30ABE218218F965500E4FEA4 /* OldVideoStreamAPIResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OldVideoStreamAPIResponse.swift; sourceTree = "<group>"; };
+		30ABE218218F965500E4FEA4 /* StreamQuality.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamQuality.swift; sourceTree = "<group>"; };
 		30ABE21E21905F5800E4FEA4 /* Queue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Queue.swift; sourceTree = "<group>"; };
 		30ABE2202190B48E00E4FEA4 /* PlayerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerViewController.swift; sourceTree = "<group>"; };
 		30B03AC121E68A45007B3E38 /* UIRebindableTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIRebindableTableViewCell.swift; sourceTree = "<group>"; };
@@ -177,7 +177,7 @@
 		30BAB7792178CDFF00B01953 /* Date+Since.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Since.swift"; sourceTree = "<group>"; };
 		30BE79BA216FF73F00E6B281 /* AnimatablePlayButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatablePlayButton.swift; sourceTree = "<group>"; };
 		30C21126226BA56900892173 /* DataReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataReader.swift; sourceTree = "<group>"; };
-		30C21127226BA56D00892173 /* VideoStreamAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoStreamAPI.swift; sourceTree = "<group>"; };
+		30C21127226BA56D00892173 /* StreamAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamAPI.swift; sourceTree = "<group>"; };
 		30C21128226BA57100892173 /* SegmentInformation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SegmentInformation.swift; sourceTree = "<group>"; };
 		30C21129226BA57400892173 /* HLSBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HLSBuilder.swift; sourceTree = "<group>"; };
 		30C2112A226BA57700892173 /* StreamDescriptor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamDescriptor.swift; sourceTree = "<group>"; };
@@ -342,12 +342,23 @@
 		30370F662177E05D00B35ACF /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				30C21126226BA56900892173 /* DataReader.swift */,
 				30ABE21E21905F5800E4FEA4 /* Queue.swift */,
 				30E3063421E7E13A008C6ECB /* Settings.swift */,
 				30E3063621E8C2C3008C6ECB /* Reachability.swift */,
 				30E3063A21E90AAF008C6ECB /* RadialGradientLayer.swift */,
 			);
 			path = Helpers;
+			sourceTree = "<group>";
+		};
+		3038424A226F49FD00D7BF7F /* Stream */ = {
+			isa = PBXGroup;
+			children = (
+				30C21127226BA56D00892173 /* StreamAPI.swift */,
+				30C2112A226BA57700892173 /* StreamDescriptor.swift */,
+				30ABE218218F965500E4FEA4 /* StreamQuality.swift */,
+			);
+			path = Stream;
 			sourceTree = "<group>";
 		};
 		3067715621DA5681009AA051 /* Playback */ = {
@@ -380,18 +391,10 @@
 				4021444B21E63C8500AAC670 /* SearchAPI.swift */,
 				30BAB764217893E400B01953 /* SubscriptionFeedAPI.swift */,
 				30F2E38621DCFAF9005EFCA9 /* DownloadManager.swift */,
+				3038424A226F49FD00D7BF7F /* Stream */,
 				30C21119226BA51000892173 /* HLS */,
-				30A81A3C21D53C4400FBE8EE /* VideoStreams */,
 			);
 			path = DataSources;
-			sourceTree = "<group>";
-		};
-		30A81A3C21D53C4400FBE8EE /* VideoStreams */ = {
-			isa = PBXGroup;
-			children = (
-				30ABE218218F965500E4FEA4 /* OldVideoStreamAPIResponse.swift */,
-			);
-			path = VideoStreams;
 			sourceTree = "<group>";
 		};
 		30BAB7692178B44400B01953 /* Views */ = {
@@ -420,12 +423,9 @@
 		30C21119226BA51000892173 /* HLS */ = {
 			isa = PBXGroup;
 			children = (
-				30C21126226BA56900892173 /* DataReader.swift */,
 				30C21129226BA57400892173 /* HLSBuilder.swift */,
 				30C2112B226BA57B00892173 /* HLSServer.swift */,
 				30C21128226BA57100892173 /* SegmentInformation.swift */,
-				30C2112A226BA57700892173 /* StreamDescriptor.swift */,
-				30C21127226BA56D00892173 /* VideoStreamAPI.swift */,
 			);
 			path = HLS;
 			sourceTree = "<group>";
@@ -644,13 +644,13 @@
 				30C2112C226BA57B00892173 /* DataReader.swift in Sources */,
 				408C524C21E54554007B2DD2 /* IncomingVideoReceiver.swift in Sources */,
 				30C21130226BA57B00892173 /* StreamDescriptor.swift in Sources */,
-				30ABE219218F965500E4FEA4 /* OldVideoStreamAPIResponse.swift in Sources */,
+				30ABE219218F965500E4FEA4 /* StreamQuality.swift in Sources */,
 				30A81A3A21D53A7D00FBE8EE /* VideoMetadataViewController.swift in Sources */,
 				30988C1F21DEBF5C0070D14A /* TubeTender.xcdatamodeld in Sources */,
 				302FB84021D58A8A00A82363 /* VideoAPI.swift in Sources */,
 				30F2E38C21DD4D14005EFCA9 /* Alamofire+Reactive.swift in Sources */,
 				30A81A3721D539F600FBE8EE /* VideoViewController.swift in Sources */,
-				30C2112D226BA57B00892173 /* VideoStreamAPI.swift in Sources */,
+				30C2112D226BA57B00892173 /* StreamAPI.swift in Sources */,
 				30F48900219CD3E1002FAE36 /* SplitViewController.swift in Sources */,
 				30E3063721E8C2C3008C6ECB /* Reachability.swift in Sources */,
 				30B03AC221E68A45007B3E38 /* UIRebindableTableViewCell.swift in Sources */,

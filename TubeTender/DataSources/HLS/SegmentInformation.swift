@@ -80,14 +80,6 @@ struct SegmentInformation {
 
         m3u8 += "#EXT-X-ENDLIST"
 
-//        let masterM3U8 = """
-//        #EXT-X-VERSION:4
-//
-//        # Media Playlists
-//        #EXT-X-STREAM-INF:AVERAGE-BANDWIDTH=1482506,BANDWIDTH=2706185,CODECS="avc1.4D401F",RESOLUTION=1280x720
-//        stream.m3u8
-//        """
-
         return m3u8
     }
 }
