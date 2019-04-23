@@ -11,7 +11,7 @@ import MediaPlayer
 import AVKit
 import Result
 
-typealias QueueEntry = (video: Video, playerItem: AVPlayerItem)
+//typealias QueueEntry = (video: Video, playerItem: AVPlayerItem)
 
 class AVPlayerView: UIView {
     var player: AVPlayer? {
@@ -34,9 +34,9 @@ class AVPlayerView: UIView {
 }
 
 enum VideoPlayerQueueChangeSet {
-    case inserted(atIndex: Int)
-    case removed(atIndex: Int)
-    case moved(fromIndex: Int, toIndex: Int)
+    case inserted(at: Int)
+    case removed(at: Int)
+    case moved(from: Int, to: Int)
 }
 
 enum PlayerStatus {
@@ -56,7 +56,7 @@ class VideoPlayer: NSObject {
 
     // MARK: - Player & Item Queue
     private let _currentIndex = MutableProperty<Int?>(nil)
-    private let videos: MutableProperty<[QueueEntry]>
+    private let _videos: MutableProperty<[Video]>
     private let player: AVQueuePlayer
     private let pictureInPictureController: AVPictureInPictureController?
     let playerView: AVPlayerView
@@ -65,12 +65,9 @@ class VideoPlayer: NSObject {
     private var changeSetObserver: Signal<VideoPlayerQueueChangeSet, NoError>.Observer!
     private(set) var changeSetSignal: Signal<VideoPlayerQueueChangeSet, NoError>!
 
-    // Queue: Latest item will be played next
     let currentIndex: Property<Int?>
-    let queue: Property<[Video]>
     let currentItem: Property<Video?>
-    // History: Latest item has been played most recently
-    let history: Property<[Video]>
+    let videos: Property<[Video]>
 
     // MARK: - Playback state
     private let _currentTime = MutableProperty<TimeInterval>(0)
@@ -92,6 +89,8 @@ class VideoPlayer: NSObject {
     private init(commandCenter: CommandCenter = CommandCenter.shared) {
         playerView = AVPlayerView()
 
+        let videos = MutableProperty<[Video]>([])
+
         // Initialize public properties with private ones
         currentTime = Property(_currentTime)
         duration = Property(_duration)
@@ -99,17 +98,15 @@ class VideoPlayer: NSObject {
         isPictureInPictureActive = Property(_isPictureInPictureActive)
         currentQuality = Property(_currentQuality)
         currentIndex = Property(_currentIndex)
+        self.videos = Property(videos)
 
         // Initialize queue
-        let videos = MutableProperty<[QueueEntry]>([])
-        self.videos = videos
-        player = AVQueuePlayer(items: videos.value.map { $0.playerItem })
+        self._videos = videos
+        player = AVQueuePlayer(items: [])
         playerView.player = player
         pictureInPictureController = AVPictureInPictureController(playerLayer: playerView.playerLayer)
 
-        currentItem = Property(currentIndex.map { $0.map({ videos.value[$0] }).map { $0.video } })
-        queue = Property(currentIndex.map { videos.value[(($0 + 1) ?? videos.value.count)...].map { $0.video } })
-        history = Property(currentIndex.map { videos.value[..<($0 ?? videos.value.count)].map { $0.video } })
+        currentItem = Property(currentIndex.map { $0.map({ videos.value[$0] }) })
 
         // Other properties
         self.commandCenter = commandCenter
@@ -140,7 +137,9 @@ class VideoPlayer: NSObject {
         currentItemStatusObserver?.invalidate()
     }
 
-    var playerTimeControlStatusObserver: NSKeyValueObservation?
+    private var playerTimeControlStatusObserver: NSKeyValueObservation?
+    private var currentItemStatusObserver: NSKeyValueObservation?
+    private var currentItemPresentationSizeObserver: NSKeyValueObservation?
     private func setupObservers() {
         // Player related
         player.addPeriodicTimeObserver(forInterval: CMTime(seconds: 0.5, preferredTimescale: 1000), queue: DispatchQueue.main) { time in
@@ -153,86 +152,82 @@ class VideoPlayer: NSObject {
 
         preferredQuality.signal.take(duringLifetimeOf: self).observeValues { [unowned self] preferredQuality in
             if let maximumResolution = preferredQuality?.resolution {
-                self.videos.value.forEach { queueItem in
-                    queueItem.playerItem.preferredMaximumResolution = maximumResolution
+                self.player.items().forEach { playerItem in
+                    playerItem.preferredMaximumResolution = maximumResolution
                 }
             }
         }
 
-        // Playback related
-        currentIndex.signal.observeValues { [unowned self] currentIndex in
-            if let index = currentIndex {
-                self.load(videoAtQueueIndex: index)
-            }
-        }
-
         // Command center related
-        commandCenter.hasNext <~ self.currentIndex.map { index in
-            return index.flatMap({ $0 < self.videos.value.count - 1  }) ?? false
+        commandCenter.hasNext <~ currentIndex.combineLatest(with: videos).map { index, videos in
+            return index.flatMap({ $0 < videos.count - 1  }) ?? false
         }
-        commandCenter.hasPrevious <~ self.currentIndex.map { index in
-            return index.flatMap({ $0 > 0 && self.videos.value.count > 0 }) ?? (self.videos.value.count > 0)
+        commandCenter.hasPrevious <~ currentIndex.combineLatest(with: videos).map { index, videos in
+            return index.flatMap({ $0 > 0 && videos.count > 0 }) ?? (videos.count > 0)
         }
 
         commandCenter.elapsedTime <~ self.currentTime
         commandCenter.duration <~ self.duration
+
+        // Playback related
+        currentIndex.combineLatest(with: videos).signal.observeValues { [unowned self] index, videos in
+            if let index = index {
+                let currentVideo = videos[index]
+                let currentItem = self.player.items().first
+
+                self.commandCenter.load(video: currentVideo)
+
+                self.currentItemStatusObserver?.invalidate()
+                self.currentItemStatusObserver = currentItem?.observe(\.status, options: []) { [unowned self] playerItem, change in
+                    self.updateStatus(from: playerItem)
+                }
+
+                self.currentItemPresentationSizeObserver?.invalidate()
+                self.currentItemPresentationSizeObserver = currentItem?.observe(\.presentationSize, options: []) { [unowned self] playerItem, change in
+                    self.updatePresentationSize(from: playerItem)
+                }
+
+                if let currentItem = currentItem {
+                    NotificationCenter.default.removeObserver(self)
+                    NotificationCenter.default.addObserver(self, selector: #selector(self.playerItemDidPlayToEndTime), name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: currentItem)
+                }
+            }
+        }
+    }
+
+    @objc func playerItemDidPlayToEndTime() {
+        changeIndex(by: 1)
     }
 
     // MARK: - Helpers
-    private func createQueueItem(fromVideo video: Video) -> QueueEntry {
-        let queueItem = (video: video, playerItem: AVPlayerItem(url: video.hlsURL))
+    private func createPlayerItem(fromVideo video: Video) -> AVPlayerItem {
+        let playerItem = AVPlayerItem(url: video.hlsURL)
 
         if let maximumResolution = preferredQuality.value?.resolution {
-            queueItem.playerItem.preferredMaximumResolution = maximumResolution
+            playerItem.preferredMaximumResolution = maximumResolution
         }
 
-        return queueItem
+        return playerItem
     }
 
-    private var currentItemStatusObserver: NSKeyValueObservation?
-    private var currentItemPresentationSizeObserver: NSKeyValueObservation?
-    private func load(videoAtQueueIndex index: Int) {
-        let futureVideos = videos.value[index...]
-
-        player.removeAllItems()
-
-        let initialPreviousPlayerItem: AVPlayerItem? = nil
-        _ = futureVideos.reduce(initialPreviousPlayerItem) { (previousPlayerItem, video) in
-            player.insert(video.playerItem, after: previousPlayerItem)
-            return video.playerItem
-        }
-
-        _status.value = .buffering
-
-        currentItemStatusObserver?.invalidate()
-        currentItemStatusObserver = futureVideos.first?.playerItem.observe(\.status, options: []) { [unowned self] playerItem, change in
-            self.updateStatus(from: playerItem)
-        }
-
-        currentItemPresentationSizeObserver?.invalidate()
-        currentItemPresentationSizeObserver = futureVideos.first?.playerItem.observe(\.presentationSize, options: []) { [unowned self] playerItem, change in
-            self.updatePresentationSize(from: playerItem)
-        }
-    }
-
-    func updatePresentationSize(from playerItem: AVPlayerItem) {
+    private func updatePresentationSize(from playerItem: AVPlayerItem) {
         self._currentQuality.value = StreamQuality.from(videoSize: playerItem.presentationSize)
     }
 
-    func updateStatus(from playerItem: AVPlayerItem) {
+    private func updateStatus(from playerItem: AVPlayerItem) {
         switch playerItem.status {
         case .readyToPlay:
             self._duration.value = playerItem.duration.seconds
             self.play()
         case .failed:
-            // TODO Show this in the UI
+            self._status.value = .playbackFailed
             break
         default:
             break
         }
     }
 
-    func updateStatus(from player: AVPlayer) {
+    private func updateStatus(from player: AVPlayer) {
         switch self.player.timeControlStatus {
         case .paused:
             self._status.value = .paused
@@ -246,6 +241,8 @@ class VideoPlayer: NSObject {
     }
 
     func refreshState() {
+        // TODO Figure out how many items have been played since we went to sleep.
+
         updateStatus(from: player)
 
         if let currentPlayerItem = player.currentItem {
@@ -254,51 +251,112 @@ class VideoPlayer: NSObject {
         }
     }
 
-    // MARK: - Queue manipulation
-    func changeIndex(to newIndex: Int) {
-        if newIndex >= videos.value.count || newIndex < 0 {
+    private func changeIndex(to newIndex: Int) {
+        if newIndex >= _videos.value.count || newIndex < 0 {
             _currentIndex.value = nil
         } else {
             _currentIndex.value = newIndex
         }
-
-        if let video = currentItem.value {
-            commandCenter.load(video: video) // TODO Do this with a binding to currentItem
-            load(videoAtQueueIndex: newIndex)
-        }
     }
 
-    func changeIndex(by delta: Int) {
-        changeIndex(to: currentIndex.value ?? (videos.value.count - 1) + delta)
+    private func changeIndex(by delta: Int) {
+        changeIndex(to: (currentIndex.value ?? (_videos.value.count - 1)) + delta)
+    }
+
+    // MARK: - Moving the queue
+    func setIndex(to newIndex: Int) {
+        let oldIndex = currentIndex.value ?? (videos.value.count - 1)
+        let delta = newIndex - oldIndex
+
+        guard delta != 0 else { return }
+
+        _status.value = .buffering
+
+        let currentPlayerItem = player.items().first
+
+        if delta > 0 {
+            player.items()[1..<delta].forEach { player.remove($0) }
+        } else { // delta < 0
+            videos.value[newIndex...oldIndex].reversed().forEach {
+                player.insert(createPlayerItem(fromVideo: $0), after: currentPlayerItem)
+            }
+        }
+
+        if currentPlayerItem != nil {
+            player.advanceToNextItem()
+        }
+
+        changeIndex(to: newIndex)
     }
 
     func next() {
+        _status.value = .buffering
+        player.advanceToNextItem()
         changeIndex(by: 1)
     }
 
     func previous() {
-        changeIndex(by: currentIndex.value == nil ? 0 : -1)
+        // TODO Go to the beginning of the current video if we aren't within the first few seconds.
+        if let currentIndex = _currentIndex.value, currentIndex > 0 {
+            let currentlyPlayingItem = player.items().first
+
+            _status.value = .buffering
+
+            // Insert the previous item after the currently playing (if applicable)
+            let previousItem = createPlayerItem(fromVideo: _videos.value[currentIndex - 1])
+            player.insert(previousItem, after: currentlyPlayingItem)
+
+            // If applicable insert the currently playing item after the previous item
+            if let currentlyPlayingItem = currentlyPlayingItem {
+                player.insert(currentlyPlayingItem, after: previousItem)
+            }
+
+            // Update the queue index
+            changeIndex(by: -1)
+        }
     }
 
+    // MARK: - Manipulating the queue
     func playNow(_ video: Video) {
-        let playing = currentItem.value != nil
-        playNext(video)
-        changeIndex(by: playing ? 1 : 0)
+        let newIndex = (currentIndex.value + 1) ?? _videos.value.count
+
+        _videos.value.insert(video, at: newIndex)
+        player.insert(createPlayerItem(fromVideo: video), after: player.items().first)
+
+        changeSetObserver.send(value: .inserted(at: newIndex))
+
+        if currentIndex.value == nil {
+            _status.value = .buffering
+            changeIndex(to: newIndex)
+        } else {
+            next()
+        }
     }
 
     func playNext(_ video: Video) {
-        let queueItem = createQueueItem(fromVideo: video)
-        let insertionIndex = (currentIndex.value + 1) ?? videos.value.count
-        videos.value.insert(queueItem, at: insertionIndex)
-        changeSetObserver.send(value: VideoPlayerQueueChangeSet.inserted(atIndex: insertionIndex))
-        changeIndex(by: 0)
+        let newIndex = (currentIndex.value + 1) ?? _videos.value.count
+
+        _videos.value.insert(video, at: newIndex)
+        player.insert(createPlayerItem(fromVideo: video), after: player.items().first)
+
+        if currentIndex.value == nil {
+            changeIndex(to: newIndex)
+        }
+
+        changeSetObserver.send(value: .inserted(at: newIndex))
     }
 
     func playLater(_ video: Video) {
-        let queueItem = createQueueItem(fromVideo: video)
-        videos.value.append(queueItem)
-        changeSetObserver.send(value: VideoPlayerQueueChangeSet.inserted(atIndex: videos.value.count - 1))
-        changeIndex(by: 0)
+        let newIndex = _videos.value.count
+
+        _videos.value.insert(video, at: newIndex)
+        player.insert(createPlayerItem(fromVideo: video), after: nil)
+
+        if currentIndex.value == nil {
+            changeIndex(to: newIndex)
+        }
+
+        changeSetObserver.send(value: .inserted(at: newIndex))
     }
 
     // MARK: - Playback manipulation
@@ -325,11 +383,15 @@ class VideoPlayer: NSObject {
     }
 
     func startPictureInPicture() {
-        pictureInPictureController?.startPictureInPicture()
+        DispatchQueue.main.async {
+            self.pictureInPictureController?.startPictureInPicture()
+        }
     }
 
     func stopPictureInPicture() {
-        pictureInPictureController?.stopPictureInPicture()
+        DispatchQueue.main.async {
+            self.pictureInPictureController?.stopPictureInPicture()
+        }
     }
 }
 

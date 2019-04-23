@@ -8,7 +8,7 @@
 
 import UIKit
 
-class SubscriptionFeedViewController: GenericVideoListViewController {
+class SubscriptionFeedViewController: SimpleVideoListViewController {
     private var cutoffDate: Date?
 
     override func viewDidLoad() {

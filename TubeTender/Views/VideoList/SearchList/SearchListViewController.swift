@@ -8,7 +8,7 @@
 
 import UIKit
 
-class SearchListViewController: GenericVideoListViewController {
+class SearchListViewController: SimpleVideoListViewController {
     let searchController = UISearchController(searchResultsController: nil)
     private var nextPageToken: String?
     private var currentSearchString: String?

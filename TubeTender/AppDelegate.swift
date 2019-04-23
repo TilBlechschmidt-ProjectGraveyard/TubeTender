@@ -89,7 +89,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                                                  annotation: options[UIApplication.OpenURLOptionsKey.annotation])
     }
 
-    func applicationDidBecomeActive(_ application: UIApplication) {
+    func applicationWillEnterForeground(_ application: UIApplication) {
         if Settings.get(setting: .BackgroundPiP) as? Bool ?? false && VideoPlayer.shared.status.value == .playing {
             DispatchQueue.global().asyncAfter(deadline: .now() + 0.25) {
                 VideoPlayer.shared.stopPictureInPicture()
@@ -100,7 +100,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         IncomingVideoReceiver.default.scanPasteboardForURL()
     }
 
-    func applicationWillResignActive(_ application: UIApplication) {
+    func applicationDidEnterBackground(_ application: UIApplication) {
         if Settings.get(setting: .BackgroundPiP) as? Bool ?? false && VideoPlayer.shared.status.value == .playing {
             VideoPlayer.shared.startPictureInPicture()
         } else if !(Settings.get(setting: .BackgroundPlayback) as? Bool ?? true) {
