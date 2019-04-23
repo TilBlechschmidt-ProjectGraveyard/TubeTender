@@ -10,33 +10,33 @@ import Foundation
 
 enum Settings: SettingsKit {
     // Quality
-    case DefaultQuality
-    case MobileQuality
-    case HDR
-    case HighFPS
+    case defaultQuality
+    case mobileQuality
+    case hdr
+    case highFPS
 
     // Playback
-    case BackgroundPlayback
-    case BackgroundPiP
+    case backgroundPlayback
+    case backgroundPictureInPicture
 
     // App details
-    case AppVersion
+    case appVersion
 
     var identifier: String {
         switch self {
-        case .AppVersion:
+        case .appVersion:
             return "app_version"
-        case .DefaultQuality:
+        case .defaultQuality:
             return "quality_default"
-        case .MobileQuality:
+        case .mobileQuality:
             return "quality_mobile"
-        case .HDR:
+        case .hdr:
             return "quality_hdr"
-        case .HighFPS:
+        case .highFPS:
             return "quality_highFps"
-        case .BackgroundPlayback:
+        case .backgroundPlayback:
             return "playback_background"
-        case .BackgroundPiP:
+        case .backgroundPictureInPicture:
             return "background_pip"
         }
     }
@@ -69,7 +69,6 @@ public extension SettingsKit {
 
     /// Local defaults reference
     private var defaults: UserDefaults { return UserDefaults.standard }
-
 
     // MARK: - Static Convenience Methods
 
@@ -104,8 +103,12 @@ public extension SettingsKit {
      - setting:  The setting to observe
      - onChange: The closure to call when the setting's value is updated
      */
-    static func subscribe(setting: Self, onChange: @escaping SettingChangeHandler) {
-        setting.subscribe(onChange: onChange)
+    static func subscribe(setting: Self, onChange: @escaping SettingChangeHandler) -> SettingsObserver {
+        return setting.subscribe(onChange: onChange)
+    }
+
+    static func unsubscribe(setting: Self, observer: SettingsObserver) {
+        setting.unsubscribe(observer: observer)
     }
 
     // MARK: - Instance Methods
@@ -140,7 +143,6 @@ public extension SettingsKit {
         }
     }
 
-
     /**
      Observe a given setting for changes. The `onChange` closure will be called,
      with the new setting value, whenever the setting value is changed either
@@ -151,14 +153,28 @@ public extension SettingsKit {
 
      - Parameter onChange: The closure to call when the setting's value is updated
      */
-    private func subscribe(onChange: @escaping SettingChangeHandler) {
+    private func subscribe(onChange: @escaping SettingChangeHandler) -> SettingsObserver {
         let center = NotificationCenter.default
 
-        center.addObserver(forName: UserDefaults.didChangeNotification, object: defaults, queue: nil) { (notif) -> Void in
+        let observerObject = center.addObserver(forName: UserDefaults.didChangeNotification, object: defaults, queue: nil) { (notif) -> Void in
             if let defaults = notif.object as? UserDefaults {
                 onChange(defaults.object(forKey: self.identifier) as AnyObject?)
             }
         }
+
+        return SettingsObserver(observerObject: observerObject)
     }
 
+    private func unsubscribe(observer: SettingsObserver) {
+        observer.unsubscribe()
+    }
+}
+
+public struct SettingsObserver {
+    fileprivate let observerObject: NSObjectProtocol
+
+    public func unsubscribe() {
+        let center = NotificationCenter.default
+        center.removeObserver(observerObject)
+    }
 }

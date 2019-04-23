@@ -8,9 +8,8 @@
 
 import struct YoutubeKit.Channel
 import struct YoutubeKit.ChannelListRequest
-import Result
-import ReactiveSwift
 import ReactiveCocoa
+import ReactiveSwift
 
 enum ChannelError: Swift.Error {
     case notFound

@@ -1,0 +1,44 @@
+excluded:
+  - Carthage
+  - TubeTender/Support Files/AMRefresher
+  - MyPlayground.playground
+
+enabled_rules:
+  - explicit_init
+  - closure_end_indentationi
+  - closure_spacing
+  - discouraged_optional_boolean
+  - empty_count
+  - empty_string
+  - fallthrough
+  - let_var_whitespace
+  - literal_expression_end_indentation
+  - file_types_order
+  - modifier_order
+  - type_contents_order
+  - sorted_imports
+  - static_operator
+  - toggle_bool
+  - trailing_closure
+  - unused_import
+  - yoda_condition
+
+custom_rules:
+  discouraged_print:
+    name: Discourage print statement
+    regex: '[^\w]print\('
+    message: 'Only use print for debugging purpose'
+    severity: warning
+
+disabled_rules:
+  - nesting
+
+type_name:
+  excluded:
+    - ID
+
+identifier_name:
+  excluded:
+    - id
+
+line_length: 235

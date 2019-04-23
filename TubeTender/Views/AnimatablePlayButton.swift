@@ -6,8 +6,8 @@
 //  Copyright © 2015 suzuki_keishi. All rights reserved.
 //
 
-import UIKit
 import ReactiveSwift
+import UIKit
 
 class PlayButton: UIButton {
     fileprivate var left: CAShapeLayer = CAShapeLayer()
@@ -25,7 +25,7 @@ class PlayButton: UIButton {
         }
     }
 
-    open override func awakeFromNib() {
+    override open func awakeFromNib() {
         super.awakeFromNib()
         setup()
         createLayers(frame)
@@ -43,11 +43,11 @@ class PlayButton: UIButton {
         createLayers(frame)
     }
 
-    convenience public init(origin: CGPoint, lengthOfSize: CGFloat){
+    public convenience init(origin: CGPoint, lengthOfSize: CGFloat) {
         self.init(frame: CGRect(x: origin.x, y: origin.y, width: lengthOfSize, height: lengthOfSize))
     }
 
-    convenience public init(lengthOfSize: CGFloat){
+    public convenience init(lengthOfSize: CGFloat) {
         self.init(frame: CGRect(x: 0, y: 0, width: lengthOfSize, height: lengthOfSize))
     }
 

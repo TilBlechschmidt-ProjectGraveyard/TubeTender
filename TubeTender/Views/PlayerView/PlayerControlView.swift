@@ -1,25 +1,26 @@
 //
 //  PlayerViewControls.swift
-//  Pivo
+//  TubeTender
 //
 //  Created by Til Blechschmidt on 13.11.18.
-//  Copyright © 2018 Til Blechschmidt. All rights reserved.
+//  Copyright © 2019 Til Blechschmidt. All rights reserved.
 //
 
 import AVKit
+import SnapKit
 
 class PlayerControlView: UIView {
-    private(set) var controlView: UIView!
-    private(set) var loadingIndicator: UIActivityIndicatorView!
-    private(set) var playButton: PlayButton!
+    let controlView = UIView()
+    let loadingIndicator = UIActivityIndicatorView()
+    let playButton = PlayButton(frame: CGRect(x: 0, y: 0, width: 35, height: 35))
 
     // MARK: Labels
-    private(set) var elapsedTime: UILabel!
-    private(set) var durationLabel: UILabel!
+    let elapsedTimeLabel = UILabel()
+    let durationLabel = UILabel()
 
     // MARK: Video progress
-    private(set) var progressBar: UIProgressView!
-    private(set) var seekingSlider: UISlider!
+    let progressBar = UIProgressView()
+    let seekingSlider = UISlider()
 
     // MARK: Context controls (PiP, Fullscreen, Quality, Queue)
     private(set) var topLeftControlView: ButtonStackView!
@@ -28,27 +29,19 @@ class PlayerControlView: UIView {
     private(set) var qualityButton: UIButton!
     private(set) var topRightControlView: ButtonStackView!
 
-    // MARK: Constraint sets
-    private(set) var fullscreenConstraints: [NSLayoutConstraint] = []
-    private(set) var regularConstraints: [NSLayoutConstraint] = []
-
     var isFullscreenActive: Bool = false {
         didSet {
             if isFullscreenActive {
-                regularConstraints.forEach { $0.isActive = false }
-                fullscreenConstraints.forEach { $0.isActive = true }
-                fullscreenButton.setImage(UIImage(named: "compact"), for: .normal)
+                enterFullscreen()
             } else {
-                fullscreenConstraints.forEach { $0.isActive = false }
-                regularConstraints.forEach { $0.isActive = true }
-                fullscreenButton.setImage(UIImage(named: "enlarge"), for: .normal)
+                exitFullscreen()
             }
 
             // Hide/show the progress bar
-            UIView.animate(withDuration: 0.4, animations: {
+            UIView.animate(withDuration: 0.4) {
                 self.layoutIfNeeded()
                 self.progressBar.alpha = self.isFullscreenActive ? 0.0 : 1.0
-            })
+            }
         }
     }
 
@@ -57,99 +50,62 @@ class PlayerControlView: UIView {
         super.init(frame: frame)
 
         // Add activity indicator
-        loadingIndicator = UIActivityIndicatorView(frame: self.bounds)
         loadingIndicator.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         addSubview(loadingIndicator)
         loadingIndicator.isUserInteractionEnabled = false
         loadingIndicator.hidesWhenStopped = true
 
+        loadingIndicator.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+            make.size.equalToSuperview()
+        }
+
         // Create a view to recognize any taps on the view
         let interactionView = UIView()
         addSubview(interactionView)
-        interactionView.translatesAutoresizingMaskIntoConstraints = false
-        addConstraints([
-            interactionView.centerXAnchor.constraint(equalTo: self.centerXAnchor),
-            interactionView.centerYAnchor.constraint(equalTo: self.centerYAnchor),
-            interactionView.widthAnchor.constraint(equalTo: self.widthAnchor),
-            interactionView.heightAnchor.constraint(equalTo: self.heightAnchor)
-        ])
+        interactionView.snp.makeConstraints { make in
+            make.size.equalToSuperview()
+            make.center.equalToSuperview()
+        }
 
         // Add video progress bar
-        progressBar = UIProgressView()
         progressBar.progressTintColor = UIColor.red
         interactionView.addSubview(progressBar)
-        progressBar.translatesAutoresizingMaskIntoConstraints = false
-        addConstraints([
-            progressBar.bottomAnchor.constraint(equalTo: interactionView.bottomAnchor),
-            progressBar.leftAnchor.constraint(equalTo: interactionView.leftAnchor),
-            progressBar.rightAnchor.constraint(equalTo: interactionView.rightAnchor)
-        ])
+        progressBar.snp.makeConstraints { make in
+            make.left.equalToSuperview()
+            make.bottom.equalToSuperview()
+            make.right.equalToSuperview()
+        }
 
         // Create view for video controls
-        controlView = UIView()
         interactionView.addSubview(controlView)
-        controlView.translatesAutoresizingMaskIntoConstraints = false
-        addConstraints([
-            controlView.centerXAnchor.constraint(equalTo: interactionView.centerXAnchor),
-            controlView.centerYAnchor.constraint(equalTo: interactionView.centerYAnchor),
-            controlView.widthAnchor.constraint(equalTo: interactionView.widthAnchor),
-            controlView.heightAnchor.constraint(equalTo: interactionView.heightAnchor)
-        ])
+        controlView.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+            make.size.equalToSuperview()
+        }
 
         // Add play/pause button
-        playButton = PlayButton(frame: CGRect(x: 0, y: 0, width: 33, height: 33))
         controlView.addSubview(playButton)
-        playButton.translatesAutoresizingMaskIntoConstraints = false
-        addConstraints([
-            playButton.centerXAnchor.constraint(equalTo: controlView.centerXAnchor),
-            playButton.centerYAnchor.constraint(equalTo: controlView.centerYAnchor),
-            playButton.widthAnchor.constraint(equalToConstant: 35),
-            playButton.heightAnchor.constraint(equalToConstant: 35)
-        ])
+        playButton.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+            make.width.equalTo(35)
+            make.height.equalTo(35)
+        }
 
         // Add the elapsed and remaining time
-        elapsedTime = UILabel()
-        timeLabelSetup(label: elapsedTime)
-        controlView.addSubview(elapsedTime)
-        fullscreenConstraints.append(contentsOf: [
-            elapsedTime.leftAnchor.constraint(equalTo: controlView.safeAreaLayoutGuide.leftAnchor, constant: 25),
-            elapsedTime.bottomAnchor.constraint(equalTo: controlView.safeAreaLayoutGuide.bottomAnchor, constant: -25)
-        ])
-        regularConstraints.append(contentsOf: [
-            elapsedTime.leftAnchor.constraint(equalTo: controlView.leftAnchor, constant: 10),
-            elapsedTime.bottomAnchor.constraint(equalTo: controlView.bottomAnchor, constant: -10),
-        ])
+        timeLabelSetup(label: elapsedTimeLabel)
+        controlView.addSubview(elapsedTimeLabel)
 
-        durationLabel = UILabel()
         timeLabelSetup(label: durationLabel)
         controlView.addSubview(durationLabel)
-        fullscreenConstraints.append(contentsOf: [
-            durationLabel.rightAnchor.constraint(equalTo: controlView.safeAreaLayoutGuide.rightAnchor, constant: -25),
-            durationLabel.bottomAnchor.constraint(equalTo: controlView.safeAreaLayoutGuide.bottomAnchor, constant: -25)
-        ])
-        regularConstraints.append(contentsOf: [
-            durationLabel.rightAnchor.constraint(equalTo: controlView.rightAnchor, constant: -10),
-            durationLabel.bottomAnchor.constraint(equalTo: controlView.bottomAnchor, constant: -10),
-        ])
 
         // Add a slider for seeking
         let thumbImage = image(with: UIBezierPath(roundedRect: CGRect(x: 0, y: 0, width: 10, height: 10), cornerRadius: 100), size: CGSize(width: 10, height: 10))
-        seekingSlider = UISlider()
         seekingSlider.thumbTintColor = UIColor.red
         seekingSlider.minimumTrackTintColor = UIColor.red
         seekingSlider.setThumbImage(thumbImage!, for: .normal)
         seekingSlider.setThumbImage(thumbImage!, for: .highlighted)
-        seekingSlider.translatesAutoresizingMaskIntoConstraints = false
         controlView.addSubview(seekingSlider)
-        fullscreenConstraints.append(contentsOf: [
-            seekingSlider.leftAnchor.constraint(equalTo: elapsedTime.rightAnchor, constant: 10),
-            seekingSlider.rightAnchor.constraint(equalTo: durationLabel.leftAnchor, constant: -10),
-            seekingSlider.centerYAnchor.constraint(equalTo: elapsedTime.centerYAnchor)
-        ])
-        regularConstraints.append(contentsOf: [
-            seekingSlider.centerYAnchor.constraint(equalTo: progressBar.centerYAnchor, constant: -0.5),
-            seekingSlider.widthAnchor.constraint(equalTo: progressBar.widthAnchor)
-        ])
 
         // Create TLCV buttons
         var tlcvButtons: [UIView] = []
@@ -164,7 +120,6 @@ class PlayerControlView: UIView {
         }
 
         fullscreenButton = UIButton(type: .roundedRect)
-        fullscreenButton.setImage(UIImage(named: "enlarge"), for: .normal)
         fullscreenButton.tintColor = UIColor.white
         fullscreenButton.snp.makeConstraints { make in
             make.height.equalTo(22)
@@ -198,7 +153,7 @@ class PlayerControlView: UIView {
         }
 
         // Activate the regular constraints
-        regularConstraints.forEach { $0.isActive = true }
+        exitFullscreen()
 
         // Add the blur layer to make the UI more visible
         blurView = controlView.blur(style: .dark)
@@ -214,13 +169,52 @@ class PlayerControlView: UIView {
         gradientLayer.addSublayer(bottomGradient)
 
         blurView.layer.mask = gradientLayer
-//        self.layer.addSublayer(gradientLayer)
     }
 
-    let gradientLayer = CALayer()
-    let playButtonGradient = RadialGradientLayer()
-    let bottomGradient = CAGradientLayer()
-    var blurView: UIVisualEffectView!
+    private func enterFullscreen() {
+        fullscreenButton.setImage(UIImage(named: "compact"), for: .normal)
+
+        elapsedTimeLabel.snp.remakeConstraints { make in
+            make.left.equalTo(controlView.safeAreaLayoutGuide).offset(25)
+            make.bottom.equalTo(controlView.safeAreaLayoutGuide).offset(-25)
+        }
+
+        durationLabel.snp.remakeConstraints { make in
+            make.right.equalTo(controlView.safeAreaLayoutGuide).offset(-25)
+            make.bottom.equalTo(controlView.safeAreaLayoutGuide).offset(-25)
+        }
+
+        seekingSlider.snp.remakeConstraints { make in
+            make.left.equalTo(elapsedTimeLabel.snp.right).offset(10)
+            make.right.equalTo(durationLabel.snp.left).offset(-10)
+            make.centerY.equalTo(elapsedTimeLabel)
+        }
+
+    }
+
+    private func exitFullscreen() {
+        fullscreenButton.setImage(UIImage(named: "enlarge"), for: .normal)
+
+        elapsedTimeLabel.snp.remakeConstraints { make in
+            make.left.equalTo(controlView).offset(10)
+            make.bottom.equalTo(controlView).offset(-10)
+        }
+
+        durationLabel.snp.remakeConstraints { make in
+            make.right.equalTo(controlView).offset(-10)
+            make.bottom.equalTo(controlView).offset(-10)
+        }
+
+        seekingSlider.snp.remakeConstraints { make in
+            make.centerY.equalTo(progressBar).offset(-0.5)
+            make.width.equalTo(progressBar)
+        }
+    }
+
+    private let gradientLayer = CALayer()
+    private let playButtonGradient = RadialGradientLayer()
+    private let bottomGradient = CAGradientLayer()
+    private var blurView: UIVisualEffectView!
 
     override func layoutSubviews() {
         playButtonGradient.frame = blurView.frame
@@ -237,7 +231,6 @@ class PlayerControlView: UIView {
         label.font = label.font.withSize(10)
         label.textAlignment = .center
         label.textColor = UIColor.white
-        label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "--:--"
     }
 

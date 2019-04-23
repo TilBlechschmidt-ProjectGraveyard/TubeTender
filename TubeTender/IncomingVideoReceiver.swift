@@ -6,14 +6,13 @@
 //  Copyright © 2019 Til Blechschmidt. All rights reserved.
 //
 
-import UIKit
 import ReactiveSwift
+import UIKit
 
 enum VideoSource {
     case none
     case view(view: UIView, permittedArrowDirections: UIPopoverArrowDirection)
     case rect(rect: CGRect, view: UIView, permittedArrowDirections: UIPopoverArrowDirection)
-
 
     var isNone: Bool {
         switch self {
@@ -28,7 +27,7 @@ enum VideoSource {
 class IncomingVideoReceiver: NSObject {
     public static let `default` = IncomingVideoReceiver()
 
-    private override init() {}
+    override private init() {}
 
     @discardableResult public func handle(url: URL, source: VideoSource) -> Bool {
         return handle(string: url.absoluteString, source: source)
@@ -55,7 +54,7 @@ class IncomingVideoReceiver: NSObject {
 
             alertControl.reactive.attributedTitle <~ SignalProducer(value: "How do you want to play the video?")
                     .then(video.title)
-                    .filterMap({ $0.value })
+                    .filterMap { $0.value }
                     .map {
                         return NSAttributedString(string: $0, attributes: [NSAttributedString.Key.foregroundColor: UIColor.lightGray])
                     }
@@ -66,12 +65,12 @@ class IncomingVideoReceiver: NSObject {
             alertControl.addAction(UIAlertAction(title: "Play Now", style: .default) { _ in
                 VideoPlayer.shared.playNow(video)
             })
-            alertControl.addAction(UIAlertAction(title: "Play Next", style: .default, handler: { _ in
+            alertControl.addAction(UIAlertAction(title: "Play Next", style: .default) { _ in
                 VideoPlayer.shared.playNext(video)
-            }))
-            alertControl.addAction(UIAlertAction(title: "Play Later", style: .default, handler: { _ in
+            })
+            alertControl.addAction(UIAlertAction(title: "Play Later", style: .default) { _ in
                 VideoPlayer.shared.playLater(video)
-            }))
+            })
             alertControl.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
 
             guard let rootViewController = (UIApplication.shared.delegate?.window ?? nil)?.rootViewController else { return }

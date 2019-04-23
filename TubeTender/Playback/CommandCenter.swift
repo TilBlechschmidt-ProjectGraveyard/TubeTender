@@ -7,15 +7,15 @@
 //
 
 import MediaPlayer
-import ReactiveSwift
 import ReactiveCocoa
+import ReactiveSwift
 
 enum CommandCenterAction {
     case play
     case pause
     case next
     case previous
-    case seek(to: TimeInterval)
+    case seek(toTime: TimeInterval)
 }
 
 protocol CommandCenterDelegate: class {
@@ -39,7 +39,7 @@ class CommandCenter: NSObject {
 
     let thumbnail = MutableProperty<UIImage?>(nil)
 
-    private override init() {
+    override private init() {
         super.init()
         isEnabled.signal.observeValues { enabled in
             if enabled {
@@ -67,7 +67,7 @@ class CommandCenter: NSObject {
         }
 
         createHandler(forCommand: commandCenter.changePlaybackPositionCommand) { (event: MPChangePlaybackPositionCommandEvent) in
-            return self.delegate?.commandCenter(self, didReceiveCommand: .seek(to: event.positionTime))
+            return self.delegate?.commandCenter(self, didReceiveCommand: .seek(toTime: event.positionTime))
         }
 
         createHandler(forCommand: commandCenter.nextTrackCommand) { _ in
@@ -98,7 +98,7 @@ class CommandCenter: NSObject {
     }
 
     private func createHandler<CommandEvent: MPRemoteCommandEvent>(forCommand command: MPRemoteCommand,
-                                                           _ closure: @escaping (CommandEvent) -> MPRemoteCommandHandlerStatus?) {
+                                                                   _ closure: @escaping (CommandEvent) -> MPRemoteCommandHandlerStatus?) {
         command.isEnabled = true
         command.addTarget { (event: MPRemoteCommandEvent) in
             let castedEvent = event as? CommandEvent
@@ -113,7 +113,7 @@ class CommandCenter: NSObject {
     }
 
     private func updateSongInfo() {
-        var songInfo: [String : Any] = [
+        var songInfo: [String: Any] = [
             MPNowPlayingInfoPropertyPlaybackRate: 1.0
         ]
 
@@ -124,7 +124,7 @@ class CommandCenter: NSObject {
         if let duration = duration.value { songInfo[MPMediaItemPropertyPlaybackDuration] = duration }
 
         if let thumbnail = thumbnail.value {
-            songInfo[MPMediaItemPropertyArtwork] = MPMediaItemArtwork(boundsSize: thumbnail.size, requestHandler: { _ in thumbnail })
+            songInfo[MPMediaItemPropertyArtwork] = MPMediaItemArtwork(boundsSize: thumbnail.size) { _ in thumbnail }
         }
 
         MPNowPlayingInfoCenter.default().nowPlayingInfo = songInfo

@@ -11,7 +11,7 @@ import UIKit
 class IncomingVideoReceiver: NSObject, UIDropInteractionDelegate {
     public static let `default` = IncomingVideoReceiver()
 
-    private override init() {}
+    override private init() {}
 
     func dropInteraction(_ interaction: UIDropInteraction, performDrop session: UIDropSession) {
         for dragItem in session.items {
@@ -55,7 +55,6 @@ class IncomingVideoReceiver: NSObject, UIDropInteractionDelegate {
 
     public func handle(videoURL url: YoutubeURL) {
         SwitchablePlayer.shared.playbackItem.value = YoutubeClient.shared.video(withID: url.videoID)
-        print("Found Video: \(url.videoID)")
     }
 
     private var pasteboardChangeCount: Int {

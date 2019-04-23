@@ -6,10 +6,9 @@
 //  Copyright © 2019 Til Blechschmidt. All rights reserved.
 //
 
-import ReactiveSwift
-import MediaPlayer
 import AVKit
-import Result
+import MediaPlayer
+import ReactiveSwift
 
 typealias QueueEntry = (video: Video, playerItem: AVPlayerItem)
 
@@ -24,6 +23,7 @@ class AVPlayerView: UIView {
     }
 
     var playerLayer: AVPlayerLayer {
+        //swiftlint:disable:next force_cast
         return layer as! AVPlayerLayer
     }
 
@@ -62,8 +62,8 @@ class VideoPlayer: NSObject {
     let playerView: AVPlayerView
     private let commandCenter: CommandCenter
 
-    private var changeSetObserver: Signal<VideoPlayerQueueChangeSet, NoError>.Observer!
-    private(set) var changeSetSignal: Signal<VideoPlayerQueueChangeSet, NoError>!
+    private var changeSetObserver: Signal<VideoPlayerQueueChangeSet, Never>.Observer!
+    private(set) var changeSetSignal: Signal<VideoPlayerQueueChangeSet, Never>!
 
     // Queue: Latest item will be played next
     let currentIndex: Property<Int?>
@@ -107,7 +107,7 @@ class VideoPlayer: NSObject {
         playerView.player = player
         pictureInPictureController = AVPictureInPictureController(playerLayer: playerView.playerLayer)
 
-        currentItem = Property(currentIndex.map { $0.map({ videos.value[$0] }).map { $0.video } })
+        currentItem = Property(currentIndex.map { $0.map { videos.value[$0] }.map { $0.video } })
         queue = Property(currentIndex.map { videos.value[(($0 + 1) ?? videos.value.count)...].map { $0.video } })
         history = Property(currentIndex.map { videos.value[..<($0 ?? videos.value.count)].map { $0.video } })
 
@@ -118,7 +118,7 @@ class VideoPlayer: NSObject {
         super.init()
 
         // Setup signals
-        changeSetSignal = Signal { observer, lifetime in
+        changeSetSignal = Signal { observer, _ in
             self.changeSetObserver = observer
         }
 
@@ -168,10 +168,10 @@ class VideoPlayer: NSObject {
 
         // Command center related
         commandCenter.hasNext <~ self.currentIndex.map { index in
-            return index.flatMap({ $0 < self.videos.value.count - 1  }) ?? false
+            return index.flatMap { $0 < self.videos.value.count - 1 } ?? false
         }
         commandCenter.hasPrevious <~ self.currentIndex.map { index in
-            return index.flatMap({ $0 > 0 && self.videos.value.count > 0 }) ?? (self.videos.value.count > 0)
+            return index.flatMap { $0 > 0 && !self.videos.value.isEmpty } ?? !self.videos.value.isEmpty
         }
 
         commandCenter.elapsedTime <~ self.currentTime
@@ -191,6 +191,7 @@ class VideoPlayer: NSObject {
 
     private var currentItemStatusObserver: NSKeyValueObservation?
     private var currentItemPresentationSizeObserver: NSKeyValueObservation?
+
     private func load(videoAtQueueIndex index: Int) {
         let futureVideos = videos.value[index...]
 
@@ -362,6 +363,8 @@ extension VideoPlayer: AVPictureInPictureControllerDelegate {
     }
 }
 
-fileprivate func +(lhs: Int?, rhs: Int) -> Int? {
-    return lhs.map { $0 + rhs }
+extension Int {
+    fileprivate static func + (lhs: Int?, rhs: Int) -> Int? {
+        return lhs.map { $0 + rhs }
+    }
 }

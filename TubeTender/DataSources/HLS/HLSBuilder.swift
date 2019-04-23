@@ -7,7 +7,6 @@
 //
 
 import ReactiveSwift
-import Result
 
 typealias VideoID = String
 typealias ITag = String
@@ -34,7 +33,7 @@ class HLSBuilder {
         cache[videoID]?[streamDescriptor.itag] = streamDescriptor
     }
 
-    func streamsDescriptors(forVideoID videoID: VideoID) -> SignalProducer<[StreamDescriptor], AnyError> {
+    func streamsDescriptors(forVideoID videoID: VideoID) -> SignalProducer<[StreamDescriptor], Error> {
         // TODO Take cache age into account (after a certain time the cache invalidates because the URLs expire)
         if let descriptors = cache[videoID] {
             return SignalProducer(value: Array(descriptors.values))
@@ -43,7 +42,7 @@ class HLSBuilder {
         }
     }
 
-    func masterPlaylist(forVideoID videoID: VideoID) -> SignalProducer<String, AnyError> {
+    func masterPlaylist(forVideoID videoID: VideoID) -> SignalProducer<String, Error> {
         let m3u8Header = """
         #EXTM3U
         #EXT-X-VERSION:4
@@ -55,9 +54,9 @@ class HLSBuilder {
             .flatten()
             .filter { $0.mimeType.contains("mp4") } // Since HLS only supports fMP4 streams we can dump all the webm streams
             // TODO We probably need to filter the codecs to not include vp9
-            .on(value: { streamDescriptor in
+            .on { streamDescriptor in
                 self.addToCache(streamDescriptor, videoID: videoID)
-            })
+            }
             .map { streamDescriptor in
                 let streamManifestURL = "\(videoID)/\(streamDescriptor.itag ?? "invalidITag").m3u8"
                 if streamDescriptor.audioChannels != nil {
@@ -75,30 +74,30 @@ class HLSBuilder {
             .map { m3u8Header + $0.joined(separator: "\n") }
     }
 
-    func playlist(forVideoID videoID: VideoID, itag: ITag) -> SignalProducer<String, AnyError> {
+    func playlist(forVideoID videoID: VideoID, itag: ITag) -> SignalProducer<String, Error> {
         return streamsDescriptors(forVideoID: videoID)
             .flatten()
             .filter { $0.itag == itag }
             .collect()
             .attemptMap { descriptors in
                 guard descriptors.count == 1, let descriptor = descriptors.first else {
-                    throw AnyError(HLSBuilderError.itagDescriptorNotFound)
+                    throw HLSBuilderError.itagDescriptorNotFound
                 }
 
                 return descriptor
             }
-            .flatMap(.merge) { (descriptor: StreamDescriptor) -> SignalProducer<String, AnyError> in
+            .flatMap(.merge) { (descriptor: StreamDescriptor) -> SignalProducer<String, Error> in
                 let path = descriptor.url!
                 let url = URL(string: descriptor.url)!
                 let index = descriptor.index!
 
-                return SignalProducer { observer, lifetime in
+                return SignalProducer { observer, _ in
                     var request = URLRequest(url: url)
                     request.setValue("bytes=\(index.lowerBound)-\(index.upperBound)", forHTTPHeaderField: "Range")
 
-                    let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
+                    let task = URLSession.shared.dataTask(with: request) { (data, _, error) in
                         guard let data = data else {
-                            observer.send(error: AnyError(HLSBuilderError.unableToReadSegmentData))
+                            observer.send(error: HLSBuilderError.unableToReadSegmentData)
                             return
                         }
 

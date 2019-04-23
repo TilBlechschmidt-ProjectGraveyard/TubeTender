@@ -6,15 +6,14 @@
 //  Copyright © 2019 Til Blechschmidt. All rights reserved.
 //
 
-import YoutubeKit
 import ReactiveCocoa
 import ReactiveSwift
-import Result
+import YoutubeKit
 
 extension ApiSession: ReactiveExtensionsProvider {}
 
 extension Reactive where Base: ApiSession {
-    public func send<T: Requestable>(_ request: T) -> SignalProducer<T.Response, AnyError> {
+    public func send<T: Requestable>(_ request: T) -> SignalProducer<T.Response, Error> {
         return SignalProducer { observer, lifetime in
             let task = self.base.send(request) { result in
                 switch result {
@@ -22,7 +21,7 @@ extension Reactive where Base: ApiSession {
                     observer.send(value: response)
                     observer.sendCompleted()
                 case .failed(let error):
-                    observer.send(error: AnyError(error))
+                    observer.send(error: error)
                 }
             }
 

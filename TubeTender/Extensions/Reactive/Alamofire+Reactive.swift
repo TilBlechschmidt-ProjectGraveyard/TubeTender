@@ -3,10 +3,9 @@
 //  TubeTender
 //
 //  Created by Noah Peeters on 20.05.18.
-//  Copyright © 2018 Noah Peeters. All rights reserved.
+//  Copyright © 2019 Noah Peeters. All rights reserved.
 //
 
-import Result
 import Alamofire
 import ReactiveSwift
 
@@ -31,19 +30,17 @@ public enum DataRequestError: LocalizedError {
 }
 
 extension DataRequest {
-    internal func signalProducer(onlyAcceptsHTTPOK: Bool = false) -> SignalProducer<Data, AnyError> {
+    internal func signalProducer(onlyAcceptsHTTPOK: Bool = false) -> SignalProducer<Data, Error> {
         return SignalProducer { observer, lifetime in
             self.response(queue: alamofireQueue) { response in
                 guard !onlyAcceptsHTTPOK || response.response?.statusCode == 200 else {
-                    observer.send(error: AnyError(
-                        DataRequestError.httpStatusCodeFailed(data: response.data,
-                                                              statusCode: response.response?.statusCode ?? -1)
-                    ))
+                    observer.send(error: DataRequestError.httpStatusCodeFailed(data: response.data, statusCode: response.response?.statusCode ?? -1)
+                    )
                     return
                 }
 
                 guard response.response != nil else {
-                    observer.send(error: AnyError(DataRequestError.serverUnreachable))
+                    observer.send(error: DataRequestError.serverUnreachable)
                     return
                 }
 
@@ -51,7 +48,7 @@ extension DataRequest {
                     observer.send(value: data)
                     observer.sendCompleted()
                 } else {
-                    observer.send(error: AnyError(response.error!))
+                    observer.send(error: response.error!)
                 }
             }
 
@@ -59,7 +56,7 @@ extension DataRequest {
         }
     }
 
-    internal func stringSignalProducer(encoding: String.Encoding = .utf8, onlyAcceptsHTTPOK: Bool = false) -> SignalProducer<String, AnyError> {
+    internal func stringSignalProducer(encoding: String.Encoding = .utf8, onlyAcceptsHTTPOK: Bool = false) -> SignalProducer<String, Error> {
         return signalProducer(onlyAcceptsHTTPOK: onlyAcceptsHTTPOK).attemptMap { data in
             if let text = String(data: data, encoding: encoding) {
                 return text
@@ -70,7 +67,7 @@ extension DataRequest {
     }
 
     internal func jsonSignalProducer<ResponseType: Decodable>(type: ResponseType.Type)
-        -> SignalProducer<ResponseType, AnyError> {
+        -> SignalProducer<ResponseType, Error> {
             return signalProducer().attemptMap { data in
                 let jsonDecoder = JSONDecoder()
                 return try jsonDecoder.decode(ResponseType.self, from: data)

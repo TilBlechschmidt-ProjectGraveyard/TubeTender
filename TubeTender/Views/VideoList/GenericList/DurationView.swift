@@ -11,7 +11,7 @@ import UIKit
 public class DurationView: UIView {
     public let label = UILabel()
 
-    public override init(frame: CGRect) {
+    override public init(frame: CGRect) {
         super.init(frame: frame)
         addBlur()
         setupLabel()
