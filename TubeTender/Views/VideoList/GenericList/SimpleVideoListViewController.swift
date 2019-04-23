@@ -6,10 +6,14 @@
 //  Copyright © 2019 Til Blechschmidt. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 class SimpleVideoListViewController: GenericVideoListViewController {
-    public var videos: [[Video]] = []
+    public var videos: [[Video]] = [] {
+        didSet {
+            super.isEmpty = videos.isEmpty
+        }
+    }
 
     override func viewDidLoad() {
         super.dataSource = self
@@ -30,6 +34,34 @@ class SimpleVideoListViewController: GenericVideoListViewController {
         self.videos = videos
         self.tableView.reloadData()
         notUpdating()
+    }
+
+    override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
+        let video = self.dataSource.getVideo(indexPath.section, row: indexPath.row)
+        self.showDetailViewController(VideoViewController(), sender: self)
+        VideoPlayer.shared.playNow(video)
+
+        return nil
+    }
+
+    override func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let playLaterAction = UIContextualAction(style: .normal, title: "Play next") { _, _, success in
+            VideoPlayer.shared.playNext(self.getVideo(indexPath.section, row: indexPath.row))
+            success(true)
+        }
+        playLaterAction.backgroundColor = Constants.primaryActionColor
+
+        return UISwipeActionsConfiguration(actions: [playLaterAction])
+    }
+
+    override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let playLaterAction = UIContextualAction(style: .normal, title: "Play later") { _, _, success in
+            VideoPlayer.shared.playLater(self.getVideo(indexPath.section, row: indexPath.row))
+            success(true)
+        }
+        playLaterAction.backgroundColor = Constants.secondaryActionColor
+
+        return UISwipeActionsConfiguration(actions: [playLaterAction])
     }
 }
 

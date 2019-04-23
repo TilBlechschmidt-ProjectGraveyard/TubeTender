@@ -52,13 +52,16 @@ class QueueListViewController: GenericVideoListViewController {
             switch change {
             case .inserted(let insertionIndex):
                 self.tableView.insertRows(at: [self.indexPath(from: insertionIndex)], with: .automatic)
-            default:
+            case .removed(let removeIndex):
+                self.tableView.deleteRows(at: [self.indexPath(from: removeIndex)], with: .automatic)
+            case .moved:
                 break
             }
         }
 
         player.currentIndex.producer.combinePrevious().startWithValues { [unowned self] previousIndex, newIndex in
-            if let previousIndex = previousIndex, let newIndex = newIndex {
+            if let previousIndex = previousIndex {
+                let newIndex = newIndex ?? self.player.videos.value.count
                 let oldPlayingItemIndexPath = self.indexPath(from: previousIndex, withCurrentIndex: newIndex)
 
                 self.tableView.beginUpdates()
@@ -73,7 +76,9 @@ class QueueListViewController: GenericVideoListViewController {
                 self.tableView.endUpdates()
 
                 self.tableView.reloadRows(at: [oldPlayingItemIndexPath], with: .automatic)
-                self.tableView.reloadRows(at: [IndexPath(row: 0, section: 1)], with: .automatic)
+                if newIndex < self.player.videos.value.count {
+                    self.tableView.reloadRows(at: [IndexPath(row: 0, section: 1)], with: .automatic)
+                }
             }
         }
     }
@@ -90,10 +95,22 @@ class QueueListViewController: GenericVideoListViewController {
         tableView.scrollToRow(at: IndexPath(row: 0, section: 1), at: .top, animated: true)
         return false
     }
+}
 
+extension QueueListViewController {
     override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
         player.setIndex(to: index(from: indexPath))
         return nil
+    }
+
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            player.remove(from: index(from: indexPath))
+        }
+    }
+
+    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        return indexPath.section > 1
     }
 }
 
@@ -121,10 +138,7 @@ extension QueueListViewController: GenericVideoListViewControllerDataSource {
     }
 
     func getVideo(_ section: Int, row: Int) -> Video {
-        guard let currentIndex = player.currentIndex.value else {
-            fatalError("Attempted to get video from empty section")
-        }
-
+        let currentIndex = player.currentIndex.value ?? player.videos.value.count
         let sectionContent = videos(fromSection: section, currentIndex: currentIndex)
         return sectionContent[sectionContent.startIndex.advanced(by: row)]
     }

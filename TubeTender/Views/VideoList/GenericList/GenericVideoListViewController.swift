@@ -17,35 +17,24 @@ class GenericVideoListViewController: UITableViewController {
     private lazy var emptyStateView: UIView = createEmptyStateView()
     private var isLoading: Bool = false
 
+    var isEmpty: Bool = false {
+        willSet {
+            emptyStateView.isHidden = !newValue
+        }
+    }
+
     weak var dataSource: GenericVideoListViewControllerDataSource!
 
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.register(SubscriptionFeedViewTableCell.self, forCellReuseIdentifier: SubscriptionFeedViewTableCell.identifier)
         tableView.backgroundColor = Constants.backgroundColor
-        tableView.separatorColor = Constants.selectedBackgroundColor
+        tableView.separatorColor = Constants.borderColor
         tableView.refreshControl = UIRefreshControl()
 
         tableView.refreshControl?.addTarget(self, action: #selector(self.handlePullToRefresh), for: .valueChanged)
         tableView.rowHeight = CGFloat.greatestFiniteMagnitude
         tableView.backgroundView = emptyStateView
-
-        let longPressGestureRecognizer = UILongPressGestureRecognizer(
-            target: self,
-            action: #selector(handleLongPress(gestureRecognizer:)))
-        tableView.addGestureRecognizer(longPressGestureRecognizer)
-    }
-
-    @objc func handleLongPress(gestureRecognizer: UILongPressGestureRecognizer) {
-        guard gestureRecognizer.state == .began else { return }
-
-        let pressLocation = gestureRecognizer.location(in: tableView)
-
-        guard let indexPath = tableView.indexPathForRow(at: pressLocation) else { return }
-
-        IncomingVideoReceiver.default.handle(
-            video: dataSource.getVideo(indexPath.section, row: indexPath.row),
-            source: .rect(rect: tableView.rectForRow(at: indexPath), view: tableView, permittedArrowDirections: .left))
     }
 
     func notUpdating() {
@@ -161,13 +150,11 @@ extension GenericVideoListViewController {
         }
     }
 
-    override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
-        let video = dataSource.getVideo(indexPath.section, row: indexPath.row)
-
-        self.showDetailViewController(VideoViewController(), sender: self)
-        VideoPlayer.shared.playNow(video)
-
-        return nil
+    override func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+        view.tintColor = Constants.selectedBackgroundColor
+        if let header = view as? UITableViewHeaderFooterView {
+            header.textLabel?.textColor = Constants.labelColor
+        }
     }
 }
 

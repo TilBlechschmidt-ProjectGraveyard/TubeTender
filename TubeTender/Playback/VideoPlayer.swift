@@ -308,14 +308,35 @@ class VideoPlayer: NSObject {
         return newIndex
     }
 
+    func remove(from index: Int) {
+        // TODO This function should only work for index > currentIndex. Add guard
+        _videos.value.remove(at: index)
+
+        if let currentIndex = currentIndex.value {
+            if index == currentIndex {
+                player.advanceToNextItem()
+            } else if index > currentIndex {
+                let playerIndexToDelete = index - currentIndex
+                player.remove(player.items()[playerIndexToDelete])
+            }
+
+            if currentIndex >= _videos.value.count {
+                _currentIndex.value = nil
+            }
+        }
+
+        changeSetObserver.send(value: .removed(at: index))
+    }
+
     func playNow(_ video: Video) {
         let newIndex = addVideoToBeginningOfQueue(video)
         changeSetObserver.send(value: .inserted(at: newIndex))
-
         if currentIndex.value == nil {
             _status.value = .buffering
             changeIndex(to: newIndex)
+            changeSetObserver.send(value: .inserted(at: newIndex))
         } else {
+            changeSetObserver.send(value: .inserted(at: newIndex))
             next()
         }
     }

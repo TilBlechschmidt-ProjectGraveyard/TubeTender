@@ -56,19 +56,24 @@ class PlayerViewController: UIViewController {
 
         // Duration & Elapsed time
         // TODO Different value when .noMediaLoaded
-        playerControlView.elapsedTimeLabel.reactive.text <~ player.currentTime.map(PlayerViewController.stringRepresentation(ofTime:))
+        playerControlView.elapsedTimeLabel.reactive.text <~ player.currentTime.signal
+            .filter { [unowned self] _ in !self.playerControlView.seekingSlider.isTracking }
+            .map(PlayerViewController.stringRepresentation(ofTime:))
         playerControlView.durationLabel.reactive.text <~ player.duration.map(PlayerViewController.stringRepresentation(ofTime:))
 
         // Slider & Progress bar
         playerControlView.progressBar.reactive.progress <~ player.currentTime.map { return Float($0 / player.duration.value) }
-        playerControlView.seekingSlider.reactive.value <~ player.currentTime.signal.observe(on: QueueScheduler.main).filterMap { [unowned self] time in
-            return self.playerControlView.seekingSlider.isTracking ? nil : Float(time / player.duration.value)
-        }
-        playerControlView.seekingSlider.reactive.values.take(duringLifetimeOf: self).observeValues { player.seek(toPercentage: Double($0)) }
+        playerControlView.seekingSlider.reactive.value <~ player.currentTime.signal.observe(on: QueueScheduler.main)
+            .filter { [unowned self] _ in !self.playerControlView.seekingSlider.isTracking }
+            .map { Float($0 / player.duration.value) }
+        self.playerControlView.elapsedTimeLabel.reactive.text <~ playerControlView.seekingSlider.reactive.values
+            .take(duringLifetimeOf: self)
+            .filter { [unowned self] _ in self.playerControlView.seekingSlider.isTracking }
+            .map { PlayerViewController.stringRepresentation(ofTime: Double($0) * player.duration.value) }
 
         let isBuffering = player.status.signal.take(duringLifetimeOf: self).map { $0 == .buffering }
         playerControlView.loadingIndicator.reactive.isAnimating <~ isBuffering
-        isBuffering.observeValues { buffering in
+        isBuffering.observeValues { [unowned self] buffering in
             if buffering {
                 self.controlsVisible = false
             }
@@ -111,6 +116,8 @@ class PlayerViewController: UIViewController {
         // TODO Also handle touchDragOutside if touchdown originated inside the slider
         playerControlView.seekingSlider.addTarget(self, action: #selector(self.seeked), for: .touchDragInside)
         playerControlView.seekingSlider.addTarget(self, action: #selector(self.seeked), for: .touchDragOutside)
+        playerControlView.seekingSlider.addTarget(self, action: #selector(self.seekFinished), for: .touchUpInside)
+        playerControlView.seekingSlider.addTarget(self, action: #selector(self.seekFinished), for: .touchUpOutside)
         playerControlView.playButton.addTarget(self, action: #selector(self.playButtonTapped), for: .touchUpInside)
         playerControlView.qualityButton.addTarget(self, action: #selector(self.qualityButtonTapped), for: .touchUpInside)
         playerControlView.pictureInPictureButton.addTarget(self,
@@ -249,7 +256,12 @@ class PlayerViewController: UIViewController {
     }
 
     @objc func seeked() {
+        // TODO Use AVAssetImageGenerator to generate and show thumbnails for the currently seeked time
         self.refreshControlHideTimer()
+    }
+
+    @objc func seekFinished() {
+        VideoPlayer.shared.seek(toPercentage: Double(playerControlView.seekingSlider.value))
     }
 
     @objc func playButtonTapped() {
