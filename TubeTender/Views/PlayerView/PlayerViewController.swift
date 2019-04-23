@@ -21,43 +21,17 @@ class PlayerViewController: UIViewController {
 
     weak var delegate: PlayerViewControllerDelegate?
 
-    func attachContentView() {
-        let contentView = contentViewController.view!
-        view.addSubview(contentView)
-        contentView.translatesAutoresizingMaskIntoConstraints = false
-        view.addConstraints([
-            contentView.topAnchor.constraint(equalTo: view.topAnchor),
-            contentView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            contentView.leftAnchor.constraint(equalTo: view.leftAnchor),
-            contentView.rightAnchor.constraint(equalTo: view.rightAnchor)
-        ])
-    }
-
     override func viewDidLoad() {
-        attachContentView()
+        setupSubviews()
+        setupGestureRecognizer()
 
-        let contentView = contentViewController.view!
+        let player = VideoPlayer.shared
 
-        contentView.backgroundColor = UIColor.black
-
-        // Add video view
-        videoView.removeFromSuperview()
-        contentView.addSubview(videoView)
-        videoView.translatesAutoresizingMaskIntoConstraints = false
-        contentView.addConstraints([
-            videoView.topAnchor.constraint(equalTo: contentView.topAnchor),
-            videoView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
-            videoView.leftAnchor.constraint(equalTo: contentView.leftAnchor),
-            videoView.rightAnchor.constraint(equalTo: contentView.rightAnchor)
-        ])
-
-        videoView.addSubview(VideoPlayer.shared.playerView)
-        VideoPlayer.shared.playerView.snp.makeConstraints { make in
+        videoView.addSubview(player.playerView)
+        player.playerView.snp.makeConstraints { make in
             make.size.equalToSuperview()
             make.center.equalToSuperview()
         }
-
-        let player = VideoPlayer.shared
 
         player.status.combinePrevious(.noMediaLoaded).signal.observeValues { previous, current in
             if previous != .playing && current == .playing {
@@ -92,16 +66,6 @@ class PlayerViewController: UIViewController {
         }
         playerControlView.seekingSlider.reactive.values.take(duringLifetimeOf: self).observeValues { player.seek(toPercentage: Double($0)) }
 
-        // Add controls
-        contentView.addSubview(playerControlView)
-        playerControlView.translatesAutoresizingMaskIntoConstraints = false
-        contentView.addConstraints([
-            playerControlView.topAnchor.constraint(equalTo: videoView.topAnchor),
-            playerControlView.bottomAnchor.constraint(equalTo: videoView.bottomAnchor),
-            playerControlView.leftAnchor.constraint(equalTo: videoView.leftAnchor),
-            playerControlView.rightAnchor.constraint(equalTo: videoView.rightAnchor)
-        ])
-
         let isBuffering = player.status.signal.take(duringLifetimeOf: self).map { $0 == .buffering }
         playerControlView.loadingIndicator.reactive.isAnimating <~ isBuffering
         isBuffering.observeValues { buffering in
@@ -110,17 +74,40 @@ class PlayerViewController: UIViewController {
             }
         }
 
-        player.isPictureInPictureActive.signal.observe(on: QueueScheduler.main).take(duringLifetimeOf: self).observeValues { [unowned self] pipActive in
-            self.controlsDisabled = pipActive
-            if pipActive {
+        player.isPictureInPictureActive.signal.observe(on: QueueScheduler.main).take(duringLifetimeOf: self).observeValues { [unowned self] isPictureInPictureActive in
+            self.controlsDisabled = isPictureInPictureActive
+            if isPictureInPictureActive {
                 self.isFullscreenActive = false
             }
             UIView.animate(withDuration: 0.5) {
-                self.playerControlView.controlView.alpha = pipActive ? 0 : 1
+                self.playerControlView.controlView.alpha = isPictureInPictureActive ? 0 : 1
             }
         }
+    }
 
-        // Bind gesture recognizers
+    private func setupSubviews() {
+        let contentView = contentViewController.view!
+        contentView.backgroundColor = UIColor.black
+        view.addSubview(contentView)
+        contentView.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+            make.size.equalToSuperview()
+        }
+
+        contentView.addSubview(videoView)
+        videoView.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+            make.size.equalToSuperview()
+        }
+
+        contentView.addSubview(playerControlView)
+        playerControlView.snp.makeConstraints { make in
+            make.size.equalTo(videoView)
+            make.center.equalTo(videoView)
+        }
+    }
+
+    private func setupGestureRecognizer() {
         // TODO Also handle touchDragOutside if touchdown originated inside the slider
         playerControlView.seekingSlider.addTarget(self, action: #selector(self.seeked), for: .touchDragInside)
         playerControlView.seekingSlider.addTarget(self, action: #selector(self.seeked), for: .touchDragOutside)
