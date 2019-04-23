@@ -10,29 +10,6 @@ import AVKit
 import MediaPlayer
 import ReactiveSwift
 
-//typealias QueueEntry = (video: Video, playerItem: AVPlayerItem)
-
-class AVPlayerView: UIView {
-    var player: AVPlayer? {
-        get {
-            return playerLayer.player
-        }
-        set {
-            playerLayer.player = newValue
-        }
-    }
-
-    var playerLayer: AVPlayerLayer {
-        //swiftlint:disable:next force_cast
-        return layer as! AVPlayerLayer
-    }
-
-    // Override UIView property
-    override static var layerClass: AnyClass {
-        return AVPlayerLayer.self
-    }
-}
-
 enum VideoPlayerQueueChangeSet {
     case inserted(at: Int)
     case removed(at: Int)
@@ -79,9 +56,7 @@ class VideoPlayer: NSObject {
     let currentTime: Property<TimeInterval>
     let duration: Property<TimeInterval>
     let status: Property<PlayerStatus>
-
     let isPictureInPictureActive: Property<Bool>
-
     let currentQuality: Property<StreamQuality?>
     let preferredQuality = MutableProperty<StreamQuality?>(nil)
 
@@ -177,14 +152,14 @@ class VideoPlayer: NSObject {
                 let currentItem = self.player.items().first
 
                 self.commandCenter.load(video: currentVideo)
-                
+
                 self.currentItemStatusObserver?.invalidate()
-                self.currentItemStatusObserver = currentItem?.observe(\.status, options: []) { [unowned self] playerItem, change in
+                self.currentItemStatusObserver = currentItem?.observe(\.status, options: []) { [unowned self] playerItem, _ in
                     self.updateStatus(from: playerItem)
                 }
 
                 self.currentItemPresentationSizeObserver?.invalidate()
-                self.currentItemPresentationSizeObserver = currentItem?.observe(\.presentationSize, options: []) { [unowned self] playerItem, change in
+                self.currentItemPresentationSizeObserver = currentItem?.observe(\.presentationSize, options: []) { [unowned self] playerItem, _ in
                     self.updatePresentationSize(from: playerItem)
                 }
 
@@ -275,7 +250,7 @@ class VideoPlayer: NSObject {
         let currentPlayerItem = player.items().first
 
         if delta > 0 {
-            player.items()[1..<delta].forEach { player.remove($0) }
+            player.items()[1..<delta].forEach(player.remove)
         } else { // delta < 0
             videos.value[newIndex...oldIndex].reversed().forEach {
                 player.insert(createPlayerItem(fromVideo: $0), after: currentPlayerItem)
@@ -317,12 +292,24 @@ class VideoPlayer: NSObject {
     }
 
     // MARK: - Manipulating the queue
-    func playNow(_ video: Video) {
+    private func addVideoToBeginningOfQueue(_ video: Video) -> Int {
         let newIndex = (currentIndex.value + 1) ?? _videos.value.count
 
         _videos.value.insert(video, at: newIndex)
         player.insert(createPlayerItem(fromVideo: video), after: player.items().first)
+        return newIndex
+    }
 
+    private func addVideoToEndOfQueue(_ video: Video) -> Int {
+        let newIndex = _videos.value.count
+
+        _videos.value.insert(video, at: newIndex)
+        player.insert(createPlayerItem(fromVideo: video), after: nil)
+        return newIndex
+    }
+
+    func playNow(_ video: Video) {
+        let newIndex = addVideoToBeginningOfQueue(video)
         changeSetObserver.send(value: .inserted(at: newIndex))
 
         if currentIndex.value == nil {
@@ -334,11 +321,7 @@ class VideoPlayer: NSObject {
     }
 
     func playNext(_ video: Video) {
-        let newIndex = (currentIndex.value + 1) ?? _videos.value.count
-
-        _videos.value.insert(video, at: newIndex)
-        player.insert(createPlayerItem(fromVideo: video), after: player.items().first)
-
+        let newIndex = addVideoToBeginningOfQueue(video)
         if currentIndex.value == nil {
             changeIndex(to: newIndex)
         }
@@ -347,11 +330,7 @@ class VideoPlayer: NSObject {
     }
 
     func playLater(_ video: Video) {
-        let newIndex = _videos.value.count
-
-        _videos.value.insert(video, at: newIndex)
-        player.insert(createPlayerItem(fromVideo: video), after: nil)
-
+        let newIndex = addVideoToEndOfQueue(video)
         if currentIndex.value == nil {
             changeIndex(to: newIndex)
         }
@@ -392,25 +371,6 @@ class VideoPlayer: NSObject {
         DispatchQueue.main.async {
             self.pictureInPictureController?.stopPictureInPicture()
         }
-    }
-}
-
-extension VideoPlayer: CommandCenterDelegate {
-    func commandCenter(_ commandCenter: CommandCenter, didReceiveCommand command: CommandCenterAction) -> MPRemoteCommandHandlerStatus {
-        switch command {
-        case .play:
-            self.play()
-        case .pause:
-            self.pause()
-        case .seek(let target):
-            self.seek(to: target)
-        case .next:
-            self.next()
-        case .previous:
-            self.previous()
-        }
-
-        return .success
     }
 }
 

@@ -46,6 +46,7 @@ class PlayerControlView: UIView {
     }
 
     // MARK: - Initializers
+    //swiftlint:disable:next function_body_length
     override init(frame: CGRect) {
         super.init(frame: frame)
 

@@ -6,6 +6,7 @@
 //  Copyright © 2019 Til Blechschmidt. All rights reserved.
 //
 
+import os.log
 import UIKit
 
 class SubscriptionFeedViewController: SimpleVideoListViewController {
@@ -13,10 +14,7 @@ class SubscriptionFeedViewController: SimpleVideoListViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(self.handleLogin),
-                                               name: NSNotification.Name("AppDelegate.authentication.loggedIn"),
-                                               object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.handleLogin), name: .googleSignInSucceeded, object: nil)
     }
 
     func fetchFeed(cutoffDate: Date?, onCompletion: @escaping ([Video], Date) -> Void) {
@@ -26,7 +24,7 @@ class SubscriptionFeedViewController: SimpleVideoListViewController {
                 onCompletion(videos, cutoffDate)
             case .failure(let error):
                 self.notUpdating()
-                print("Failed to fetch infinite feed!", error)
+                os_log("Failed to fetch infinite feed: %@", log: .network, type: .info, error.localizedDescription)
                 // TODO Show this to the user.
             }
         }

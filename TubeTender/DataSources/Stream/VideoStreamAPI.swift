@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import os.log
 import ReactiveSwift
 
 enum VideoStreamAPIError: Error {
@@ -73,7 +74,7 @@ private func dictionaryFromURL(parameterStrings: [String]) -> [String: String] {
         if keyValue.count == 2, let decoded = keyValue[1].removingPercentEncoding {
             result[keyValue[0]] = decoded
         } else {
-            print("Failed to parse URL parameter: \(keyValue)")
+            os_log("Failed to parse URL parameter: %@", log: .network, type: .fault, keyValue)
         }
     }
 }

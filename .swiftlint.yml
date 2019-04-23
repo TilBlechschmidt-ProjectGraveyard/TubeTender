@@ -32,6 +32,7 @@ custom_rules:
 
 disabled_rules:
   - nesting
+  - todo
 
 type_name:
   excluded:
@@ -40,5 +41,7 @@ type_name:
 identifier_name:
   excluded:
     - id
+    - at
+    - to
 
 line_length: 235

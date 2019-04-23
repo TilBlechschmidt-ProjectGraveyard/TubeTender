@@ -18,8 +18,8 @@ class VideoViewController: UIViewController {
     private var fullscreenConstraints: [NSLayoutConstraint] = []
     private var regularConstraints: [NSLayoutConstraint] = []
 
+    //swiftlint:disable:next function_body_length
     override func viewDidLoad() {
-
         view.backgroundColor = Constants.backgroundColor
 
         // PlayerViewController setup
@@ -38,6 +38,8 @@ class VideoViewController: UIViewController {
         videoView.backgroundColor = Constants.backgroundColor
         view.addSubview(videoView)
         videoView.translatesAutoresizingMaskIntoConstraints = false
+
+        //TODO: use snapkit
         view.addConstraints([
             videoView.topAnchor.constraint(equalTo: view.topAnchor),
             videoView.bottomAnchor.constraint(equalTo: view.bottomAnchor),

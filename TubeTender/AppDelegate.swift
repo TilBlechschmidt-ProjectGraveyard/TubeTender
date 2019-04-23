@@ -8,6 +8,7 @@
 
 import AVKit
 import GoogleSignIn
+import os.log
 import UIKit
 import YoutubeKit
 
@@ -24,7 +25,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         do {
             try audioSession.setCategory(AVAudioSession.Category.playback, mode: AVAudioSession.Mode.moviePlayback, options: [])
         } catch {
-            print("Setting category to AVAudioSessionCategoryPlayback failed.")
+            os_log("Setting category to AVAudioSessionCategoryPlayback failed.", log: .audio, type: .fault)
         }
 
         // Override point for customization after application launch.
@@ -56,29 +57,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let versionString = "\(Bundle.main.releaseVersionNumber ?? "0") (\(Bundle.main.buildVersionNumber ?? "0"))"
         Settings.set(setting: .appVersion, versionString)
 
-        do {
-            Network.reachability = try Reachability(hostname: "www.youtube.com")
-            do {
-                try Network.reachability?.start()
-            } catch let error as Network.Error {
-                print(error)
-            } catch {
-                print(error)
-            }
-        } catch {
-            print(error)
-        }
-
-        NotificationCenter.default.reactive.notifications(forName: .flagsChanged).signal.take(duringLifetimeOf: self).observeValues { _ in
-            guard let status = Network.reachability?.status else { return }
-            print("\n\n\nReachability Summary")
-            print("Status:", status)
-            print("HostName:", Network.reachability?.hostname ?? "nil")
-            print("Reachable:", Network.reachability?.isReachable ?? "nil")
-            print("Wifi:", Network.reachability?.isReachableViaWiFi ?? "nil")
-            print("Cellular:", Network.reachability?.isWWAN ?? "nil")
-        }
-
+        setupNetworkMonitoring()
         hlsServer?.listen()
 
         return true
@@ -108,6 +87,34 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             VideoPlayer.shared.pause()
         }
     }
+
+    private func setupNetworkMonitoring() {
+        do {
+            Network.reachability = try Reachability(hostname: "www.youtube.com")
+            do {
+                try Network.reachability?.start()
+            } catch let error as Network.Error {
+                os_log("Network error: %@", log: .network, type: .fault, error.localizedDescription)
+            } catch {
+                os_log("Unknown network error: %@", log: .network, type: .fault, error.localizedDescription)
+            }
+        } catch {
+            os_log("Failed to initialize reachability: %@", log: .network, type: .fault, error.localizedDescription)
+        }
+
+        NotificationCenter.default.reactive.notifications(forName: .flagsChanged).signal.take(duringLifetimeOf: self).observeValues { _ in
+            guard let status = Network.reachability?.status else { return }
+
+            os_log("Status: %@, HostName: %@, Reachable: %@, Wifi: %@, Cellular: %@",
+                   log: .network,
+                   type: .info,
+                   status.description,
+                   Network.reachability?.hostname ?? "nil",
+                   Network.reachability?.isReachable.description ?? "nil",
+                   Network.reachability?.isReachableViaWiFi.description ?? "nil",
+                   Network.reachability?.isWWAN.description ?? "nil")
+        }
+    }
 }
 
 extension AppDelegate: UISplitViewControllerDelegate {
@@ -117,35 +124,20 @@ extension AppDelegate: UISplitViewControllerDelegate {
 }
 
 extension AppDelegate: GIDSignInDelegate {
-    func sign(_ signIn: GIDSignIn!, didSignInFor user: GIDGoogleUser!, withError error: Error!) {
+    func sign(_ signIn: GIDSignIn!, didSignInFor user: GIDGoogleUser!, withError error: Error?) {
         if let error = error {
-            print("\(error.localizedDescription)")
+            os_log("Failed to login: %@", log: .googleSignIn, type: .error, error.localizedDescription)
         } else {
-            //            // Perform any operations on signed in user here.
-            //            let userId = user.userID                  // For client-side use only!
-            //            let idToken = user.authentication.idToken // Safe to send to the server
-            //            let fullName = user.profile.name
-            //            let givenName = user.profile.givenName
-            //            let familyName = user.profile.familyName
-            //            let email = user.profile.email
-            //            // ...
-            //            print(fullName, email)
-            print("logged in")
-
+            os_log("Logged in as %@", log: .googleSignIn, type: .info, user.profile.name)
             if let accessToken = user.authentication.accessToken {
                 YoutubeKit.shared.setAccessToken(accessToken)
-
-                NotificationCenter.default.post(name: NSNotification.Name("AppDelegate.authentication.loggedIn"),
-                                                object: nil,
-                                                userInfo: nil)
+                NotificationCenter.default.post(name: .googleSignInSucceeded, object: nil, userInfo: nil)
             }
         }
     }
 
-    func sign(_ signIn: GIDSignIn!, didDisconnectWith user: GIDGoogleUser!,
-              withError error: Error!) {
-        // Perform any operations when the user disconnects from app here.
-        print("logged out")
+    func sign(_ signIn: GIDSignIn!, didDisconnectWith user: GIDGoogleUser!, withError error: Error?) {
+        os_log("Logged out from user %@ with error: %@", log: .googleSignIn, type: .info, user.profile.name, error?.localizedDescription ?? "nil")
     }
 }
 
@@ -156,4 +148,8 @@ extension Bundle {
     var buildVersionNumber: String? {
         return infoDictionary?["CFBundleVersion"] as? String
     }
+}
+
+extension NSNotification.Name {
+    static let googleSignInSucceeded = NSNotification.Name("Google.authentication.loggedIn")
 }

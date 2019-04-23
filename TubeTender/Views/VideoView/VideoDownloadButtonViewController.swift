@@ -7,6 +7,7 @@
 //
 
 import DownloadButton
+import os.log
 import ReactiveSwift
 import UIKit
 
@@ -45,7 +46,7 @@ class VideoDownloadButtonViewController: UIViewController {
                             self.downloadButton.downloadPercent = CGFloat(progress)
                         }
                     case .failure(let error):
-                        print(error)
+                        os_log("Download video error: %@", log: .network, type: .info, error.localizedDescription)
                     }
             }
         }

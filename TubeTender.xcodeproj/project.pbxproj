@@ -78,6 +78,9 @@
 		4021444C21E63C8500AAC670 /* SearchAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4021444B21E63C8500AAC670 /* SearchAPI.swift */; };
 		4021444E21E68E4300AAC670 /* EmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4021444D21E68E4300AAC670 /* EmptyStateView.swift */; };
 		4021445121E6AE1D00AAC670 /* QueueListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4021445021E6AE1D00AAC670 /* QueueListViewController.swift */; };
+		40491176226F9B9B005A6454 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40491175226F9B9B005A6454 /* Logger.swift */; };
+		40491178226FAAE1005A6454 /* AVPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40491177226FAAE1005A6454 /* AVPlayerView.swift */; };
+		4049117A226FACF7005A6454 /* VideoPlayer+CommandCenterDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40491179226FACF7005A6454 /* VideoPlayer+CommandCenterDelegate.swift */; };
 		40822CB521E3F8A900903390 /* Kingfisher+Reactive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40822CB421E3F8A900903390 /* Kingfisher+Reactive.swift */; };
 		40822CBB21E4FE8700903390 /* UIView+Blur.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40822CBA21E4FE8700903390 /* UIView+Blur.swift */; };
 		408C524C21E54554007B2DD2 /* IncomingVideoReceiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 408C524B21E54554007B2DD2 /* IncomingVideoReceiver.swift */; };
@@ -193,6 +196,9 @@
 		4021444B21E63C8500AAC670 /* SearchAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchAPI.swift; sourceTree = "<group>"; };
 		4021444D21E68E4300AAC670 /* EmptyStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyStateView.swift; sourceTree = "<group>"; };
 		4021445021E6AE1D00AAC670 /* QueueListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueueListViewController.swift; sourceTree = "<group>"; };
+		40491175226F9B9B005A6454 /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
+		40491177226FAAE1005A6454 /* AVPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVPlayerView.swift; sourceTree = "<group>"; };
+		40491179226FACF7005A6454 /* VideoPlayer+CommandCenterDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VideoPlayer+CommandCenterDelegate.swift"; sourceTree = "<group>"; };
 		40822CB421E3F8A900903390 /* Kingfisher+Reactive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Kingfisher+Reactive.swift"; sourceTree = "<group>"; };
 		40822CBA21E4FE8700903390 /* UIView+Blur.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Blur.swift"; sourceTree = "<group>"; };
 		408C524B21E54554007B2DD2 /* IncomingVideoReceiver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncomingVideoReceiver.swift; sourceTree = "<group>"; };
@@ -229,6 +235,7 @@
 			children = (
 				30ABE2202190B48E00E4FEA4 /* PlayerViewController.swift */,
 				3005DC63219B767D0002F6A1 /* PlayerControlView.swift */,
+				40491177226FAAE1005A6454 /* AVPlayerView.swift */,
 			);
 			path = PlayerView;
 			sourceTree = "<group>";
@@ -334,6 +341,7 @@
 				30E3063421E7E13A008C6ECB /* Settings.swift */,
 				30E3063621E8C2C3008C6ECB /* Reachability.swift */,
 				30E3063A21E90AAF008C6ECB /* RadialGradientLayer.swift */,
+				40491175226F9B9B005A6454 /* Logger.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -353,6 +361,7 @@
 			children = (
 				30D0490921E754EE0077E80C /* CommandCenter.swift */,
 				3004A2AB226DF8FE00E3A826 /* VideoPlayer.swift */,
+				40491179226FACF7005A6454 /* VideoPlayer+CommandCenterDelegate.swift */,
 			);
 			path = Playback;
 			sourceTree = "<group>";
@@ -622,11 +631,13 @@
 				30C2112E226BA57B00892173 /* SegmentInformation.swift in Sources */,
 				30E3063B21E90AAF008C6ECB /* RadialGradientLayer.swift in Sources */,
 				30A81A3E21D53E9500FBE8EE /* VideoMetadataView.swift in Sources */,
+				4049117A226FACF7005A6454 /* VideoPlayer+CommandCenterDelegate.swift in Sources */,
 				30D0490A21E754EE0077E80C /* CommandCenter.swift in Sources */,
 				300F296721D59F2900C9B0B0 /* Video.swift in Sources */,
 				4021445121E6AE1D00AAC670 /* QueueListViewController.swift in Sources */,
 				40822CBB21E4FE8700903390 /* UIView+Blur.swift in Sources */,
 				40E2E1F521E29383007EA359 /* ChannelAPI.swift in Sources */,
+				40491178226FAAE1005A6454 /* AVPlayerView.swift in Sources */,
 				4021444E21E68E4300AAC670 /* EmptyStateView.swift in Sources */,
 				30370F612177769800B35ACF /* String+FancyFormatting.swift in Sources */,
 				30C21131226BA57B00892173 /* HLSServer.swift in Sources */,
@@ -637,6 +648,7 @@
 				30E3063521E7E13A008C6ECB /* Settings.swift in Sources */,
 				4021444C21E63C8500AAC670 /* SearchAPI.swift in Sources */,
 				4021444721E625E300AAC670 /* GenericVideoListViewController.swift in Sources */,
+				40491176226F9B9B005A6454 /* Logger.swift in Sources */,
 				30ABE214218F928A00E4FEA4 /* ArrayComparable.swift in Sources */,
 				302D0417216E7535009FC2E5 /* SimpleRegexMatcher.swift in Sources */,
 				30C2112F226BA57B00892173 /* HLSBuilder.swift in Sources */,
