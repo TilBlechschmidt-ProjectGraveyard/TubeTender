@@ -18,25 +18,31 @@ class SignInViewController: UIViewController, GIDSignInUIDelegate {
         // TODO Show only one of the two depending on whether or not the user is logged in
         // Actually - if the user is not logged in don't let him do anything.
         // Show a nice welcome screen prompting to log in!
-        let button = UIButton()
-        button.setTitle("Login", for: .normal)
-        button.addTarget(self, action: #selector(self.onLoginTap), for: .touchUpInside)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(button)
-        view.addConstraints([
-            button.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            button.centerXAnchor.constraint(equalTo: view.centerXAnchor)
-        ])
+        let loginButton = UIButton()
+        loginButton.setTitle("API Login", for: .normal)
+        loginButton.addTarget(self, action: #selector(onLoginTap), for: .touchUpInside)
 
         let logoutButton = UIButton()
-        logoutButton.setTitle("Logout", for: .normal)
-        logoutButton.addTarget(self, action: #selector(self.onLogoutTap), for: .touchUpInside)
-        logoutButton.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(logoutButton)
+        logoutButton.setTitle("API Logout", for: .normal)
+        logoutButton.addTarget(self, action: #selector(onLogoutTap), for: .touchUpInside)
+
+        let webLoginButton = UIButton()
+        webLoginButton.setTitle("Web Login", for: .normal)
+        webLoginButton.addTarget(self, action: #selector(onWebLoginTap), for: .touchUpInside)
+
+        let stackView = UIStackView(arrangedSubviews: [webLoginButton, loginButton, logoutButton])
+        stackView.axis = .vertical
+        stackView.spacing = 10
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(stackView)
         view.addConstraints([
-            logoutButton.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: 50),
-            logoutButton.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+            stackView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            stackView.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
+    }
+
+    @objc func onWebLoginTap() {
+        self.showDetailViewController(WebSignInViewController(), sender: self)
     }
 
     @objc func onLoginTap() {

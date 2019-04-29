@@ -11,6 +11,7 @@
 		3005DC64219B767D0002F6A1 /* PlayerControlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3005DC63219B767D0002F6A1 /* PlayerControlView.swift */; };
 		300F296721D59F2900C9B0B0 /* Video.swift in Sources */ = {isa = PBXBuildFile; fileRef = 300F296621D59F2900C9B0B0 /* Video.swift */; };
 		300F296921D6C80600C9B0B0 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 300F296821D6C80600C9B0B0 /* Default-568h@2x.png */; };
+		3014040B2275D570006AEE37 /* WebSignInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3014040A2275D570006AEE37 /* WebSignInViewController.swift */; };
 		302182BF226F5EE600EDE0D2 /* SimpleVideoListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 302182BE226F5EE600EDE0D2 /* SimpleVideoListViewController.swift */; };
 		302D03FF216E197A009FC2E5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 302D03FE216E197A009FC2E5 /* AppDelegate.swift */; };
 		302D0404216E197A009FC2E5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 302D0402216E197A009FC2E5 /* Main.storyboard */; };
@@ -118,6 +119,7 @@
 		3005DC63219B767D0002F6A1 /* PlayerControlView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerControlView.swift; sourceTree = "<group>"; };
 		300F296621D59F2900C9B0B0 /* Video.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Video.swift; sourceTree = "<group>"; };
 		300F296821D6C80600C9B0B0 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+		3014040A2275D570006AEE37 /* WebSignInViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSignInViewController.swift; sourceTree = "<group>"; };
 		302182BE226F5EE600EDE0D2 /* SimpleVideoListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleVideoListViewController.swift; sourceTree = "<group>"; };
 		302D03FB216E197A009FC2E5 /* TubeTender.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TubeTender.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		302D03FE216E197A009FC2E5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -502,6 +504,7 @@
 			isa = PBXGroup;
 			children = (
 				30BAB76221787EB100B01953 /* SignInViewController.swift */,
+				3014040A2275D570006AEE37 /* WebSignInViewController.swift */,
 			);
 			path = SignIn;
 			sourceTree = "<group>";
@@ -679,6 +682,7 @@
 				4021444A21E631BB00AAC670 /* SearchListViewController.swift in Sources */,
 				30BAB765217893E400B01953 /* SubscriptionFeedAPI.swift in Sources */,
 				3005DC64219B767D0002F6A1 /* PlayerControlView.swift in Sources */,
+				3014040B2275D570006AEE37 /* WebSignInViewController.swift in Sources */,
 				4021444321E5F7FB00AAC670 /* UIAlertController+Reactive.swift in Sources */,
 				30BE79BB216FF73F00E6B281 /* AnimatablePlayButton.swift in Sources */,
 				40E2E1EF21E28D21007EA359 /* ApiSession+Reactive.swift in Sources */,
