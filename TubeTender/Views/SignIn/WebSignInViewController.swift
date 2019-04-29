@@ -42,7 +42,7 @@ class WebSignInViewController: UIViewController {
         request.allHTTPHeaderFields = cookieHeaders
         request.addValue(userAgent, forHTTPHeaderField: "User-Agent")
 
-        URLSession.shared.dataTask(with: request) { data, response, error in
+        URLSession.shared.dataTask(with: request) { data, _, error in
             if let data = data, let html = String(data: data, encoding: .utf8) {
                 let initialDataLine = html.components(separatedBy: "\n").filter { $0.contains("ytInitialData") }.first
                 print(initialDataLine!.replacingOccurrences(of: dataPrefix, with: ""))
