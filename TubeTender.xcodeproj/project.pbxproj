@@ -132,23 +132,6 @@
 		302D0408216E197C009FC2E5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		302D040A216E197C009FC2E5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		302D0416216E7535009FC2E5 /* SimpleRegexMatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleRegexMatcher.swift; sourceTree = "<group>"; };
-		302D0428216F3F17009FC2E5 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
-		302D042A216F3F21009FC2E5 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
-		302D042C216F3F2B009FC2E5 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
-		302D042E216F3F33009FC2E5 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
-		302D0430216F3F3A009FC2E5 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
-		302D0432216F3F41009FC2E5 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
-		302D0434216F3F48009FC2E5 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
-		302D0436216F3F4F009FC2E5 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
-		302D0438216F3F54009FC2E5 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
-		302D043A216F3F5C009FC2E5 /* libbz2.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libbz2.tbd; path = usr/lib/libbz2.tbd; sourceTree = SDKROOT; };
-		302D043C216F3F64009FC2E5 /* libiconv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libiconv.tbd; path = usr/lib/libiconv.tbd; sourceTree = SDKROOT; };
-		302D043E216F3F6B009FC2E5 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
-		302D0440216F3F72009FC2E5 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
-		302D0442216F3F79009FC2E5 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
-		302D0444216F3F7F009FC2E5 /* VideoToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VideoToolbox.framework; path = System/Library/Frameworks/VideoToolbox.framework; sourceTree = SDKROOT; };
-		302D0446216F3F85009FC2E5 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
-		302D0448216F51F4009FC2E5 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
 		302FB83D21D5886B00A82363 /* DateFormatter+ISO8601Full.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DateFormatter+ISO8601Full.swift"; sourceTree = "<group>"; };
 		302FB83F21D58A8A00A82363 /* VideoAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoAPI.swift; sourceTree = "<group>"; };
 		3034ACC221E529C7000F06A9 /* YoutubeURLParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YoutubeURLParser.swift; sourceTree = "<group>"; };
@@ -330,23 +313,6 @@
 				30BAB7762178C96300B01953 /* Kingfisher.framework */,
 				30BAB75F21787D0D00B01953 /* GoogleSignIn.framework */,
 				30370F56217735A200B35ACF /* YoutubeKit.framework */,
-				302D0448216F51F4009FC2E5 /* libc++.tbd */,
-				302D0446216F3F85009FC2E5 /* UIKit.framework */,
-				302D0444216F3F7F009FC2E5 /* VideoToolbox.framework */,
-				302D0442216F3F79009FC2E5 /* Security.framework */,
-				302D0440216F3F72009FC2E5 /* QuartzCore.framework */,
-				302D043E216F3F6B009FC2E5 /* OpenGLES.framework */,
-				302D043C216F3F64009FC2E5 /* libiconv.tbd */,
-				302D043A216F3F5C009FC2E5 /* libbz2.tbd */,
-				302D0438216F3F54009FC2E5 /* Foundation.framework */,
-				302D0436216F3F4F009FC2E5 /* CoreVideo.framework */,
-				302D0434216F3F48009FC2E5 /* CoreText.framework */,
-				302D0432216F3F41009FC2E5 /* CoreMedia.framework */,
-				302D0430216F3F3A009FC2E5 /* CoreGraphics.framework */,
-				302D042E216F3F33009FC2E5 /* CoreFoundation.framework */,
-				302D042C216F3F2B009FC2E5 /* CFNetwork.framework */,
-				302D042A216F3F21009FC2E5 /* AVFoundation.framework */,
-				302D0428216F3F17009FC2E5 /* AudioToolbox.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
