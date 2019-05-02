@@ -70,7 +70,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationDidBecomeActive(_ application: UIApplication) {
-        if Settings.get(setting: .backgroundPictureInPicture) as? Bool ?? false && VideoPlayer.shared.status.value == .playing {
+        if Settings.get(setting: .backgroundPictureInPicture) as? Bool ?? false && VideoPlayer.shared.status.value == .playing && VideoPlayer.shared.isPictureInPictureActive.value {
             DispatchQueue.global().asyncAfter(deadline: .now() + 0.25) {
                 VideoPlayer.shared.stopPictureInPicture()
             }

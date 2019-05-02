@@ -155,6 +155,7 @@ class VideoPlayer: NSObject {
 
                 self.currentItemStatusObserver?.invalidate()
                 self.currentItemStatusObserver = currentItem?.observe(\.status, options: []) { [unowned self] playerItem, _ in
+                    // TODO This gets called when the app returns from being inactive and plays the video even though it shouldn't.
                     self.updateStatus(from: playerItem)
                 }
 
@@ -190,11 +191,13 @@ class VideoPlayer: NSObject {
         self._currentQuality.value = StreamQuality.from(videoSize: playerItem.presentationSize)
     }
 
-    private func updateStatus(from playerItem: AVPlayerItem) {
+    private func updateStatus(from playerItem: AVPlayerItem, autoStartPlay: Bool = true) {
         switch playerItem.status {
         case .readyToPlay:
             self._duration.value = playerItem.duration.seconds
-            self.play()
+            if autoStartPlay {
+                self.play()
+            }
         case .failed:
             self._status.value = .playbackFailed
         default:
@@ -221,7 +224,7 @@ class VideoPlayer: NSObject {
         updateStatus(from: player)
 
         if let currentPlayerItem = player.currentItem {
-            updateStatus(from: currentPlayerItem)
+            updateStatus(from: currentPlayerItem, autoStartPlay: false)
             updatePresentationSize(from: currentPlayerItem)
         }
     }
@@ -383,9 +386,7 @@ class VideoPlayer: NSObject {
     }
 
     func startPictureInPicture() {
-        DispatchQueue.main.async {
-            self.pictureInPictureController?.startPictureInPicture()
-        }
+        self.pictureInPictureController?.startPictureInPicture()
     }
 
     func stopPictureInPicture() {

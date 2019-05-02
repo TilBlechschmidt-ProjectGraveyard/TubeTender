@@ -9,11 +9,6 @@
 import UIKit
 import WebKit
 
-private let userAgent: String = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_4) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.1 Safari/605.1.15"
-private let requiredCookies: [String] = ["SIDCC", "PREF", "VISITOR_INFO1_LIVE", "YSC", "APISID", "CONSENT", "HSID", "SAPISID", "SID", "SSID", "LOGIN_INFO"]
-private let cookieDomain: String = ".youtube.com"
-private let dataPrefix: String = "    window[\"ytInitialData\"] = "
-
 class WebSignInViewController: UIViewController {
     var webView: WKWebView!
     var manualLoad = false
@@ -22,7 +17,7 @@ class WebSignInViewController: UIViewController {
         let webConfiguration = WKWebViewConfiguration()
         webView = WKWebView(frame: .zero, configuration: webConfiguration)
         webView.navigationDelegate = self
-        webView.customUserAgent = userAgent
+        webView.customUserAgent = HomeFeedAPI.userAgent
         view = webView
     }
 
@@ -35,21 +30,9 @@ class WebSignInViewController: UIViewController {
     }
 
     func onLoggedIn(cookies: [HTTPCookie]) {
-        var request = URLRequest(url: URL(string: "https://www.youtube.com/")!)
-
-        let filteredCookies = cookies.filter { requiredCookies.contains($0.name) && $0.domain == cookieDomain }
-        let cookieHeaders = HTTPCookie.requestHeaderFields(with: filteredCookies)
-        request.allHTTPHeaderFields = cookieHeaders
-        request.addValue(userAgent, forHTTPHeaderField: "User-Agent")
-
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            if let data = data, let html = String(data: data, encoding: .utf8) {
-                let initialDataLine = html.components(separatedBy: "\n").filter { $0.contains("ytInitialData") }.first
-                print(initialDataLine!.replacingOccurrences(of: dataPrefix, with: ""))
-            } else if let error = error {
-                print(error)
-            }
-        }.resume()
+//        let filteredCookies = cookies.filter { requiredCookies.contains($0.name) && $0.domain == cookieDomain }
+//
+//        let homeFeedAPI = HomeFeedAPI(cookies: filteredCookies)
     }
 }
 

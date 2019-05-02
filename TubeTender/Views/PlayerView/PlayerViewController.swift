@@ -14,6 +14,7 @@ protocol PlayerViewControllerDelegate: class {
 }
 
 class PlayerViewController: UIViewController {
+    let player = VideoPlayer.shared
     let contentViewController = UIViewController()
     let playerControlView = PlayerControlView()
     let videoView = UIView()
@@ -24,8 +25,6 @@ class PlayerViewController: UIViewController {
     override func viewDidLoad() {
         setupSubviews()
         setupGestureRecognizer()
-
-        let player = VideoPlayer.shared
 
         videoView.addSubview(player.playerView)
         player.playerView.snp.makeConstraints { make in
@@ -42,16 +41,16 @@ class PlayerViewController: UIViewController {
         // Play button
         playerControlView.playButton.reactive.isPlaying <~ player.status.map { $0 == .playing }
         playerControlView.playButton.reactive.controlEvents(.touchUpInside).take(duringLifetimeOf: self).observeValues { _ in
-            if player.status.value == .playing {
-                player.pause()
+            if self.player.status.value == .playing {
+                self.player.pause()
             } else {
-                player.play()
+                self.player.play()
             }
         }
 
         // Picture in picture button
         playerControlView.pictureInPictureButton.reactive.controlEvents(.touchUpInside).observeValues { _ in
-            player.startPictureInPicture()
+            self.player.startPictureInPicture()
         }
 
         // Duration & Elapsed time
@@ -62,14 +61,14 @@ class PlayerViewController: UIViewController {
         playerControlView.durationLabel.reactive.text <~ player.duration.map(PlayerViewController.stringRepresentation(ofTime:))
 
         // Slider & Progress bar
-        playerControlView.progressBar.reactive.progress <~ player.currentTime.map { return Float($0 / player.duration.value) }
+        playerControlView.progressBar.reactive.progress <~ player.currentTime.map { return Float($0 / self.player.duration.value) }
         playerControlView.seekingSlider.reactive.value <~ player.currentTime.signal.observe(on: QueueScheduler.main)
             .filter { [unowned self] _ in !self.playerControlView.seekingSlider.isTracking }
-            .map { Float($0 / player.duration.value) }
+            .map { Float($0 / self.player.duration.value) }
         self.playerControlView.elapsedTimeLabel.reactive.text <~ playerControlView.seekingSlider.reactive.values
             .take(duringLifetimeOf: self)
             .filter { [unowned self] _ in self.playerControlView.seekingSlider.isTracking }
-            .map { PlayerViewController.stringRepresentation(ofTime: Double($0) * player.duration.value) }
+            .map { PlayerViewController.stringRepresentation(ofTime: Double($0) * self.player.duration.value) }
 
         let isBuffering = player.status.signal.take(duringLifetimeOf: self).map { $0 == .buffering }
         playerControlView.loadingIndicator.reactive.isAnimating <~ isBuffering
@@ -183,7 +182,16 @@ class PlayerViewController: UIViewController {
         }
     }
 
-    @objc func viewTapped() {
+    @objc func viewTapped(recognizer: UITapGestureRecognizer) {
+        if player.status.value == .playing, recognizer.numberOfTouches == 1, !controlsVisible {
+            let location = recognizer.location(ofTouch: 0, in: playerControlView.playButton)
+            let hiddenPlayTouchTolerance = CGFloat(20)
+
+            if playerControlView.playButton.bounds.insetBy(dx: -hiddenPlayTouchTolerance, dy: -hiddenPlayTouchTolerance).contains(location) {
+                player.pause()
+            }
+        }
+
         //swiftlint:disable:next toggle_bool
         controlsVisible = !controlsVisible && !controlsDisabled
 
