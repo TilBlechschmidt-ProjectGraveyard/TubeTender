@@ -67,11 +67,11 @@ struct HomeFeedDataContinuation: Decodable {
         let urlEncodedToken = try decoder.decode(String.self, at: ["nextContinuationData", "continuation"])
 
         // TODO Check if this is required
-        guard let token = urlEncodedToken.removingPercentEncoding else {
-            throw HomeFeedDataError.invalidURLEncoding
-        }
+//        guard let token = urlEncodedToken.removingPercentEncoding else {
+//            throw HomeFeedDataError.invalidURLEncoding
+//        }
 
-        self.token = token
+        self.token = urlEncodedToken // token
     }
 }
 
@@ -82,7 +82,7 @@ struct HomeFeedDataSection: Decodable {
     let title: String // title -> simpleText
     let subtitle: String? // titleAnnotation -> simpleText
 
-    let thumbnailURL: String? // thumbnail -> thumbnails[0] -> url
+    let thumbnailURL: URL? // thumbnail -> thumbnails[0] -> url
 
     let items: [HomeFeedDataSectionItem] // content -> gridRenderer -> items[] || content -> horizontalListRenderer -> items[]
 
@@ -96,12 +96,20 @@ struct HomeFeedDataSection: Decodable {
         title = try decoder.decode(String.self, at: prefixPath + ["title", "simpleText"])
         subtitle = try? decoder.decode(String.self, at: prefixPath + ["titleAnnotation", "simpleText"])
 
-        thumbnailURL = try? decoder.decode(String.self, at: prefixPath + ["thumbnail", 0, "url"])
+        let thumbnailString = try? decoder.decode(String.self, at: prefixPath + ["thumbnail", "thumbnails", 0, "url"])
+        thumbnailURL = thumbnailString.flatMap { string in
+            if string.contains("https://") || string.contains("http://") {
+                return URL(string: string)
+            } else {
+                return URL(string: "https:\(string)")
+            }
+        }
 
         let gridItems = try? decoder.decode([HomeFeedDataSectionItem].self, at: prefixPath + ["content", "gridRenderer", "items"])
         let listItems = try? decoder.decode([HomeFeedDataSectionItem].self, at: prefixPath + ["content", "horizontalListRenderer", "items"])
+        let bigGridItems = try? decoder.decode([HomeFeedDataSectionItem].self, at: prefixPath + ["content", "expandedShelfContentsRenderer", "items"])
 
-        guard let items = gridItems ?? listItems else {
+        guard let items = gridItems ?? listItems ?? bigGridItems else {
             throw HomeFeedDataError.invalidData
         }
 
@@ -122,9 +130,17 @@ struct HomeFeedDataSectionItem: Decodable {
     // shortBylineText -> runs[0] -> text --- Channel name
 
     init(from decoder: Decoder) throws {
-        let prefixPath: [DecodingKey] = ["gridVideoRenderer"]
+        let gridPrefixPath: [DecodingKey] = ["gridVideoRenderer"]
+        let bigGridPrefixPath: [DecodingKey] = ["videoRenderer"]
 
-        videoID = try decoder.decode(String.self, at: prefixPath + ["videoId"])
+        let gridVideoID = try? decoder.decode(String.self, at: gridPrefixPath + ["videoId"])
+        let bigGridVideoID = try? decoder.decode(String.self, at: bigGridPrefixPath + ["videoId"])
+
+        guard let videoID = gridVideoID ?? bigGridVideoID else {
+            throw HomeFeedDataError.invalidData
+        }
+
+        self.videoID = videoID
     }
 }
 

@@ -10,6 +10,7 @@ import ReactiveSwift
 
 enum HomeFeedAPIError: Error {
     case noContinuationAvailable
+    case invalidResponse
 }
 
 class HomeFeedAPI {
@@ -23,8 +24,16 @@ class HomeFeedAPI {
     var identityToken: String?
     var continuationToken: String?
 
+    var canContinue: Bool {
+        return identityToken != nil && continuationToken != nil
+    }
+
     init(cookies: [HTTPCookie]) {
         self.cookies = cookies
+    }
+
+    func clearContinuationData() {
+        continuationToken = nil
     }
 
     func fetchHomeFeed() -> SignalProducer<[HomeFeedDataSection], Error> {
@@ -34,8 +43,10 @@ class HomeFeedAPI {
         request.allHTTPHeaderFields = cookieHeaders
         request.addValue(HomeFeedAPI.userAgent, forHTTPHeaderField: "User-Agent")
 
+        let session = URLSession(configuration: .ephemeral)
+
         return SignalProducer { observer, _ in
-            URLSession.shared.dataTask(with: request) { data, _, error in
+            session.dataTask(with: request) { data, _, error in
                 if let data = data, let html = String(data: data, encoding: .utf8) {
                     self.identityToken = self.identityToken(from: html)
 
@@ -46,6 +57,7 @@ class HomeFeedAPI {
                         let feed = try JSONDecoder().decode(HomeFeedData.self, from: homeFeedData.data(using: .utf8)!)
                         self.continuationToken = feed.continuation.token
                         observer.send(value: feed.sections)
+                        observer.sendCompleted()
                     } catch {
                         observer.send(error: error)
                     }
@@ -61,7 +73,7 @@ class HomeFeedAPI {
             return SignalProducer(error: HomeFeedAPIError.noContinuationAvailable)
         }
 
-        let url = URL(string: "https://www.youtube.com/browse_ajax?ctoken=\(continuationToken)&continuation=\(continuationToken)")
+        let url = URL(string: "https://www.youtube.com/browse_ajax?ctoken=\(continuationToken)") //"&continuation=\(continuationToken)")
         var request = URLRequest(url: url!)
 
         let cookieHeaders = HTTPCookie.requestHeaderFields(with: cookies)
@@ -71,24 +83,32 @@ class HomeFeedAPI {
         request.addValue(HomeFeedAPI.youtubeClientVersion, forHTTPHeaderField: "X-YouTube-Client-Version")
         request.addValue(identityToken, forHTTPHeaderField: "X-Youtube-Identity-Token")
 
+        let session = URLSession(configuration: .ephemeral)
+
         return SignalProducer { observer, _ in
-            URLSession.shared.dataTask(with: request) { data, _, error in
+            session.dataTask(with: request) { data, response, error in
+
+                // TODO Make use of Set-Cookies response header to refresh the cookies
+
                 if let data = data, let json = String(data: data, encoding: .utf8) {
                     do {
                         let feed = try JSONDecoder().decode(HomeFeedContinuationData.self, from: json.data(using: .utf8)!)
                         self.continuationToken = feed.continuation.token
                         observer.send(value: feed.sections)
+                        observer.sendCompleted()
                     } catch {
                         observer.send(error: error)
                     }
                 } else if let error = error {
                     observer.send(error: error)
+                } else {
+                    observer.send(error: HomeFeedAPIError.invalidResponse)
                 }
             }.resume()
         }
     }
 
     private func identityToken(from html: String) -> String? {
-        return SimpleRegexMatcher.firstMatch(forPattern: "\"ID_TOKEN\": ?\"(.*?)\"", in: html)?.groups[1].flatMap { String($0) }
+        return SimpleRegexMatcher.firstMatch(forPattern: "\"ID_TOKEN\": ?\"(.*?)\"", in: html)?.groups[1].flatMap(String.init)
     }
 }

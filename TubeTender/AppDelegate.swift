@@ -60,6 +60,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setupNetworkMonitoring()
         hlsServer?.listen()
 
+        window!.rootViewController = HomeFeedGridViewController(videoPlayer: VideoPlayer.shared)
+
         return true
     }
 
