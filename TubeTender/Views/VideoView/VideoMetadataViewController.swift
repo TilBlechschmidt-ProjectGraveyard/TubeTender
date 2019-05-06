@@ -28,7 +28,7 @@ class VideoMetadataViewController: UIViewController {
 
     private let downloadButtonViewController = VideoDownloadButtonViewController()
 
-    public weak var delegate: VideoMetadataViewDelegate?
+    public weak var delegate: VideoMetadataViewControllerDelegate?
 
     init() {
         super.init(nibName: nil, bundle: nil)

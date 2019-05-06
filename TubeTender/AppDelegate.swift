@@ -27,8 +27,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         commandCenter = CommandCenter()
         videoPlayer = VideoPlayer(commandCenter: commandCenter)
         incomingVideoReceiver = IncomingVideoReceiver(videoPlayer: videoPlayer)
-        videoViewController = VideoViewController(videoPlayer: videoPlayer)
+        videoViewController = VideoViewController(videoPlayer: videoPlayer, incomingVideoReceiver: incomingVideoReceiver)
         hlsServer = try? HLSServer(port: Constants.hlsServerPort)
+
+        super.init()
+        videoViewController.delegate = self
     }
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
@@ -61,6 +64,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.window = window
         window.rootViewController = createRootTabBarController()
         window.makeKeyAndVisible()
+        updateVideoPosition()
 
         return true
     }
@@ -104,12 +108,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         videoViewController.viewWillAppear(true)
         tabBarController.view.addSubview(videoViewController.view)
-        videoViewController.view.snp.makeConstraints { make in
-            make.right.equalToSuperview().offset(-10)
-            make.bottom.equalToSuperview().offset(-10)
-            make.width.equalToSuperview().dividedBy(2)
-            make.height.equalToSuperview().dividedBy(2)
-        }
+//        videoViewController.view.translatesAutoresizingMaskIntoConstraints = false
+//        videoViewController.view.snp.makeConstraints { make in
+//            make.right.equalToSuperview().offset(-10)
+//            make.bottom.equalTo(tabBarController.tabBar.snp.top).offset(-10)
+//            make.width.equalToSuperview().dividedBy(2)
+//            make.height.equalTo(videoViewController.view.snp.width).multipliedBy(Constants.defaultAspectRatio)
+//        }
         videoViewController.viewDidAppear(true)
 
         tabBarController.view.addInteraction(UIDropInteraction(delegate: incomingVideoReceiver))
@@ -155,6 +160,26 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                    Network.reachability?.isWWAN.description ?? "nil")
         }
     }
+
+    var videoPosition: CGFloat = 0
+
+    func updateVideoPosition() {
+        videoViewController.videoDetailViewController.view.alpha = CGFloat(videoPosition)
+
+        let frame = window!.frame
+        let videoWidth = frame.width * (0.5 + videoPosition / 2)
+        let videoHeight = videoWidth * Constants.defaultAspectRatio
+
+        //swiftlint:disable force_cast
+        let tabBarController = (window!.rootViewController as! UITabBarController)
+        let tabBarPosition = tabBarController.tabBar.convert(tabBarController.tabBar.bounds, to: tabBarController.view).minY
+
+        videoViewController.view.frame = CGRect(
+            x: frame.width - videoWidth - (1 - videoPosition) * 10,
+            y: (1 - videoPosition) * (tabBarPosition - videoHeight - 10),
+            width: videoWidth,
+            height: videoHeight + videoPosition * (frame.height - videoHeight))
+    }
 }
 
 extension AppDelegate: GIDSignInDelegate {
@@ -172,6 +197,28 @@ extension AppDelegate: GIDSignInDelegate {
 
     func sign(_ signIn: GIDSignIn!, didDisconnectWith user: GIDGoogleUser!, withError error: Error?) {
         os_log("Logged out from user %@ with error: %@", log: .googleSignIn, type: .info, user.profile.name, error?.localizedDescription ?? "nil")
+    }
+}
+
+extension AppDelegate: VideoViewControllerDelegate {
+    func videoViewController(_ videoViewController: VideoViewController, userDidMoveVideoVertical deltaY: CGFloat) {
+        videoPosition -= deltaY / (window!.frame.height / 2)
+        videoPosition = min(max(videoPosition, 0), 1)
+        self.updateVideoPosition()
+    }
+
+    func videoViewController(_ videoViewController: VideoViewController, userDidReleaseVideo velocityY: CGFloat) {
+        videoPosition -= velocityY / (window!.frame.height / 2) / 2
+
+        if videoPosition > 0.5 {
+            videoPosition = 1
+        } else {
+            videoPosition = 0
+        }
+
+        UIView.animate(withDuration: 0.2) {
+            self.updateVideoPosition()
+        }
     }
 }
 

@@ -9,21 +9,27 @@
 import ReactiveSwift
 import UIKit
 
-class VideoViewController: UIViewController {
+public class VideoViewController: UIViewController {
     private let emptyStateView = EmptyStateView(image: #imageLiteral(resourceName: "camera"), text: "No video selected")
     private let videoView = UIView()
-    private let playerViewController: PlayerViewController
-    private let videoDetailViewController = VideoMetadataViewController()
+    let playerViewController: PlayerViewController
+    let videoDetailViewController = VideoMetadataViewController()
 
     private var fullscreenConstraints: [NSLayoutConstraint] = []
     private var regularConstraints: [NSLayoutConstraint] = []
 
     private let videoPlayer: VideoPlayer
+    private let incomingVideoReceiver: IncomingVideoReceiver
 
-    init(videoPlayer: VideoPlayer) {
+    public weak var delegate: VideoViewControllerDelegate?
+
+    init(videoPlayer: VideoPlayer, incomingVideoReceiver: IncomingVideoReceiver) {
         self.videoPlayer = videoPlayer
+        self.incomingVideoReceiver = incomingVideoReceiver
         self.playerViewController = PlayerViewController(videoPlayer: videoPlayer)
         super.init(nibName: nil, bundle: nil)
+
+        videoDetailViewController.delegate = self
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -31,7 +37,7 @@ class VideoViewController: UIViewController {
     }
 
     //swiftlint:disable:next function_body_length
-    override func viewDidLoad() {
+    override public func viewDidLoad() {
         view.backgroundColor = Constants.backgroundColor
 
         // PlayerViewController setup
@@ -72,12 +78,16 @@ class VideoViewController: UIViewController {
                 playerView.rightAnchor.constraint(equalTo: videoView.safeAreaLayoutGuide.rightAnchor)
             ])
             regularConstraints.append(
-                playerView.heightAnchor.constraint(equalTo: videoView.safeAreaLayoutGuide.widthAnchor, multiplier: 0.5625)
+                playerView.heightAnchor.constraint(equalTo: videoView.safeAreaLayoutGuide.widthAnchor, multiplier: Constants.defaultAspectRatio)
             )
             fullscreenConstraints.append(
                 //                playerView.heightAnchor.constraint(equalTo: videoView.heightAnchor)
                 playerView.bottomAnchor.constraint(equalTo: videoView.bottomAnchor)
             )
+
+            let swipeGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(userDidSwipeVideo(gestureRecognizer:)))
+            playerView.addGestureRecognizer(swipeGestureRecognizer)
+            playerView.isUserInteractionEnabled = true
 
             // Add a black bar to fill the top safe area
             let blackBar = UIView()
@@ -123,10 +133,24 @@ class VideoViewController: UIViewController {
             }
         }
     }
+
+    @objc func userDidSwipeVideo(gestureRecognizer: UIPanGestureRecognizer) {
+        switch gestureRecognizer.state {
+        case .changed:
+            let translation = gestureRecognizer.translation(in: playerViewController.view)
+            gestureRecognizer.setTranslation(.zero, in: playerViewController.view)
+            delegate?.videoViewController(self, userDidMoveVideoVertical: translation.y)
+        case .ended:
+            let velocity = gestureRecognizer.velocity(in: playerViewController.view)
+            delegate?.videoViewController(self, userDidReleaseVideo: velocity.y)
+        default:
+            break
+        }
+    }
 }
 
 extension VideoViewController: PlayerViewControllerDelegate {
-    func playerViewController(_ playerViewController: PlayerViewController, didChangeFullscreenStatus isFullscreenActive: Bool) {
+    public func playerViewController(_ playerViewController: PlayerViewController, didChangeFullscreenStatus isFullscreenActive: Bool) {
         if isFullscreenActive {
             self.regularConstraints.forEach { $0.isActive = false }
             self.fullscreenConstraints.forEach { $0.isActive = true }
@@ -138,4 +162,15 @@ extension VideoViewController: PlayerViewControllerDelegate {
             self.view.layoutIfNeeded()
         }
     }
+}
+
+extension VideoViewController: VideoMetadataViewControllerDelegate {
+    public func handle(url: URL, rect: CGRect, view: UIView) -> Bool {
+        return !incomingVideoReceiver.handle(url: url, source: .rect(rect: rect, view: view, permittedArrowDirections: .any))
+    }
+}
+
+public protocol VideoViewControllerDelegate: class {
+    func videoViewController(_ videoViewController: VideoViewController, userDidMoveVideoVertical deltaY: CGFloat)
+    func videoViewController(_ videoViewController: VideoViewController, userDidReleaseVideo velocityY: CGFloat)
 }

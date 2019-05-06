@@ -162,19 +162,11 @@ public class PlayerViewController: UIViewController {
 
     private(set) var isFullscreenActive = false {
         didSet {
-            if let splitViewController = UIApplication.shared.keyWindow?.rootViewController as? SplitViewController {
-                UIView.animate(withDuration: 0.25) {
-                    if self.isFullscreenActive {
-                        splitViewController.preferredDisplayMode = .primaryHidden
-                    } else {
-                        splitViewController.preferredDisplayMode = .automatic
-                    }
+            UIView.animate(withDuration: 0.25) {
+                self.playerControlView.isFullscreenActive = self.isFullscreenActive
+                self.delegate?.playerViewController(self, didChangeFullscreenStatus: self.isFullscreenActive)
 
-                    self.playerControlView.isFullscreenActive = self.isFullscreenActive
-                    self.delegate?.playerViewController(self, didChangeFullscreenStatus: self.isFullscreenActive)
-
-                    self.refreshControlHideTimer()
-                }
+                self.refreshControlHideTimer()
             }
         }
     }
