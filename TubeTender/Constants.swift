@@ -20,6 +20,8 @@ struct Constants {
     static let uiPadding: CGFloat = 15.0
     static let channelIconSize: CGFloat = 45.0
     static let smallChannelIconSize: CGFloat = 35.0
+    // TODO: Use everywhere
+    static let defaultAspectRatio: CGFloat = 9/16
 
     static let hlsServerPort: UInt16 = 37298
 }

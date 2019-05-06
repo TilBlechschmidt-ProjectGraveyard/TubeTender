@@ -9,15 +9,16 @@
 import UIKit
 
 class SubscriptionFeedViewController: UIViewController {
-    private let subscriptionListViewController = SubscriptionFeedGridViewController(videoPlayer: VideoPlayer.shared)
+    private let subscriptionListViewController: SubscriptionFeedGridViewController
     private let channelListView: ChannelListView
     private let borderView = UIView()
 
     private let compact: Bool
 
-    init(compact: Bool = UIDevice.current.userInterfaceIdiom == .phone) {
-        channelListView = ChannelListView(compact: compact)
+    init(videoPlayer: VideoPlayer, incomingVideoReceiver: IncomingVideoReceiver, compact: Bool = UIDevice.current.userInterfaceIdiom == .phone) {
+        self.channelListView = ChannelListView(compact: compact)
         self.compact = compact
+        self.subscriptionListViewController = SubscriptionFeedGridViewController(videoPlayer: videoPlayer, incomingVideoReceiver: incomingVideoReceiver)
 
         super.init(nibName: nil, bundle: nil)
 

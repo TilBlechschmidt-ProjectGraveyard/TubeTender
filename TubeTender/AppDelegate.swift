@@ -17,9 +17,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
-    let hlsServer = try? HLSServer(port: Constants.hlsServerPort)
+    let commandCenter: CommandCenter
+    let incomingVideoReceiver: IncomingVideoReceiver
+    let videoPlayer: VideoPlayer
+    let hlsServer: HLSServer?
 
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+    override init() {
+        commandCenter = CommandCenter()
+        videoPlayer = VideoPlayer(commandCenter: commandCenter)
+        incomingVideoReceiver = IncomingVideoReceiver(videoPlayer: videoPlayer)
+        hlsServer = try? HLSServer(port: Constants.hlsServerPort)
+        super.init()
+    }
+
+    func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
         let audioSession = AVAudioSession.sharedInstance()
         do {
@@ -31,24 +42,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Override point for customization after application launch.
         YoutubeKit.shared.setAPIKey("AIzaSyDEN6U1W9vvrV5CDgRizZRfd6nHnZZDydU")
 
-        // Initialize sign-in
-        GIDSignIn.sharedInstance().clientID = "1075139575942-l15imga5cglnbvjeir5aoclf9jkf07cf.apps.googleusercontent.com"
-        GIDSignIn.sharedInstance().delegate = self
-
-        var scopes = GIDSignIn.sharedInstance()?.scopes
-        scopes?.append("https://www.googleapis.com/auth/youtube")
-        GIDSignIn.sharedInstance()?.scopes = scopes
-
-        GIDSignIn.sharedInstance()?.signInSilently()
-
-        //swiftlint:disable:next force_cast
-        let splitViewController = window!.rootViewController as! UISplitViewController
-        splitViewController.delegate = self
-
-        splitViewController.view.addInteraction(UIDropInteraction(delegate: IncomingVideoReceiver.default))
-
-        NotificationCenter.default.addObserver(IncomingVideoReceiver.default,
-                                               selector: #selector(IncomingVideoReceiver.default.scanPasteboardForURL),
+        googleSignIn()
+        NotificationCenter.default.addObserver(incomingVideoReceiver,
+                                               selector: #selector(incomingVideoReceiver.scanPasteboardForURL),
                                                name: UIPasteboard.changedNotification,
                                                object: nil)
 
@@ -60,40 +56,51 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setupNetworkMonitoring()
         hlsServer?.listen()
 
-//        let rootVC = HomeFeedGridViewController(videoPlayer: VideoPlayer.shared)
-        let rootVC = SubscriptionFeedViewController()
-
-        let navController = UINavigationController(rootViewController: rootVC)
-        navController.navigationBar.barStyle = .blackOpaque
-
-        window!.rootViewController = navController
+        let window = UIWindow()
+        self.window = window
+        window.rootViewController = RootViewController(videoPlayer: videoPlayer, incomingVideoReceiver: incomingVideoReceiver)
+        window.makeKeyAndVisible()
 
         return true
     }
 
     func application(_ app: UIApplication, handleOpen url: URL, options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
-        return GIDSignIn.sharedInstance().handle(url as URL?,
-                                                 sourceApplication: options[UIApplication.OpenURLOptionsKey.sourceApplication] as? String,
-                                                 annotation: options[UIApplication.OpenURLOptionsKey.annotation])
+        return GIDSignIn
+            .sharedInstance()
+            .handle(url as URL?,
+                    sourceApplication: options[.sourceApplication] as? String,
+                    annotation: options[.annotation])
     }
 
     func applicationDidBecomeActive(_ application: UIApplication) {
-        if Settings.get(setting: .backgroundPictureInPicture) as? Bool ?? false && VideoPlayer.shared.status.value == .playing && VideoPlayer.shared.isPictureInPictureActive.value {
+        if Settings.get(setting: .backgroundPictureInPicture) as? Bool ?? false && videoPlayer.status.value == .playing && videoPlayer.isPictureInPictureActive.value {
             DispatchQueue.global().asyncAfter(deadline: .now() + 0.25) {
-                VideoPlayer.shared.stopPictureInPicture()
+                self.videoPlayer.stopPictureInPicture()
             }
         }
 
-        VideoPlayer.shared.refreshState()
-        IncomingVideoReceiver.default.scanPasteboardForURL()
+        videoPlayer.refreshState()
+        incomingVideoReceiver.scanPasteboardForURL()
     }
 
     func applicationWillResignActive(_ application: UIApplication) {
-        if Settings.get(setting: .backgroundPictureInPicture) as? Bool ?? false && VideoPlayer.shared.status.value == .playing {
-            VideoPlayer.shared.startPictureInPicture()
+        if Settings.get(setting: .backgroundPictureInPicture) as? Bool ?? false && videoPlayer.status.value == .playing {
+            videoPlayer.startPictureInPicture()
         } else if !(Settings.get(setting: .backgroundPlayback) as? Bool ?? true) {
-            VideoPlayer.shared.pause()
+            videoPlayer.pause()
         }
+    }
+
+    private func googleSignIn() {
+        // Initialize sign-in
+        GIDSignIn.sharedInstance().clientID = "1075139575942-l15imga5cglnbvjeir5aoclf9jkf07cf.apps.googleusercontent.com"
+        GIDSignIn.sharedInstance().delegate = self
+
+        var scopes = GIDSignIn.sharedInstance()?.scopes
+        scopes?.append("https://www.googleapis.com/auth/youtube")
+        GIDSignIn.sharedInstance()?.scopes = scopes
+
+        GIDSignIn.sharedInstance()?.signInSilently()
     }
 
     private func setupNetworkMonitoring() {
@@ -122,12 +129,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                    Network.reachability?.isReachableViaWiFi.description ?? "nil",
                    Network.reachability?.isWWAN.description ?? "nil")
         }
-    }
-}
-
-extension AppDelegate: UISplitViewControllerDelegate {
-    func splitViewController(_ splitViewController: UISplitViewController, collapseSecondary secondaryViewController: UIViewController, onto primaryViewController: UIViewController) -> Bool {
-        return true
     }
 }
 

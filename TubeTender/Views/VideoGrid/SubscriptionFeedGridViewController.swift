@@ -10,10 +10,10 @@ import ReactiveSwift
 import UIKit
 
 class SubscriptionFeedGridViewController: GenericVideoGridViewController {
-    init(videoPlayer: VideoPlayer) {
-        super.init(videoPlayer: videoPlayer, fetchInitialData: false, sectionBased: false)
+    init(videoPlayer: VideoPlayer, incomingVideoReceiver: IncomingVideoReceiver) {
+        super.init(videoPlayer: videoPlayer, incomingVideoReceiver: incomingVideoReceiver, fetchInitialData: false, sectionBased: false)
     }
-    
+
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

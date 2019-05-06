@@ -38,6 +38,8 @@ custom_rules:
 disabled_rules:
   - nesting
   - todo
+  - type_contents_order
+  - file_types_order
 
 type_name:
   excluded:

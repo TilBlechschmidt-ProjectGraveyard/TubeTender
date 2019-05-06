@@ -16,7 +16,7 @@ extension HomeFeedAPI {
         guard let cookies = HTTPCookieStorage.shared.cookies?.filter({ requiredCookies.contains($0.name) && $0.domain == cookieDomain }) else {
             return nil
         }
-        
+
         self.init(cookies: cookies)
     }
 }

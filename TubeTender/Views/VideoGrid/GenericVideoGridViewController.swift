@@ -26,23 +26,16 @@ class GenericVideoGridViewController: UICollectionViewController {
         return .lightContent
     }
 
-    let sectionBased: Bool
+    private let sectionBased: Bool
 
-    let topSafeAreaOverlayView = UIView()
+    private let topSafeAreaOverlayView = UIView()
 
-    let videoPlayer: VideoPlayer
-    let layout = UICollectionViewFlowLayout()
+    private let videoPlayer: VideoPlayer
+    private let incomingVideoReceiver: IncomingVideoReceiver
+    private let layout = UICollectionViewFlowLayout()
     var sections: [GenericVideoGridViewSection] = []
 
-    var fetching = false {
-        didSet {
-            if !fetching {
-                DispatchQueue.main.async {
-                    self.collectionView.refreshControl?.endRefreshing()
-                }
-            }
-        }
-    }
+    private var fetching = false
 
     func refreshItemSize() {
         let isSmallDevice = UIDevice.current.userInterfaceIdiom == .phone
@@ -53,9 +46,10 @@ class GenericVideoGridViewController: UICollectionViewController {
         layout.itemSize = CGSize(width: itemWidth, height: itemWidth * 0.5625 + Constants.channelIconSize + 2 * Constants.uiPadding)
     }
 
-    init(videoPlayer: VideoPlayer, fetchInitialData: Bool = true, sectionBased: Bool = true) {
+    init(videoPlayer: VideoPlayer, incomingVideoReceiver: IncomingVideoReceiver, fetchInitialData: Bool = true, sectionBased: Bool = true) {
         self.videoPlayer = videoPlayer
         self.sectionBased = sectionBased
+        self.incomingVideoReceiver = incomingVideoReceiver
         super.init(collectionViewLayout: layout)
 
         let isSmallDevice = UIDevice.current.userInterfaceIdiom == .phone
@@ -77,8 +71,7 @@ class GenericVideoGridViewController: UICollectionViewController {
         collectionView.register(GenericVideoGridHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: GenericVideoGridHeaderView.identifier)
 
         if fetchInitialData {
-            collectionView.refreshControl?.beginRefreshing()
-            setNeedsNewData()
+            setNeedsNewData(clearingPreviousData: true)
         }
 
         let longPressGestureRecognizer = UILongPressGestureRecognizer(
@@ -129,8 +122,12 @@ class GenericVideoGridViewController: UICollectionViewController {
     func setNeedsNewData(clearingPreviousData: Bool = false) {
         guard !fetching else { return }
         fetching = true
-        fetchNextData().startWithResult { newSectionsResult in
-            DispatchQueue.main.async {
+        if clearingPreviousData {
+            collectionView.refreshControl?.beginRefreshing()
+        }
+
+        DispatchQueue.global().async {
+            self.fetchNextData().observe(on: QueueScheduler.main).startWithResult { newSectionsResult in
                 if let newSections = newSectionsResult.value {
                     let previousData = self.sections
 
@@ -168,6 +165,9 @@ class GenericVideoGridViewController: UICollectionViewController {
                     }, completion: nil)
                 }
 
+                if clearingPreviousData {
+                    self.collectionView.refreshControl?.endRefreshing()
+                }
                 self.fetching = false
             }
         }
@@ -185,7 +185,7 @@ class GenericVideoGridViewController: UICollectionViewController {
 
         guard let indexPath = collectionView.indexPathForItem(at: pressLocation) else { return }
 
-        IncomingVideoReceiver.default.handle(
+        incomingVideoReceiver.handle(
             video: sections[indexPath.section].items[indexPath.row],
             source: .rect(rect: collectionView.cellForItem(at: indexPath)?.frame ?? .zero, view: collectionView, permittedArrowDirections: [.left, .down, .up])
         )

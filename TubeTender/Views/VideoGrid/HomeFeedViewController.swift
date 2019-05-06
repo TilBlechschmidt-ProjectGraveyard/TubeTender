@@ -1,5 +1,5 @@
 //
-//  HomeFeedGridViewController.swift
+//  HomeFeedViewController.swift
 //  TubeTender
 //
 //  Created by Til Blechschmidt on 02.05.19.
@@ -9,7 +9,7 @@
 import ReactiveSwift
 import UIKit
 
-class HomeFeedGridViewController: GenericVideoGridViewController {
+class HomeFeedViewController: GenericVideoGridViewController {
     let homeFeedAPI = HomeFeedAPI()
     let youtubeClient = YoutubeClient.shared
 

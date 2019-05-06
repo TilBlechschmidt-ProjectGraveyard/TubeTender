@@ -28,22 +28,16 @@ class WebSignInViewController: UIViewController {
         let myRequest = URLRequest(url: myURL!)
         webView.load(myRequest)
     }
-
-    func onLoggedIn(cookies: [HTTPCookie]) {
-//        let filteredCookies = cookies.filter { requiredCookies.contains($0.name) && $0.domain == cookieDomain }
-//
-//        let homeFeedAPI = HomeFeedAPI(cookies: filteredCookies)
-    }
 }
 
 extension WebSignInViewController: WKNavigationDelegate {
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         if let path = webView.url?.path, path == "/" {
             webView.configuration.websiteDataStore.httpCookieStore.getAllCookies { cookies in
-                let loginCookies = cookies.filter { $0.name == "LOGIN_INFO" }
-                if !loginCookies.isEmpty {
-                    self.onLoggedIn(cookies: cookies)
-                }
+//                let loginCookies = cookies.filter { $0.name == "LOGIN_INFO" }
+//                if !loginCookies.isEmpty {
+//                    self.onLoggedIn(cookies: cookies)
+//                }
             }
         }
     }

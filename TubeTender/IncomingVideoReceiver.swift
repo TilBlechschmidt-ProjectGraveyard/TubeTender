@@ -6,9 +6,9 @@
 //  Copyright © 2019 Til Blechschmidt. All rights reserved.
 //
 
+import CoreGraphics
 import ReactiveSwift
 import UIKit
-import CoreGraphics
 
 enum VideoSource {
     case none
@@ -26,9 +26,12 @@ enum VideoSource {
 }
 
 class IncomingVideoReceiver: NSObject {
-    public static let `default` = IncomingVideoReceiver()
+    let videoPlayer: VideoPlayer
 
-    override private init() {}
+    init(videoPlayer: VideoPlayer) {
+        self.videoPlayer = videoPlayer
+        super.init()
+    }
 
     @discardableResult public func handle(url: URL, source: VideoSource) -> Bool {
         return handle(string: url.absoluteString, source: source)
@@ -64,13 +67,13 @@ class IncomingVideoReceiver: NSObject {
             alertControl.view.tintColor = .lightGray
 
             alertControl.addAction(UIAlertAction(title: "Play Now", style: .default) { _ in
-                VideoPlayer.shared.playNow(video)
+                self.videoPlayer.playNow(video)
             })
             alertControl.addAction(UIAlertAction(title: "Play Next", style: .default) { _ in
-                VideoPlayer.shared.playNext(video)
+                self.videoPlayer.playNext(video)
             })
             alertControl.addAction(UIAlertAction(title: "Play Later", style: .default) { _ in
-                VideoPlayer.shared.playLater(video)
+                self.videoPlayer.playLater(video)
             })
             alertControl.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
 

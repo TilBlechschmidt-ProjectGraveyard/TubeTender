@@ -10,6 +10,13 @@ import ReactiveSwift
 import UIKit
 
 class VideoMetadataViewController: UIViewController {
+    private static let numberFormatter: NumberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.groupingSeparator = "."
+        formatter.numberStyle = .decimal
+        return formatter
+    }()
+
     let videoMetadataView = VideoMetadataView()
 
     var video: Video! {
@@ -21,25 +28,25 @@ class VideoMetadataViewController: UIViewController {
 
     private let downloadButtonViewController = VideoDownloadButtonViewController()
 
-    private static let numberFormatter: NumberFormatter = {
-        let formatter = NumberFormatter()
-        formatter.groupingSeparator = "."
-        formatter.numberStyle = .decimal
-        return formatter
-    }()
+    public weak var delegate: VideoMetadataViewControllerDelegate?
+
+    init() {
+        super.init(nibName: nil, bundle: nil)
+
+        videoMetadataView.videoMetadataViewDelegate = self
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    override func loadView() {
+        view = videoMetadataView
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
         videoMetadataView.downloadButtonView = downloadButtonViewController.view
-        videoMetadataView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(videoMetadataView)
-        view.addConstraints([
-            videoMetadataView.topAnchor.constraint(equalTo: view.topAnchor),
-            videoMetadataView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            videoMetadataView.leftAnchor.constraint(equalTo: view.leftAnchor),
-            videoMetadataView.rightAnchor.constraint(equalTo: view.rightAnchor)
-        ])
     }
 
     func fetchVideoDetails() {
@@ -61,4 +68,14 @@ class VideoMetadataViewController: UIViewController {
             "\($0.value?.unitFormatted ?? "??") subscribers"
         }
     }
+}
+
+extension VideoMetadataViewController: VideoMetadataViewDelegate {
+    func handle(url: URL, rect: CGRect, view: UIView) -> Bool {
+        return delegate?.handle(url: url, rect: rect, view: view) ?? false
+    }
+}
+
+public protocol VideoMetadataViewControllerDelegate: class {
+    func handle(url: URL, rect: CGRect, view: UIView) -> Bool
 }

@@ -9,15 +9,23 @@
 import UIKit
 
 class SimpleVideoListViewController: GenericVideoListViewController {
+    public let videoPlayer: VideoPlayer
+
     public var videos: [[Video]] = [] {
         didSet {
             super.isEmpty = videos.isEmpty
         }
     }
 
-    override func viewDidLoad() {
-        super.dataSource = self
-        super.viewDidLoad()
+    init(videoPlayer: VideoPlayer) {
+        self.videoPlayer = videoPlayer
+        super.init(nibName: nil, bundle: nil)
+
+        self.dataSource = self
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 
     func append(videos: [Video], toSection section: Int) {
@@ -38,15 +46,14 @@ class SimpleVideoListViewController: GenericVideoListViewController {
 
     override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
         let video = self.dataSource.getVideo(indexPath.section, row: indexPath.row)
-        self.showDetailViewController(VideoViewController(), sender: self)
-        VideoPlayer.shared.playNow(video)
+        videoPlayer.playNow(video)
 
         return nil
     }
 
     override func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        let playLaterAction = UIContextualAction(style: .normal, title: "Play next") { _, _, success in
-            VideoPlayer.shared.playNext(self.getVideo(indexPath.section, row: indexPath.row))
+        let playLaterAction = UIContextualAction(style: .normal, title: "Play next") { [unowned self] _, _, success in
+            self.videoPlayer.playNext(self.getVideo(indexPath.section, row: indexPath.row))
             success(true)
         }
         playLaterAction.backgroundColor = Constants.primaryActionColor
@@ -55,8 +62,8 @@ class SimpleVideoListViewController: GenericVideoListViewController {
     }
 
     override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        let playLaterAction = UIContextualAction(style: .normal, title: "Play later") { _, _, success in
-            VideoPlayer.shared.playLater(self.getVideo(indexPath.section, row: indexPath.row))
+        let playLaterAction = UIContextualAction(style: .normal, title: "Play later") { [unowned self] _, _, success in
+            self.videoPlayer.playLater(self.getVideo(indexPath.section, row: indexPath.row))
             success(true)
         }
         playLaterAction.backgroundColor = Constants.secondaryActionColor

@@ -45,6 +45,10 @@ class PlayerControlView: UIView {
         }
     }
 
+    var isTracking: Bool {
+        return seekingSlider.isTracking
+    }
+
     // MARK: - Initializers
     //swiftlint:disable:next function_body_length
     override init(frame: CGRect) {
@@ -189,6 +193,7 @@ class PlayerControlView: UIView {
             make.left.equalTo(elapsedTimeLabel.snp.right).offset(10)
             make.right.equalTo(durationLabel.snp.left).offset(-10)
             make.centerY.equalTo(elapsedTimeLabel)
+            make.centerX.equalTo(progressBar.snp.centerX)
         }
 
     }
@@ -209,6 +214,7 @@ class PlayerControlView: UIView {
         seekingSlider.snp.remakeConstraints { make in
             make.centerY.equalTo(progressBar).offset(-0.5)
             make.width.equalTo(progressBar)
+            make.centerX.equalTo(progressBar.snp.centerX)
         }
     }
 

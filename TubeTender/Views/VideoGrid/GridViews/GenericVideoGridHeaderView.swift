@@ -6,8 +6,8 @@
 //  Copyright © 2019 Til Blechschmidt. All rights reserved.
 //
 
-import UIKit
 import SnapKit
+import UIKit
 
 class GenericVideoGridHeaderView: UICollectionReusableView {
     static let kind: String = "GenericTitle"
@@ -102,4 +102,3 @@ class GenericVideoGridHeaderView: UICollectionReusableView {
         iconHiddenConstraint.activate()
     }
 }
-

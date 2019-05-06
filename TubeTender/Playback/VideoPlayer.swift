@@ -29,8 +29,6 @@ enum PlayerStatus {
 }
 
 class VideoPlayer: NSObject {
-    static let shared = VideoPlayer()
-
     // MARK: - Player & Item Queue
     private let _currentIndex = MutableProperty<Int?>(nil)
     private let _videos: MutableProperty<[Video]>
@@ -61,7 +59,7 @@ class VideoPlayer: NSObject {
     let preferredQuality = MutableProperty<StreamQuality?>(nil)
 
     // MARK: - Initializers
-    private init(commandCenter: CommandCenter = CommandCenter.shared) {
+    init(commandCenter: CommandCenter) {
         playerView = AVPlayerView()
 
         let videos = MutableProperty<[Video]>([])
