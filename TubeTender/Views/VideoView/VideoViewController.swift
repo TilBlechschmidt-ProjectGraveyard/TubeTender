@@ -12,11 +12,23 @@ import UIKit
 class VideoViewController: UIViewController {
     private let emptyStateView = EmptyStateView(image: #imageLiteral(resourceName: "camera"), text: "No video selected")
     private let videoView = UIView()
-    private let playerViewController = PlayerViewController()
+    private let playerViewController: PlayerViewController
     private let videoDetailViewController = VideoMetadataViewController()
 
     private var fullscreenConstraints: [NSLayoutConstraint] = []
     private var regularConstraints: [NSLayoutConstraint] = []
+
+    private let videoPlayer: VideoPlayer
+
+    init(videoPlayer: VideoPlayer) {
+        self.videoPlayer = videoPlayer
+        self.playerViewController = PlayerViewController(videoPlayer: videoPlayer)
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     //swiftlint:disable:next function_body_length
     override func viewDidLoad() {
@@ -96,7 +108,7 @@ class VideoViewController: UIViewController {
 
         regularConstraints.forEach { $0.isActive = true }
 
-        VideoPlayer.shared.currentItem.signal.take(duringLifetimeOf: self).observeValues { [unowned self] video in
+        videoPlayer.currentItem.producer.take(duringLifetimeOf: self).startWithValues { [unowned self] video in
             if let video = video {
                 self.videoDetailViewController.video = video
                 UIView.animate(withDuration: 0.5) {

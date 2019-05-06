@@ -10,6 +10,13 @@ import ReactiveSwift
 import UIKit
 
 class VideoMetadataViewController: UIViewController {
+    private static let numberFormatter: NumberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.groupingSeparator = "."
+        formatter.numberStyle = .decimal
+        return formatter
+    }()
+
     let videoMetadataView = VideoMetadataView()
 
     var video: Video! {
@@ -21,12 +28,17 @@ class VideoMetadataViewController: UIViewController {
 
     private let downloadButtonViewController = VideoDownloadButtonViewController()
 
-    private static let numberFormatter: NumberFormatter = {
-        let formatter = NumberFormatter()
-        formatter.groupingSeparator = "."
-        formatter.numberStyle = .decimal
-        return formatter
-    }()
+    public weak var delegate: VideoMetadataViewDelegate?
+
+    init() {
+        super.init(nibName: nil, bundle: nil)
+
+        videoMetadataView.delegate = self
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -61,4 +73,14 @@ class VideoMetadataViewController: UIViewController {
             "\($0.value?.unitFormatted ?? "??") subscribers"
         }
     }
+}
+
+extension VideoMetadataViewController: VideoMetadataViewDelegate {
+    func handle(url: URL, rect: CGRect, view: UIView) -> Bool {
+        return delegate?.handle(url: url, rect: rect, view: view) ?? false
+    }
+}
+
+public protocol VideoMetadataViewControllerDelegate: class {
+    func handle(url: URL, rect: CGRect, view: UIView) -> Bool
 }

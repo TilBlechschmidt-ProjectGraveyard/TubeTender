@@ -45,6 +45,10 @@ class PlayerControlView: UIView {
         }
     }
 
+    var isTracking: Bool {
+        return seekingSlider.isTracking
+    }
+
     // MARK: - Initializers
     //swiftlint:disable:next function_body_length
     override init(frame: CGRect) {

@@ -9,69 +9,87 @@
 import ReactiveSwift
 import UIKit
 
-protocol PlayerViewControllerDelegate: class {
-    func playerViewController(_ playerViewController: PlayerViewController, didChangeFullscreenStatus: Bool)
-}
+public class PlayerViewController: UIViewController {
+    private let contentViewController = UIViewController()
+    private let playerControlView = PlayerControlView()
+    private let videoView = UIView()
+    private var mediaDuration: Int32?
 
-class PlayerViewController: UIViewController {
-    let contentViewController = UIViewController()
-    let playerControlView = PlayerControlView()
-    let videoView = UIView()
-    var mediaDuration: Int32?
+    private let videoPlayer: VideoPlayer
 
-    weak var delegate: PlayerViewControllerDelegate?
+    public weak var delegate: PlayerViewControllerDelegate?
 
-    override func viewDidLoad() {
+    init(videoPlayer: VideoPlayer) {
+        self.videoPlayer = videoPlayer
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    override public func viewDidLoad() {
         setupSubviews()
         setupGestureRecognizer()
 
-        let player = VideoPlayer.shared
-
-        videoView.addSubview(player.playerView)
-        player.playerView.snp.makeConstraints { make in
+        videoView.addSubview(videoPlayer.playerView)
+        videoPlayer.playerView.snp.makeConstraints { make in
             make.size.equalToSuperview()
             make.center.equalToSuperview()
         }
 
-        player.status.combinePrevious(.noMediaLoaded).signal.observeValues { previous, current in
+        videoPlayer.status.combinePrevious(.noMediaLoaded).signal.observeValues { previous, current in
             if previous != .playing && current == .playing {
                 self.refreshControlHideTimer()
             }
         }
 
         // Play button
-        playerControlView.playButton.reactive.isPlaying <~ player.status.map { $0 == .playing }
+        playerControlView.playButton.reactive.isPlaying <~ videoPlayer.status.map { $0 == .playing }
         playerControlView.playButton.reactive.controlEvents(.touchUpInside).take(duringLifetimeOf: self).observeValues { _ in
-            if player.status.value == .playing {
-                player.pause()
+            if self.videoPlayer.status.value == .playing {
+                self.videoPlayer.pause()
             } else {
-                player.play()
+                self.videoPlayer.play()
             }
         }
 
         // Picture in picture button
         playerControlView.pictureInPictureButton.reactive.controlEvents(.touchUpInside).observeValues { _ in
-            player.startPictureInPicture()
+            self.videoPlayer.startPictureInPicture()
         }
 
         // Duration & Elapsed time
         // TODO Different value when .noMediaLoaded
-        playerControlView.elapsedTimeLabel.reactive.text <~ player.currentTime.signal
-            .filter { [unowned self] _ in !self.playerControlView.seekingSlider.isTracking }
-            .map(PlayerViewController.stringRepresentation(ofTime:))
-        playerControlView.durationLabel.reactive.text <~ player.duration.map(PlayerViewController.stringRepresentation(ofTime:))
+        playerControlView.durationLabel.reactive.text <~ videoPlayer.duration.map(PlayerViewController.stringRepresentation(ofTime:))
 
         // Slider & Progress bar
-        playerControlView.progressBar.reactive.progress <~ player.currentTime.map { return Float($0 / player.duration.value) }
-        playerControlView.seekingSlider.reactive.value <~ player.currentTime.signal.observe(on: QueueScheduler.main)
-            .filter { [unowned self] _ in !self.playerControlView.seekingSlider.isTracking }
-            .map { Float($0 / player.duration.value) }
-        self.playerControlView.elapsedTimeLabel.reactive.text <~ playerControlView.seekingSlider.reactive.values
-            .take(duringLifetimeOf: self)
-            .filter { [unowned self] _ in self.playerControlView.seekingSlider.isTracking }
-            .map { PlayerViewController.stringRepresentation(ofTime: Double($0) * player.duration.value) }
+        playerControlView.progressBar.reactive.progress <~ Property.combineLatest(videoPlayer.currentTime, videoPlayer.duration)
+            .map { Float($0 / $1) }
 
-        let isBuffering = player.status.signal.take(duringLifetimeOf: self).map { $0 == .buffering }
+        playerControlView.seekingSlider.reactive.value <~ Property.combineLatest(videoPlayer.currentTime, videoPlayer.duration)
+            .producer
+            .take(duringLifetimeOf: self)
+            .observe(on: QueueScheduler.main)
+            .filter { [unowned self] _ in !self.playerControlView.seekingSlider.isTracking }
+            .map { Float($0 / $1) }
+
+        playerControlView.elapsedTimeLabel.reactive.text <~ Property.combineLatest(
+            videoPlayer.currentTime,
+            Property(initial: 0, then: playerControlView.seekingSlider.reactive.values),
+            videoPlayer.duration)
+                .producer
+                .take(duringLifetimeOf: self)
+                .map { [unowned self] currentPlayerTime, seekingSliderPosition, duration -> TimeInterval in
+                    if self.playerControlView.isTracking {
+                        return Double(seekingSliderPosition) * duration
+                    } else {
+                        return currentPlayerTime
+                    }
+                }
+                .map(PlayerViewController.stringRepresentation(ofTime:))
+
+        let isBuffering = videoPlayer.status.signal.take(duringLifetimeOf: self).map { $0 == .buffering }
         playerControlView.loadingIndicator.reactive.isAnimating <~ isBuffering
         isBuffering.observeValues { [unowned self] buffering in
             if buffering {
@@ -79,15 +97,19 @@ class PlayerViewController: UIViewController {
             }
         }
 
-        player.isPictureInPictureActive.signal.observe(on: QueueScheduler.main).take(duringLifetimeOf: self).observeValues { [unowned self] isPictureInPictureActive in
-            self.controlsDisabled = isPictureInPictureActive
-            if isPictureInPictureActive {
-                self.isFullscreenActive = false
+        videoPlayer.isPictureInPictureActive
+            .producer
+            .take(duringLifetimeOf: self)
+            .observe(on: QueueScheduler.main)
+            .startWithValues { [unowned self] isPictureInPictureActive in
+                self.controlsDisabled = isPictureInPictureActive
+                if isPictureInPictureActive {
+                    self.isFullscreenActive = false
+                }
+                UIView.animate(withDuration: 0.5) {
+                    self.playerControlView.controlView.alpha = isPictureInPictureActive ? 0 : 1
+                }
             }
-            UIView.animate(withDuration: 0.5) {
-                self.playerControlView.controlView.alpha = isPictureInPictureActive ? 0 : 1
-            }
-        }
     }
 
     private func setupSubviews() {
@@ -176,7 +198,7 @@ class PlayerViewController: UIViewController {
     }
 
     @objc func idleTimerExceeded(_ sender: Timer) {
-        if playerControlView.seekingSlider.isTracking || VideoPlayer.shared.status.value != .playing {
+        if playerControlView.isTracking || videoPlayer.status.value != .playing {
             refreshControlHideTimer()
         } else {
             controlsVisible = false
@@ -198,9 +220,9 @@ class PlayerViewController: UIViewController {
         // TODO Add animation to indicate seeking visually
         let tapPoint = sender.location(in: self.view)
         if tapPoint.x > self.view.bounds.width / 2 {
-            VideoPlayer.shared.seek(by: 10)
+            videoPlayer.seek(by: 10)
         } else {
-            VideoPlayer.shared.seek(by: -10)
+            videoPlayer.seek(by: -10)
         }
     }
 
@@ -223,13 +245,14 @@ class PlayerViewController: UIViewController {
         alert.popoverPresentationController?.backgroundColor = Constants.backgroundColor
         alert.view.tintColor = .lightGray
 
-        alert.reactive.attributedTitle <~ VideoPlayer.shared.currentQuality.map { NSAttributedString(string: "Current quality: \($0?.description ?? "--")") }
+        alert.reactive.attributedTitle <~ videoPlayer.currentQuality.map { NSAttributedString(string: "Current quality: \($0?.description ?? "--")") }
 
-        let currentQuality = VideoPlayer.shared.preferredQuality.value
+        let currentQuality = videoPlayer.preferredQuality.value
 
         let action = UIAlertAction(title: "Automatic", style: .default) { _ in
-            VideoPlayer.shared.preferredQuality.value = nil
+            self.videoPlayer.preferredQuality.value = nil
         }
+
         if currentQuality == nil {
             action.setValue(true, forKey: "checked")
         }
@@ -238,10 +261,10 @@ class PlayerViewController: UIViewController {
         // TODO Filter actually available qualities
         StreamQuality.ascendingOrder.reversed().forEach { quality in
             let action = UIAlertAction(title: quality.description, style: .default) { _ in
-                VideoPlayer.shared.preferredQuality.value = quality
+                self.videoPlayer.preferredQuality.value = quality
             }
 
-            if let currentQuality = currentQuality, quality == currentQuality {
+            if quality == currentQuality {
                 action.setValue(true, forKey: "checked")
             }
 
@@ -261,7 +284,7 @@ class PlayerViewController: UIViewController {
     }
 
     @objc func seekFinished() {
-        VideoPlayer.shared.seek(toPercentage: Double(playerControlView.seekingSlider.value))
+        videoPlayer.seek(toPercentage: Double(playerControlView.seekingSlider.value))
     }
 
     @objc func playButtonTapped() {
@@ -282,4 +305,8 @@ class PlayerViewController: UIViewController {
         let output = String(format: "%02d:%02d", minutes, seconds)
         return hours > 0 ? String(format: "%02d:%@", hours, output) : output
     }
+}
+
+public protocol PlayerViewControllerDelegate: class {
+    func playerViewController(_ playerViewController: PlayerViewController, didChangeFullscreenStatus: Bool)
 }

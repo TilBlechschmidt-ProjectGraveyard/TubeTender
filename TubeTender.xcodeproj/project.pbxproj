@@ -71,7 +71,6 @@
 		30F2E38921DD059D005EFCA9 /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 30F2E38821DD059D005EFCA9 /* Alamofire.framework */; };
 		30F2E38A21DD05A5005EFCA9 /* Alamofire.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 30F2E38821DD059D005EFCA9 /* Alamofire.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		30F2E38C21DD4D14005EFCA9 /* Alamofire+Reactive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30F2E38B21DD4D14005EFCA9 /* Alamofire+Reactive.swift */; };
-		30F48900219CD3E1002FAE36 /* SplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30F488FF219CD3E0002FAE36 /* SplitViewController.swift */; };
 		30F66C7021DF78E300BBBBD8 /* VideoDownloadButtonViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30F66C6F21DF78E300BBBBD8 /* VideoDownloadButtonViewController.swift */; };
 		4021444321E5F7FB00AAC670 /* UIAlertController+Reactive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4021444221E5F7FB00AAC670 /* UIAlertController+Reactive.swift */; };
 		4021444721E625E300AAC670 /* GenericVideoListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4021444621E625E300AAC670 /* GenericVideoListViewController.swift */; };
@@ -190,7 +189,6 @@
 		30F2E38621DCFAF9005EFCA9 /* DownloadManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadManager.swift; sourceTree = "<group>"; };
 		30F2E38821DD059D005EFCA9 /* Alamofire.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Alamofire.framework; path = Carthage/Build/iOS/Alamofire.framework; sourceTree = "<group>"; };
 		30F2E38B21DD4D14005EFCA9 /* Alamofire+Reactive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Alamofire+Reactive.swift"; sourceTree = "<group>"; };
-		30F488FF219CD3E0002FAE36 /* SplitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitViewController.swift; sourceTree = "<group>"; };
 		30F66C6F21DF78E300BBBBD8 /* VideoDownloadButtonViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoDownloadButtonViewController.swift; sourceTree = "<group>"; };
 		4021444221E5F7FB00AAC670 /* UIAlertController+Reactive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIAlertController+Reactive.swift"; sourceTree = "<group>"; };
 		4021444621E625E300AAC670 /* GenericVideoListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericVideoListViewController.swift; sourceTree = "<group>"; };
@@ -397,7 +395,6 @@
 		30BAB7692178B44400B01953 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				30F488FF219CD3E0002FAE36 /* SplitViewController.swift */,
 				30BE79BA216FF73F00E6B281 /* AnimatablePlayButton.swift */,
 				4021444D21E68E4300AAC670 /* EmptyStateView.swift */,
 				30E3063821E8DC7C008C6ECB /* ButtonStackView.swift */,
@@ -671,7 +668,6 @@
 				302182BF226F5EE600EDE0D2 /* SimpleVideoListViewController.swift in Sources */,
 				30A81A3721D539F600FBE8EE /* VideoViewController.swift in Sources */,
 				30C2112D226BA57B00892173 /* VideoStreamAPI.swift in Sources */,
-				30F48900219CD3E1002FAE36 /* SplitViewController.swift in Sources */,
 				30E3063721E8C2C3008C6ECB /* Reachability.swift in Sources */,
 				30B03AC221E68A45007B3E38 /* UIRebindableTableViewCell.swift in Sources */,
 				40E2E1F321E292D5007EA359 /* YoutubeClient.swift in Sources */,

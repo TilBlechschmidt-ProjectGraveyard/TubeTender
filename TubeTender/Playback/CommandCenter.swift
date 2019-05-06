@@ -23,8 +23,6 @@ protocol CommandCenterDelegate: class {
 }
 
 class CommandCenter: NSObject {
-    static let shared = CommandCenter()
-
     weak var delegate: CommandCenterDelegate?
 
     let isEnabled = MutableProperty<Bool>(false)
@@ -39,7 +37,7 @@ class CommandCenter: NSObject {
 
     let thumbnail = MutableProperty<UIImage?>(nil)
 
-    override private init() {
+    override init() {
         super.init()
         isEnabled.signal.observeValues { enabled in
             if enabled {

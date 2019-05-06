@@ -43,8 +43,10 @@ class VideoMetadataView: UIView {
     private let descriptionView = UIView()
     let videoDescriptionView = UITextView()
 
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    public weak var delegate: VideoMetadataViewDelegate?
+
+    init() {
+        super.init(frame: .zero)
 
         backgroundColor = Constants.backgroundColor // TODO This had .darker attached to it
 
@@ -225,15 +227,19 @@ class VideoMetadataView: UIView {
 
 extension VideoMetadataView: UITextViewDelegate {
     func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
-        if interaction == .invokeDefaultAction {
+        if interaction == .invokeDefaultAction, let delegate = delegate {
 
             let beginning = textView.beginningOfDocument
             guard let center = textView.position(from: beginning, offset: characterRange.location + characterRange.length / 2) else { return true }
 
             let rect = textView.caretRect(for: center)
 
-            return !IncomingVideoReceiver.default.handle(url: URL, source: .rect(rect: rect, view: textView, permittedArrowDirections: .any))
+            return delegate.handle(url: URL, rect: rect, view: textView)
         }
         return true
     }
+}
+
+public protocol VideoMetadataViewDelegate: class {
+    func handle(url: URL, rect: CGRect, view: UIView) -> Bool
 }

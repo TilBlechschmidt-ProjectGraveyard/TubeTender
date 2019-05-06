@@ -17,7 +17,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
-    let hlsServer = try? HLSServer(port: Constants.hlsServerPort)
+    let commandCenter: CommandCenter
+    let incomingVideoReceiver: IncomingVideoReceiver
+    let videoPlayer: VideoPlayer
+    let videoViewController: VideoViewController
+    let hlsServer: HLSServer?
+
+    override init() {
+        commandCenter = CommandCenter()
+        videoPlayer = VideoPlayer(commandCenter: commandCenter)
+        incomingVideoReceiver = IncomingVideoReceiver(videoPlayer: videoPlayer)
+        videoViewController = VideoViewController(videoPlayer: videoPlayer)
+        hlsServer = try? HLSServer(port: Constants.hlsServerPort)
+    }
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
@@ -31,24 +43,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Override point for customization after application launch.
         YoutubeKit.shared.setAPIKey("AIzaSyDEN6U1W9vvrV5CDgRizZRfd6nHnZZDydU")
 
-        // Initialize sign-in
-        GIDSignIn.sharedInstance().clientID = "1075139575942-l15imga5cglnbvjeir5aoclf9jkf07cf.apps.googleusercontent.com"
-        GIDSignIn.sharedInstance().delegate = self
-
-        var scopes = GIDSignIn.sharedInstance()?.scopes
-        scopes?.append("https://www.googleapis.com/auth/youtube")
-        GIDSignIn.sharedInstance()?.scopes = scopes
-
-        GIDSignIn.sharedInstance()?.signInSilently()
-
-        //swiftlint:disable:next force_cast
-        let splitViewController = window!.rootViewController as! UISplitViewController
-        splitViewController.delegate = self
-
-        splitViewController.view.addInteraction(UIDropInteraction(delegate: IncomingVideoReceiver.default))
-
-        NotificationCenter.default.addObserver(IncomingVideoReceiver.default,
-                                               selector: #selector(IncomingVideoReceiver.default.scanPasteboardForURL),
+        googleSingIn()
+        NotificationCenter.default.addObserver(incomingVideoReceiver,
+                                               selector: #selector(incomingVideoReceiver.scanPasteboardForURL),
                                                name: UIPasteboard.changedNotification,
                                                object: nil)
 
@@ -60,32 +57,75 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setupNetworkMonitoring()
         hlsServer?.listen()
 
+        let window = UIWindow(frame: UIScreen.main.bounds)
+        self.window = window
+        window.rootViewController = createRootTabBarController()
+        window.makeKeyAndVisible()
+
         return true
     }
 
     func application(_ app: UIApplication, handleOpen url: URL, options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
-        return GIDSignIn.sharedInstance().handle(url as URL?,
-                                                 sourceApplication: options[UIApplication.OpenURLOptionsKey.sourceApplication] as? String,
-                                                 annotation: options[UIApplication.OpenURLOptionsKey.annotation])
+        return GIDSignIn
+            .sharedInstance()
+            .handle(url as URL?,
+                    sourceApplication: options[.sourceApplication] as? String,
+                    annotation: options[.annotation])
     }
 
     func applicationDidBecomeActive(_ application: UIApplication) {
-        if Settings.get(setting: .backgroundPictureInPicture) as? Bool ?? false && VideoPlayer.shared.status.value == .playing {
+        if Settings.get(setting: .backgroundPictureInPicture) as? Bool ?? false && videoPlayer.status.value == .playing {
             DispatchQueue.global().asyncAfter(deadline: .now() + 0.25) {
-                VideoPlayer.shared.stopPictureInPicture()
+                self.videoPlayer.stopPictureInPicture()
             }
         }
 
-        VideoPlayer.shared.refreshState()
-        IncomingVideoReceiver.default.scanPasteboardForURL()
+        videoPlayer.refreshState()
+        incomingVideoReceiver.scanPasteboardForURL()
     }
 
     func applicationWillResignActive(_ application: UIApplication) {
-        if Settings.get(setting: .backgroundPictureInPicture) as? Bool ?? false && VideoPlayer.shared.status.value == .playing {
-            VideoPlayer.shared.startPictureInPicture()
+        if Settings.get(setting: .backgroundPictureInPicture) as? Bool ?? false && videoPlayer.status.value == .playing {
+            videoPlayer.startPictureInPicture()
         } else if !(Settings.get(setting: .backgroundPlayback) as? Bool ?? true) {
-            VideoPlayer.shared.pause()
+            videoPlayer.pause()
         }
+    }
+
+    private func createRootTabBarController() -> UITabBarController {
+        let tabBarController = UITabBarController()
+        tabBarController.tabBar.barStyle = .black
+        tabBarController.viewControllers = [
+            UINavigationController(rootViewController: SubscriptionFeedViewController(videoPlayer: videoPlayer)),
+            UINavigationController(rootViewController: SearchListViewController(videoPlayer: videoPlayer)),
+            UINavigationController(rootViewController: QueueListViewController(videoPlayer: videoPlayer)),
+            UINavigationController(rootViewController: SignInViewController())
+        ]
+
+        videoViewController.viewWillAppear(true)
+        tabBarController.view.addSubview(videoViewController.view)
+        videoViewController.view.snp.makeConstraints { make in
+            make.right.equalToSuperview().offset(-10)
+            make.bottom.equalToSuperview().offset(-10)
+            make.width.equalToSuperview().dividedBy(2)
+            make.height.equalToSuperview().dividedBy(2)
+        }
+        videoViewController.viewDidAppear(true)
+
+        tabBarController.view.addInteraction(UIDropInteraction(delegate: incomingVideoReceiver))
+        return tabBarController
+    }
+
+    private func googleSingIn() {
+        // Initialize sign-in
+        GIDSignIn.sharedInstance().clientID = "1075139575942-l15imga5cglnbvjeir5aoclf9jkf07cf.apps.googleusercontent.com"
+        GIDSignIn.sharedInstance().delegate = self
+
+        var scopes = GIDSignIn.sharedInstance()?.scopes
+        scopes?.append("https://www.googleapis.com/auth/youtube")
+        GIDSignIn.sharedInstance()?.scopes = scopes
+
+        GIDSignIn.sharedInstance()?.signInSilently()
     }
 
     private func setupNetworkMonitoring() {
@@ -114,12 +154,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                    Network.reachability?.isReachableViaWiFi.description ?? "nil",
                    Network.reachability?.isWWAN.description ?? "nil")
         }
-    }
-}
-
-extension AppDelegate: UISplitViewControllerDelegate {
-    func splitViewController(_ splitViewController: UISplitViewController, collapseSecondary secondaryViewController: UIViewController, onto primaryViewController: UIViewController) -> Bool {
-        return true
     }
 }
 
