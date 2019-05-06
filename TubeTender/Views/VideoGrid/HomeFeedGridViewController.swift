@@ -6,15 +6,14 @@
 //  Copyright © 2019 Til Blechschmidt. All rights reserved.
 //
 
-import Foundation
 import ReactiveSwift
+import UIKit
 
 class HomeFeedGridViewController: GenericVideoGridViewController {
     let homeFeedAPI = HomeFeedAPI()
     let youtubeClient = YoutubeClient.shared
 
     override func resetData() {
-        super.resetData()
         homeFeedAPI?.clearContinuationData()
     }
 
@@ -37,5 +36,11 @@ class HomeFeedGridViewController: GenericVideoGridViewController {
                 )
             }
             .collect()
+    }
+
+    override func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        if indexPath.section >= sections.count - 2 {
+            setNeedsNewData()
+        }
     }
 }

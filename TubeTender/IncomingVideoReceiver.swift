@@ -8,6 +8,7 @@
 
 import ReactiveSwift
 import UIKit
+import CoreGraphics
 
 enum VideoSource {
     case none
@@ -59,7 +60,7 @@ class IncomingVideoReceiver: NSObject {
                         return NSAttributedString(string: $0, attributes: [NSAttributedString.Key.foregroundColor: UIColor.lightGray])
                     }
 
-            alertControl.popoverPresentationController?.backgroundColor = Constants.backgroundColor
+            alertControl.popoverPresentationController?.backgroundColor = Constants.selectedBackgroundColor.withAlphaComponent(0.75)
             alertControl.view.tintColor = .lightGray
 
             alertControl.addAction(UIAlertAction(title: "Play Now", style: .default) { _ in

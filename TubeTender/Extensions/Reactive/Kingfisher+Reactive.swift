@@ -16,6 +16,8 @@ extension Reactive where Base: UIImageView {
                          options: KingfisherOptionsInfo? = nil,
                          progressBlock: DownloadProgressBlock? = nil) -> BindingTarget<Resource?> {
         return makeBindingTarget { imageView, imageResource in
+            imageView.kf.cancelDownloadTask()
+            imageView.image = nil
             imageView.kf.setImage(
                 with: imageResource,
                 placeholder: placeholder,

@@ -36,9 +36,9 @@ class VideoCellView: UIView {
         }
     }
 
-    init() {
+    init(borderlessThumbnail: Bool = false) {
         super.init(frame: .zero)
-        setupUI()
+        setupUI(borderlessThumbnail)
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -83,19 +83,20 @@ class VideoCellView: UIView {
         subtitleLabel.reactive.text <~ subtitle
     }
 
-    private func setupUI() {
-        setupThumbnail()
+    private func setupUI(_ borderlessThumbnail: Bool) {
+        setupThumbnail(borderlessThumbnail)
         setupMetadata()
     }
 
-    private func setupThumbnail() {
+    private func setupThumbnail(_ borderlessThumbnail: Bool) {
         thumbnailView.contentMode = .scaleAspectFill
         thumbnailView.clipsToBounds = true
         addSubview(thumbnailView)
         thumbnailView.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(Constants.uiPadding)
-            make.left.equalToSuperview().offset(Constants.uiPadding)
-            make.right.equalToSuperview().offset(-Constants.uiPadding)
+            let padding = borderlessThumbnail ? 0 : Constants.uiPadding
+            make.top.equalToSuperview().inset(padding)
+            make.left.equalToSuperview().inset(padding)
+            make.right.equalToSuperview().inset(padding)
             make.height.equalTo(thumbnailView.snp.width).multipliedBy(9.0/16.0)
         }
 

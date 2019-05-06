@@ -31,6 +31,7 @@
 		3066682821E7D057001B01C7 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 3066682721E7D057001B01C7 /* Settings.bundle */; };
 		30935A5E227B296000652B86 /* HomeFeedAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30935A5D227B296000652B86 /* HomeFeedAPI.swift */; };
 		30935A60227B45A500652B86 /* HomeFeedAPI+Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30935A5F227B45A500652B86 /* HomeFeedAPI+Persistence.swift */; };
+		3094780A227F8875002E1A63 /* GenericVideoGridHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30947809227F8875002E1A63 /* GenericVideoGridHeaderView.swift */; };
 		30988C1F21DEBF5C0070D14A /* TubeTender.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 30988C1D21DEBF5C0070D14A /* TubeTender.xcdatamodeld */; };
 		30988C2121DEC0BD0070D14A /* CoreStore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 30988C2021DEC0BC0070D14A /* CoreStore.framework */; };
 		30988C2221DEC0C70070D14A /* CoreStore.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 30988C2021DEC0BC0070D14A /* CoreStore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -52,7 +53,7 @@
 		30BAB76121787D1700B01953 /* GoogleSignIn.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 30BAB75F21787D0D00B01953 /* GoogleSignIn.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		30BAB76321787EB100B01953 /* SignInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30BAB76221787EB100B01953 /* SignInViewController.swift */; };
 		30BAB765217893E400B01953 /* SubscriptionFeedAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30BAB764217893E400B01953 /* SubscriptionFeedAPI.swift */; };
-		30BAB76B2178B47A00B01953 /* SubscriptionFeedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30BAB76A2178B47A00B01953 /* SubscriptionFeedViewController.swift */; };
+		30BAB76B2178B47A00B01953 /* OldSubscriptionFeedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30BAB76A2178B47A00B01953 /* OldSubscriptionFeedViewController.swift */; };
 		30BAB7752178BBC500B01953 /* VideoListTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30BAB7742178BBC500B01953 /* VideoListTableCell.swift */; };
 		30BAB7772178C96300B01953 /* Kingfisher.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 30BAB7762178C96300B01953 /* Kingfisher.framework */; };
 		30BAB7782178C96C00B01953 /* Kingfisher.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 30BAB7762178C96300B01953 /* Kingfisher.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -64,11 +65,16 @@
 		30C2112F226BA57B00892173 /* HLSBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30C21129226BA57400892173 /* HLSBuilder.swift */; };
 		30C21130226BA57B00892173 /* StreamDescriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30C2112A226BA57700892173 /* StreamDescriptor.swift */; };
 		30C21131226BA57B00892173 /* HLSServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30C2112B226BA57B00892173 /* HLSServer.swift */; };
+		30C9B7C3227E0E6300B8C20F /* NavigationController+Orientation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30C9B7C2227E0E6300B8C20F /* NavigationController+Orientation.swift */; };
+		30C9B7C5227F177700B8C20F /* SubscriptionFeedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30C9B7C4227F177600B8C20F /* SubscriptionFeedViewController.swift */; };
+		30C9B7C8227F17F600B8C20F /* ChannelListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30C9B7C7227F17F600B8C20F /* ChannelListView.swift */; };
 		30D0490A21E754EE0077E80C /* CommandCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30D0490921E754EE0077E80C /* CommandCenter.swift */; };
 		30D91B70218F6C810020C814 /* ReactiveSwift.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 30D91B6E218F6C810020C814 /* ReactiveSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		30D91B72218F6CB40020C814 /* ReactiveSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 30D91B6E218F6C810020C814 /* ReactiveSwift.framework */; };
 		30DA13E721E3C593000B2638 /* SignalProducer+Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DA13E621E3C593000B2638 /* SignalProducer+Cache.swift */; };
 		30DA13E921E3C6EB000B2638 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DA13E821E3C6EB000B2638 /* Constants.swift */; };
+		30DD6A5D227F87D300C158BE /* SubscriptionFeedGridViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DD6A5C227F87D300C158BE /* SubscriptionFeedGridViewController.swift */; };
+		30DD6A5F227F880600C158BE /* GenericVideoGridCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DD6A5E227F880500C158BE /* GenericVideoGridCellView.swift */; };
 		30E3063521E7E13A008C6ECB /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30E3063421E7E13A008C6ECB /* Settings.swift */; };
 		30E3063721E8C2C3008C6ECB /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30E3063621E8C2C3008C6ECB /* Reachability.swift */; };
 		30E3063921E8DC7C008C6ECB /* ButtonStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30E3063821E8DC7C008C6ECB /* ButtonStackView.swift */; };
@@ -146,6 +152,7 @@
 		3066682721E7D057001B01C7 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		30935A5D227B296000652B86 /* HomeFeedAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeFeedAPI.swift; sourceTree = "<group>"; };
 		30935A5F227B45A500652B86 /* HomeFeedAPI+Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HomeFeedAPI+Persistence.swift"; sourceTree = "<group>"; };
+		30947809227F8875002E1A63 /* GenericVideoGridHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericVideoGridHeaderView.swift; sourceTree = "<group>"; };
 		30988C1E21DEBF5C0070D14A /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 		30988C2021DEC0BC0070D14A /* CoreStore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreStore.framework; path = Carthage/Build/iOS/CoreStore.framework; sourceTree = "<group>"; };
 		30A81A3621D539F600FBE8EE /* VideoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoViewController.swift; sourceTree = "<group>"; };
@@ -163,7 +170,7 @@
 		30BAB75F21787D0D00B01953 /* GoogleSignIn.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GoogleSignIn.framework; path = Carthage/Build/iOS/GoogleSignIn.framework; sourceTree = "<group>"; };
 		30BAB76221787EB100B01953 /* SignInViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInViewController.swift; sourceTree = "<group>"; };
 		30BAB764217893E400B01953 /* SubscriptionFeedAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionFeedAPI.swift; sourceTree = "<group>"; };
-		30BAB76A2178B47A00B01953 /* SubscriptionFeedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionFeedViewController.swift; sourceTree = "<group>"; };
+		30BAB76A2178B47A00B01953 /* OldSubscriptionFeedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OldSubscriptionFeedViewController.swift; sourceTree = "<group>"; };
 		30BAB7742178BBC500B01953 /* VideoListTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoListTableCell.swift; sourceTree = "<group>"; };
 		30BAB7762178C96300B01953 /* Kingfisher.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Kingfisher.framework; path = Carthage/Build/iOS/Kingfisher.framework; sourceTree = "<group>"; };
 		30BAB7792178CDFF00B01953 /* Date+Since.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Since.swift"; sourceTree = "<group>"; };
@@ -174,10 +181,15 @@
 		30C21129226BA57400892173 /* HLSBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HLSBuilder.swift; sourceTree = "<group>"; };
 		30C2112A226BA57700892173 /* StreamDescriptor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamDescriptor.swift; sourceTree = "<group>"; };
 		30C2112B226BA57B00892173 /* HLSServer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HLSServer.swift; sourceTree = "<group>"; };
+		30C9B7C2227E0E6300B8C20F /* NavigationController+Orientation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NavigationController+Orientation.swift"; sourceTree = "<group>"; };
+		30C9B7C4227F177600B8C20F /* SubscriptionFeedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionFeedViewController.swift; sourceTree = "<group>"; };
+		30C9B7C7227F17F600B8C20F /* ChannelListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelListView.swift; sourceTree = "<group>"; };
 		30D0490921E754EE0077E80C /* CommandCenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandCenter.swift; sourceTree = "<group>"; };
 		30D91B6E218F6C810020C814 /* ReactiveSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReactiveSwift.framework; path = Carthage/Build/iOS/ReactiveSwift.framework; sourceTree = "<group>"; };
 		30DA13E621E3C593000B2638 /* SignalProducer+Cache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SignalProducer+Cache.swift"; sourceTree = "<group>"; };
 		30DA13E821E3C6EB000B2638 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		30DD6A5C227F87D300C158BE /* SubscriptionFeedGridViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionFeedGridViewController.swift; sourceTree = "<group>"; };
+		30DD6A5E227F880500C158BE /* GenericVideoGridCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericVideoGridCellView.swift; sourceTree = "<group>"; };
 		30E3063421E7E13A008C6ECB /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		30E3063621E8C2C3008C6ECB /* Reachability.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reachability.swift; sourceTree = "<group>"; };
 		30E3063821E8DC7C008C6ECB /* ButtonStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonStackView.swift; sourceTree = "<group>"; };
@@ -303,6 +315,7 @@
 				40E2E1F821E3E7AE007EA359 /* Optional+Error.swift */,
 				40822CBA21E4FE8700903390 /* UIView+Blur.swift */,
 				30935A5F227B45A500652B86 /* HomeFeedAPI+Persistence.swift */,
+				30C9B7C2227E0E6300B8C20F /* NavigationController+Orientation.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -360,7 +373,9 @@
 			isa = PBXGroup;
 			children = (
 				301BB502227B4B38004EA7E7 /* GenericVideoGridViewController.swift */,
+				30DD6A60227F884100C158BE /* GridViews */,
 				301BB506227B5FA7004EA7E7 /* HomeFeedGridViewController.swift */,
+				30DD6A5C227F87D300C158BE /* SubscriptionFeedGridViewController.swift */,
 			);
 			path = VideoGrid;
 			sourceTree = "<group>";
@@ -402,6 +417,7 @@
 				40822CB921E3FFBB00903390 /* SignIn */,
 				30935A61227B496500652B86 /* VideoGrid */,
 				4021444421E623BF00AAC670 /* VideoList */,
+				30C9B7C6227F17CE00B8C20F /* SubscriptionFeed */,
 				3005DC62219B763D0002F6A1 /* PlayerView */,
 				30A81A3821D53A5F00FBE8EE /* VideoView */,
 			);
@@ -411,7 +427,7 @@
 		30BAB7732178BB7400B01953 /* SubscriptionFeed */ = {
 			isa = PBXGroup;
 			children = (
-				30BAB76A2178B47A00B01953 /* SubscriptionFeedViewController.swift */,
+				30BAB76A2178B47A00B01953 /* OldSubscriptionFeedViewController.swift */,
 			);
 			path = SubscriptionFeed;
 			sourceTree = "<group>";
@@ -424,6 +440,24 @@
 				30C21128226BA57100892173 /* SegmentInformation.swift */,
 			);
 			path = HLS;
+			sourceTree = "<group>";
+		};
+		30C9B7C6227F17CE00B8C20F /* SubscriptionFeed */ = {
+			isa = PBXGroup;
+			children = (
+				30C9B7C4227F177600B8C20F /* SubscriptionFeedViewController.swift */,
+				30C9B7C7227F17F600B8C20F /* ChannelListView.swift */,
+			);
+			path = SubscriptionFeed;
+			sourceTree = "<group>";
+		};
+		30DD6A60227F884100C158BE /* GridViews */ = {
+			isa = PBXGroup;
+			children = (
+				30DD6A5E227F880500C158BE /* GenericVideoGridCellView.swift */,
+				30947809227F8875002E1A63 /* GenericVideoGridHeaderView.swift */,
+			);
+			path = GridViews;
 			sourceTree = "<group>";
 		};
 		4021444421E623BF00AAC670 /* VideoList */ = {
@@ -630,7 +664,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				30BAB76B2178B47A00B01953 /* SubscriptionFeedViewController.swift in Sources */,
+				30BAB76B2178B47A00B01953 /* OldSubscriptionFeedViewController.swift in Sources */,
 				30C2112E226BA57B00892173 /* SegmentInformation.swift in Sources */,
 				30E3063B21E90AAF008C6ECB /* RadialGradientLayer.swift in Sources */,
 				30A81A3E21D53E9500FBE8EE /* VideoMetadataView.swift in Sources */,
@@ -649,6 +683,7 @@
 				30DA13E721E3C593000B2638 /* SignalProducer+Cache.swift in Sources */,
 				30DA13E921E3C6EB000B2638 /* Constants.swift in Sources */,
 				30ABE2212190B48E00E4FEA4 /* PlayerViewController.swift in Sources */,
+				30C9B7C5227F177700B8C20F /* SubscriptionFeedViewController.swift in Sources */,
 				30E3063521E7E13A008C6ECB /* Settings.swift in Sources */,
 				4021444C21E63C8500AAC670 /* SearchAPI.swift in Sources */,
 				4021444721E625E300AAC670 /* GenericVideoListViewController.swift in Sources */,
@@ -675,14 +710,19 @@
 				302182BF226F5EE600EDE0D2 /* SimpleVideoListViewController.swift in Sources */,
 				30A81A3721D539F600FBE8EE /* VideoViewController.swift in Sources */,
 				30C2112D226BA57B00892173 /* VideoStreamAPI.swift in Sources */,
+				30DD6A5F227F880600C158BE /* GenericVideoGridCellView.swift in Sources */,
+				30C9B7C8227F17F600B8C20F /* ChannelListView.swift in Sources */,
 				30F48900219CD3E1002FAE36 /* SplitViewController.swift in Sources */,
+				30C9B7C3227E0E6300B8C20F /* NavigationController+Orientation.swift in Sources */,
 				30E3063721E8C2C3008C6ECB /* Reachability.swift in Sources */,
 				30B03AC221E68A45007B3E38 /* UIRebindableTableViewCell.swift in Sources */,
 				40E2E1F321E292D5007EA359 /* YoutubeClient.swift in Sources */,
 				40E2E1F921E3E7AE007EA359 /* Optional+Error.swift in Sources */,
+				30DD6A5D227F87D300C158BE /* SubscriptionFeedGridViewController.swift in Sources */,
 				302D03FF216E197A009FC2E5 /* AppDelegate.swift in Sources */,
 				30BAB76321787EB100B01953 /* SignInViewController.swift in Sources */,
 				30F2E38721DCFAF9005EFCA9 /* DownloadManager.swift in Sources */,
+				3094780A227F8875002E1A63 /* GenericVideoGridHeaderView.swift in Sources */,
 				4021444A21E631BB00AAC670 /* SearchListViewController.swift in Sources */,
 				30BAB765217893E400B01953 /* SubscriptionFeedAPI.swift in Sources */,
 				3005DC64219B767D0002F6A1 /* PlayerControlView.swift in Sources */,

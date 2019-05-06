@@ -9,7 +9,7 @@
 import os.log
 import UIKit
 
-class SubscriptionFeedViewController: SimpleVideoListViewController {
+class OldSubscriptionFeedViewController: SimpleVideoListViewController {
     private var cutoffDate: Date?
 
     override func viewDidLoad() {

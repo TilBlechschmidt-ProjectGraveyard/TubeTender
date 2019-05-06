@@ -7,7 +7,6 @@
 //
 
 import ReactiveSwift
-import SnapKit
 import UIKit
 
 struct GenericVideoGridViewSection {
@@ -18,6 +17,19 @@ struct GenericVideoGridViewSection {
 }
 
 class GenericVideoGridViewController: UICollectionViewController {
+    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+        // TODO Only do on iPhone
+        return .portrait
+    }
+
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
+    }
+
+    let sectionBased: Bool
+
+    let topSafeAreaOverlayView = UIView()
+
     let videoPlayer: VideoPlayer
     let layout = UICollectionViewFlowLayout()
     var sections: [GenericVideoGridViewSection] = []
@@ -32,30 +44,78 @@ class GenericVideoGridViewController: UICollectionViewController {
         }
     }
 
-    init(videoPlayer: VideoPlayer) {
+    func refreshItemSize() {
+        let isSmallDevice = UIDevice.current.userInterfaceIdiom == .phone
+        let frameWidth = collectionView.contentSize.width
+        let defaultItemWidth = CGFloat(300.0)
+        let itemPadding = isSmallDevice ? 0 : 2 * Constants.uiPadding
+        let itemWidth = isSmallDevice ? frameWidth - itemPadding : defaultItemWidth
+        layout.itemSize = CGSize(width: itemWidth, height: itemWidth * 0.5625 + Constants.channelIconSize + 2 * Constants.uiPadding)
+    }
+
+    init(videoPlayer: VideoPlayer, fetchInitialData: Bool = true, sectionBased: Bool = true) {
         self.videoPlayer = videoPlayer
+        self.sectionBased = sectionBased
         super.init(collectionViewLayout: layout)
 
-        let itemWidth = CGFloat(300.0)
-        layout.sectionInset = UIEdgeInsets(top: 0, left: 2 * Constants.uiPadding, bottom: 3 * Constants.uiPadding, right: 2 * Constants.uiPadding)
-        layout.itemSize = CGSize(width: itemWidth, height: itemWidth * 0.5625 + Constants.channelIconSize + 2 * Constants.uiPadding)
-        layout.headerReferenceSize = CGSize(width: view.bounds.width, height: Constants.channelIconSize + 2 * Constants.uiPadding)
+        let isSmallDevice = UIDevice.current.userInterfaceIdiom == .phone
+        let sideInset = isSmallDevice || !sectionBased ? 0 : 2 * Constants.uiPadding
+        layout.sectionInsetReference = .fromSafeArea
+        layout.sectionInset = UIEdgeInsets(top: 0, left: sideInset, bottom: 3 * Constants.uiPadding, right: sideInset)
+
+        layout.sectionHeadersPinToVisibleBounds = true
 
         collectionView.backgroundColor = Constants.backgroundColor
         collectionView.allowsSelection = true
+        collectionView.delegate = self
 
         collectionView.refreshControl = UIRefreshControl()
         collectionView.refreshControl?.addTarget(self, action: #selector(handlePullToRefresh), for: .valueChanged)
+        collectionView.refreshControl?.layoutMargins = collectionView.safeAreaInsets
 
-        collectionView.register(GenericVideoGridViewCell.self, forCellWithReuseIdentifier: GenericVideoGridViewCell.identifier)
-        collectionView.register(GenericVideoGridSupplimentaryView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: GenericVideoGridSupplimentaryView.identifier)
+        collectionView.register(GenericVideoGridCellView.self, forCellWithReuseIdentifier: GenericVideoGridCellView.identifier)
+        collectionView.register(GenericVideoGridHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: GenericVideoGridHeaderView.identifier)
 
-        collectionView.refreshControl?.beginRefreshing()
-        setNeedsNewData()
+        if fetchInitialData {
+            collectionView.refreshControl?.beginRefreshing()
+            setNeedsNewData()
+        }
+
+        let longPressGestureRecognizer = UILongPressGestureRecognizer(
+            target: self,
+            action: #selector(handleLongPress(gestureRecognizer:)))
+        collectionView.addGestureRecognizer(longPressGestureRecognizer)
     }
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    override func viewDidLayoutSubviews() {
+        refreshItemSize()
+
+        if sectionBased {
+            let headerContentSize = Constants.channelIconSize + 2 * Constants.uiPadding
+            let topSafeAreaInset = collectionView.safeAreaInsets.top
+
+            layout.headerReferenceSize = CGSize(width: view.bounds.width, height: headerContentSize + topSafeAreaInset)
+        }
+    }
+
+    override func viewDidLoad() {
+        if sectionBased {
+            collectionView.contentInsetAdjustmentBehavior = .never
+        } else {
+            collectionView.contentInsetAdjustmentBehavior = .automatic
+        }
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        navigationController?.setNavigationBarHidden(true, animated: true)
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        navigationController?.setNavigationBarHidden(false, animated: true)
     }
 
     func fetchNextData() -> SignalProducer<[GenericVideoGridViewSection], Error> {
@@ -70,8 +130,8 @@ class GenericVideoGridViewController: UICollectionViewController {
         guard !fetching else { return }
         fetching = true
         fetchNextData().startWithResult { newSectionsResult in
-            if let newSections = newSectionsResult.value {
-                DispatchQueue.main.sync {
+            DispatchQueue.main.async {
+                if let newSections = newSectionsResult.value {
                     let previousData = self.sections
 
                     self.collectionView.performBatchUpdates({
@@ -107,15 +167,28 @@ class GenericVideoGridViewController: UICollectionViewController {
                         }
                     }, completion: nil)
                 }
-            }
 
-            self.fetching = false
+                self.fetching = false
+            }
         }
     }
 
     @objc func handlePullToRefresh() {
         resetData()
         setNeedsNewData(clearingPreviousData: true)
+    }
+
+    @objc func handleLongPress(gestureRecognizer: UILongPressGestureRecognizer) {
+        guard gestureRecognizer.state == .began else { return }
+
+        let pressLocation = gestureRecognizer.location(in: collectionView)
+
+        guard let indexPath = collectionView.indexPathForItem(at: pressLocation) else { return }
+
+        IncomingVideoReceiver.default.handle(
+            video: sections[indexPath.section].items[indexPath.row],
+            source: .rect(rect: collectionView.cellForItem(at: indexPath)?.frame ?? .zero, view: collectionView, permittedArrowDirections: [.left, .down, .up])
+        )
     }
 }
 
@@ -129,9 +202,9 @@ extension GenericVideoGridViewController {
     }
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = self.collectionView.dequeueReusableCell(withReuseIdentifier: GenericVideoGridViewCell.identifier, for: indexPath)
+        let cell = self.collectionView.dequeueReusableCell(withReuseIdentifier: GenericVideoGridCellView.identifier, for: indexPath)
 
-        if let cell = cell as? GenericVideoGridViewCell {
+        if let cell = cell as? GenericVideoGridCellView {
             cell.video = sections[indexPath.section].items[indexPath.row]
         }
 
@@ -141,9 +214,9 @@ extension GenericVideoGridViewController {
     override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         switch kind {
         case UICollectionView.elementKindSectionHeader:
-            let view = self.collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: GenericVideoGridSupplimentaryView.identifier, for: indexPath)
+            let view = self.collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: GenericVideoGridHeaderView.identifier, for: indexPath)
 
-            if let view = view as? GenericVideoGridSupplimentaryView {
+            if let view = view as? GenericVideoGridHeaderView {
                 view.title = sections[indexPath.section].title
                 view.subtitle = sections[indexPath.section].subtitle
                 view.icon = sections[indexPath.section].icon
@@ -164,142 +237,15 @@ extension GenericVideoGridViewController {
             self.videoPlayer.playNow(video)
         }
     }
-
-    override func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        if indexPath.section >= sections.count - 2 {
-            setNeedsNewData()
-        }
-    }
 }
 
-class GenericVideoGridSupplimentaryView: UICollectionReusableView {
-    static let kind: String = "GenericTitle"
-    static let identifier: String = "GenericVideoGridSupplimentaryView"
-
-    let titleLabel = UILabel()
-    let subtitleLabel = UILabel()
-    let topBorder = UIView()
-    let iconView = UIImageView()
-
-    var iconVisibleConstraint: Constraint!
-    var iconHiddenConstraint: Constraint!
-
-    var icon: URL? {
-        didSet {
-            iconView.image = nil
-            iconView.kf.cancelDownloadTask()
-            iconView.kf.setImage(with: icon)
-
-            if icon == nil {
-                iconVisibleConstraint.deactivate()
-                iconHiddenConstraint.activate()
-            } else {
-                iconHiddenConstraint.deactivate()
-                iconVisibleConstraint.activate()
-            }
-        }
-    }
-
-    var title: String! {
-        didSet {
-            titleLabel.text = title
-        }
-    }
-
-    var subtitle: String? {
-        didSet {
-            subtitleLabel.text = subtitle
-        }
-    }
-
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        setupUI()
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    override func prepareForReuse() {
-        titleLabel.text = nil
-        subtitleLabel.text = nil
-    }
-
-    func setupUI() {
-        topBorder.backgroundColor = Constants.selectedBackgroundColor
-        addSubview(topBorder)
-        topBorder.snp.makeConstraints { make in
-            make.top.equalToSuperview()
-            make.centerX.equalToSuperview()
-            make.width.equalToSuperview()
-            make.height.equalTo(1)
-        }
-
-        titleLabel.textColor = .white
-
-        subtitleLabel.textColor = Constants.borderColor
-        subtitleLabel.font = subtitleLabel.font.withSize(14)
-
-        iconView.layer.cornerRadius = Constants.channelIconSize / 2
-        iconView.layer.masksToBounds = false
-        iconView.clipsToBounds = true
-
-        let stackView = UIStackView(arrangedSubviews: [iconView, titleLabel, subtitleLabel])
-        stackView.spacing = Constants.uiPadding
-        stackView.alignment = .center
-        addSubview(stackView)
-        stackView.snp.makeConstraints { make in
-            make.centerY.equalToSuperview()
-            make.height.equalToSuperview()
-            make.width.lessThanOrEqualToSuperview()
-            make.left.equalToSuperview().offset(Constants.uiPadding)
-        }
-
-        iconView.snp.makeConstraints { make in
-            make.height.equalTo(Constants.channelIconSize)
-        }
-
-        iconView.snp.prepareConstraints { make in
-            iconVisibleConstraint = make.width.equalTo(Constants.channelIconSize).constraint
-            iconHiddenConstraint = make.width.equalTo(0).constraint
-        }
-
-        iconHiddenConstraint.activate()
-    }
-}
-
-class GenericVideoGridViewCell: UICollectionViewCell {
-    static let identifier: String = "GenericVideoGridViewCell"
-
-    let videoCellView = VideoCellView()
-
-    var video: Video! {
-        didSet {
-            videoCellView.video = video
-        }
-    }
-
-    var hideThumbnail: Bool = false {
-        didSet {
-            videoCellView.hideThumbnail = hideThumbnail
-        }
-    }
-
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-
-        selectedBackgroundView = UIView()
-        selectedBackgroundView?.backgroundColor = Constants.selectedBackgroundColor
-
-        addSubview(videoCellView)
-        videoCellView.snp.makeConstraints { make in
-            make.center.equalToSuperview()
-            make.size.equalToSuperview()
-        }
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+extension GenericVideoGridViewController: UICollectionViewDelegateFlowLayout {
+    // TODO Fix this code to center the items
+//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+//        let numberOfItems = collectionView.numberOfItems(inSection: section)
+//        let combinedItemWidth: CGFloat = (CGFloat(numberOfItems) * layout.itemSize.width) + ((CGFloat(numberOfItems) - 1) * layout.minimumInteritemSpacing)
+//        let padding = (collectionView.contentSize.width - combinedItemWidth.truncatingRemainder(dividingBy: collectionView.contentSize.width)) / 2
+//
+//        return UIEdgeInsets(top: 0, left: padding, bottom: 0, right: padding)
+//    }
 }

@@ -60,7 +60,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setupNetworkMonitoring()
         hlsServer?.listen()
 
-        window!.rootViewController = HomeFeedGridViewController(videoPlayer: VideoPlayer.shared)
+//        let rootVC = HomeFeedGridViewController(videoPlayer: VideoPlayer.shared)
+        let rootVC = SubscriptionFeedViewController()
+
+        let navController = UINavigationController(rootViewController: rootVC)
+        navController.navigationBar.barStyle = .blackOpaque
+
+        window!.rootViewController = navController
 
         return true
     }

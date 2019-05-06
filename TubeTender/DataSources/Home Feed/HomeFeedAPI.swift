@@ -25,7 +25,7 @@ class HomeFeedAPI {
     var continuationToken: String?
 
     var canContinue: Bool {
-        return identityToken != nil && continuationToken != nil
+        return continuationToken != nil
     }
 
     init(cookies: [HTTPCookie]) {
@@ -72,6 +72,8 @@ class HomeFeedAPI {
         guard let identityToken = identityToken, let continuationToken = continuationToken else {
             return SignalProducer(error: HomeFeedAPIError.noContinuationAvailable)
         }
+
+        // TODO When unauthenticated / authentication is invalid continuation contains the initial data. Bail out.
 
         let url = URL(string: "https://www.youtube.com/browse_ajax?ctoken=\(continuationToken)") //"&continuation=\(continuationToken)")
         var request = URLRequest(url: url!)

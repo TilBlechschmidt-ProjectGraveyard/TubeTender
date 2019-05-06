@@ -39,6 +39,13 @@ class SubscriptionFeedAPI {
         }
     }
 
+    func subscribedChannels() -> SignalProducer<[Channel], Error> {
+        return fetchSubscribedChannels(pageToken: nil)
+            .flatten()
+            .map(YoutubeClient.shared.channel(withID:))
+            .collect()
+    }
+
     func fetchSubscriptionFeed(publishedBefore: Date? = nil) -> SignalProducer<(videos: [Video], endDate: Date), Error> {
         return fetchSubscribedChannels().flatMap(.latest) {
             self.fetchSubscriptionFeed(forChannels: $0, publishedBefore: publishedBefore)
