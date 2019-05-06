@@ -240,12 +240,11 @@ extension GenericVideoGridViewController {
 }
 
 extension GenericVideoGridViewController: UICollectionViewDelegateFlowLayout {
-    // TODO Fix this code to center the items
-//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-//        let numberOfItems = collectionView.numberOfItems(inSection: section)
-//        let combinedItemWidth: CGFloat = (CGFloat(numberOfItems) * layout.itemSize.width) + ((CGFloat(numberOfItems) - 1) * layout.minimumInteritemSpacing)
-//        let padding = (collectionView.contentSize.width - combinedItemWidth.truncatingRemainder(dividingBy: collectionView.contentSize.width)) / 2
-//
-//        return UIEdgeInsets(top: 0, left: padding, bottom: 0, right: padding)
-//    }
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        let itemWidth = layout.itemSize.width + layout.minimumInteritemSpacing
+        let totalSpacing = collectionView.contentSize.width.truncatingRemainder(dividingBy: itemWidth)
+        let padding = totalSpacing / 2
+
+        return UIEdgeInsets(top: 0, left: padding, bottom: 0, right: padding)
+    }
 }
