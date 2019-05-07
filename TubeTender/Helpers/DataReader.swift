@@ -8,27 +8,27 @@
 
 import Foundation
 
-class DataReader {
-    let data: Data
-    var offset: Int
+public class DataReader {
+    private let data: Data
+    internal private(set) var offset: Int
 
-    init(data: Data, offset: Int = 0) {
+    public init(data: Data, offset: Int = 0) {
         self.data = data
         self.offset = offset
     }
 
-    func advance(byBytes bytes: Int) {
+    public func advance(byBytes bytes: Int) {
         offset += bytes
     }
 
-    func readByte() -> UInt8 {
+    public func readByte() -> UInt8 {
         defer {
             offset += 1
         }
         return data[offset]
     }
 
-    func read(bytes: UInt8) -> UInt64 {
+    public func read(bytes: UInt8) -> UInt64 {
         return (0..<bytes).reduce(0) { acc, byteIndex in
             let byte = readByte()
             let shift = (bytes - 1 - byteIndex) * 8
