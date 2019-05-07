@@ -12,7 +12,6 @@ env:
     - PROJECT=TubeTender.xcodeproj
     - CODECOV_TOKEN="5e9d4d1a-6817-4b81-8d3c-c3be5eb9b968"
   matrix:
-    - DESTINATION="OS=12.0,name=iPhone X"   SCHEME="TubeTender"   CARTHAGE_PLATFORM="iOS"
     - DESTINATION="OS=12.2,name=iPhone X"   SCHEME="TubeTender"   CARTHAGE_PLATFORM="iOS"
 
 script:
@@ -21,4 +20,4 @@ script:
   - xcodebuild -project "$PROJECT" -scheme "$SCHEME" -destination "$DESTINATION" test | xcpretty;
 
 after_success:
-  - if [[ "$MAIN_BUILD" == "YES" ]]; then bash <(curl -s https://codecov.io/bash); fi
+  - bash <(curl -s https://codecov.io/bash)
