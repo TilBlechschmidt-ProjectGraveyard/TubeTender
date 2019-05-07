@@ -86,4 +86,3 @@ extension RootViewController: VideoViewControllerDelegate {
         }
     }
 }
-
