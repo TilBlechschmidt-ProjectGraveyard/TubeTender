@@ -159,7 +159,15 @@ public class PlayerViewController: UIViewController {
         playerControlView.addGestureRecognizer(pinchGestureRecognizer)
     }
 
-    private(set) var isFullscreenActive = false {
+    func disableControls() {
+        playerControlView.isHidden = true
+    }
+
+    func enableControls() {
+        playerControlView.isHidden = false
+    }
+
+    var isFullscreenActive = false {
         didSet {
             UIView.animate(withDuration: 0.25) {
                 self.playerControlView.isFullscreenActive = self.isFullscreenActive
@@ -170,9 +178,9 @@ public class PlayerViewController: UIViewController {
         }
     }
 
-    var idleTimer: Timer?
-    var controlsDisabled = false
-    var controlsVisible: Bool {
+    private var idleTimer: Timer?
+    private var controlsDisabled = false
+    private var controlsVisible: Bool {
         get {
             return self.playerControlView.controlView.alpha == 1
         }

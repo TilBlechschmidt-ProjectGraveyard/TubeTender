@@ -224,6 +224,7 @@ class PlayerControlView: UIView {
     private var blurView: UIVisualEffectView!
 
     override func layoutSubviews() {
+        super.layoutSubviews()
         playButtonGradient.frame = blurView.frame
         bottomGradient.frame = blurView.frame
         gradientLayer.frame = blurView.frame

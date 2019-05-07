@@ -11,13 +11,13 @@ import UIKit
 class RootViewController: UITabBarController {
     let videoViewController: VideoViewController
 
-    init(videoPlayer: VideoPlayer, incomingVideoReceiver: IncomingVideoReceiver) {
+    init(videoPlayer: VideoPlayer, incomingVideoReceiver: IncomingVideoReceiver, subscriptionFeedAPI: SubscriptionFeedAPI) {
         videoViewController = VideoViewController(videoPlayer: videoPlayer, incomingVideoReceiver: incomingVideoReceiver)
         super.init(nibName: nil, bundle: nil)
 
         viewControllers = [
             createNavigationController(rootViewController: HomeFeedViewController(videoPlayer: videoPlayer, incomingVideoReceiver: incomingVideoReceiver)),
-            createNavigationController(rootViewController: SubscriptionFeedViewController(videoPlayer: videoPlayer, incomingVideoReceiver: incomingVideoReceiver)),
+            createNavigationController(rootViewController: SubscriptionFeedViewController(videoPlayer: videoPlayer, incomingVideoReceiver: incomingVideoReceiver, subscriptionFeedAPI: subscriptionFeedAPI)),
             createNavigationController(rootViewController: SearchListViewController(videoPlayer: videoPlayer)),
             createNavigationController(rootViewController: QueueListViewController(videoPlayer: videoPlayer)),
             createNavigationController(rootViewController: SignInViewController())
@@ -28,8 +28,20 @@ class RootViewController: UITabBarController {
         view.addSubview(videoViewController.view)
         videoViewController.viewDidAppear(false)
 
+        videoViewController.view.addDropShadow()
+
         view.addInteraction(UIDropInteraction(delegate: incomingVideoReceiver))
         tabBar.barStyle = .black
+
+        videoViewController.view.alpha = 0
+        videoPlayer.currentItem.signal.take(duringLifetimeOf: self).observeValues { [unowned self] video in
+            guard self.videoPosition == 0 else { return }
+            DispatchQueue.main.async {
+                UIView.animate(withDuration: 0.5) {
+                    self.videoViewController.view.alpha = video == nil ? 0 : 1
+                }
+            }
+        }
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -38,6 +50,12 @@ class RootViewController: UITabBarController {
 
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
+        updateVideoPosition()
+    }
+
+    override public func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        videoViewController.viewWillTransition(to: size, with: coordinator)
         updateVideoPosition()
     }
 
@@ -51,15 +69,23 @@ class RootViewController: UITabBarController {
 
     private func updateVideoPosition() {
         videoViewController.videoDetailViewController.view.alpha = CGFloat(videoPosition)
+        videoViewController.view.updateDropShadow()
 
-        let videoWidth = view.frame.width * (0.5 + videoPosition / 2)
+        if videoPosition == 0 {
+            videoViewController.playerViewController.disableControls()
+        } else {
+            videoViewController.playerViewController.enableControls()
+        }
+
+        let videoWidthPercentage: CGFloat = UIDevice.current.userInterfaceIdiom == .phone ? 0.5 : 0.25
+        let videoWidth = view.frame.width * (videoWidthPercentage + videoPosition * (1 - videoWidthPercentage))
         let videoHeight = videoWidth * Constants.defaultAspectRatio
 
         let tabBarPosition = tabBar.convert(tabBar.bounds, to: view).minY
 
         videoViewController.view.frame = CGRect(
-            x: view.frame.width - videoWidth - (1 - videoPosition) * 10,
-            y: (1 - videoPosition) * (tabBarPosition - videoHeight - 10),
+            x: view.frame.width - videoWidth - (1 - videoPosition) * Constants.uiPadding,
+            y: (1 - videoPosition) * (tabBarPosition - videoHeight - Constants.uiPadding),
             width: videoWidth,
             height: videoHeight + videoPosition * (view.frame.height - videoHeight))
     }
@@ -81,9 +107,17 @@ extension RootViewController: VideoViewControllerDelegate {
             videoPosition = 0
         }
 
-        UIView.animate(withDuration: 0.2) {
+        UIView.animate(withDuration: 0.2, delay: 0, options: [.layoutSubviews], animations: {
             self.updateVideoPosition()
-        }
+        })
+    }
+
+    func videoViewControllerUserDidTapVideo(_ videoViewController: VideoViewController) {
+        videoPosition = 1
+
+        UIView.animate(withDuration: 0.2, delay: 0, options: [.layoutSubviews], animations: {
+            self.updateVideoPosition()
+        })
     }
 }
 

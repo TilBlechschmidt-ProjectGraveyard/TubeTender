@@ -9,20 +9,25 @@
 import UIKit
 
 class SubscriptionFeedViewController: UIViewController {
+    private let feedAPI: SubscriptionFeedAPI
+
     private let subscriptionListViewController: SubscriptionFeedGridViewController
     private let channelListView: ChannelListView
+    private let channelActivityIndicator = UIActivityIndicatorView()
     private let borderView = UIView()
 
     private let compact: Bool
 
-    init(videoPlayer: VideoPlayer, incomingVideoReceiver: IncomingVideoReceiver, compact: Bool = UIDevice.current.userInterfaceIdiom == .phone) {
+    init(videoPlayer: VideoPlayer, incomingVideoReceiver: IncomingVideoReceiver, subscriptionFeedAPI: SubscriptionFeedAPI, compact: Bool = UIDevice.current.userInterfaceIdiom == .phone) {
         self.channelListView = ChannelListView(compact: compact)
         self.compact = compact
-        self.subscriptionListViewController = SubscriptionFeedGridViewController(videoPlayer: videoPlayer, incomingVideoReceiver: incomingVideoReceiver)
+        self.feedAPI = subscriptionFeedAPI
+        self.subscriptionListViewController = SubscriptionFeedGridViewController(videoPlayer: videoPlayer, incomingVideoReceiver: incomingVideoReceiver, subscriptionFeedAPI: subscriptionFeedAPI)
 
         super.init(nibName: nil, bundle: nil)
 
         self.title = "Subscriptions"
+        self.tabBarItem = UITabBarItem(title: self.title, image: #imageLiteral(resourceName: "movie"), tag: 0)
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -30,15 +35,17 @@ class SubscriptionFeedViewController: UIViewController {
     }
 
     override func viewDidLoad() {
+        let channelListViewHeight = Constants.channelIconSize + 2 * Constants.uiPadding
         view.addSubview(channelListView)
         channelListView.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide.snp.top)
             make.left.equalToSuperview()
 
             if compact {
+                make.top.equalTo(view.safeAreaLayoutGuide.snp.top)
                 make.right.equalToSuperview()
-                // Intrinsic content height
+                make.height.equalTo(channelListViewHeight)
             } else {
+                make.top.equalToSuperview()
                 make.bottom.equalToSuperview()
                 make.width.equalTo(300)
             }
@@ -60,31 +67,41 @@ class SubscriptionFeedViewController: UIViewController {
             }
         }
 
+        addChild(subscriptionListViewController)
         view.addSubview(subscriptionListViewController.view)
         subscriptionListViewController.view.snp.makeConstraints { make in
+            make.top.equalToSuperview()
             make.bottom.equalToSuperview()
             make.right.equalToSuperview()
 
             if compact {
-                make.top.equalTo(borderView.snp.bottom)
                 make.left.equalToSuperview()
             } else {
-                make.top.equalTo(view.safeAreaLayoutGuide.snp.top)
                 make.left.equalTo(borderView.snp.right)
             }
+        }
+        subscriptionListViewController.didMove(toParent: self)
+
+        if compact {
+            subscriptionListViewController.collectionView.contentInset = UIEdgeInsets(top: channelListViewHeight + 1, left: 0, bottom: 0, right: 0)
         }
 
         view.bringSubviewToFront(channelListView)
         view.bringSubviewToFront(borderView)
 
-        NotificationCenter.default.addObserver(self, selector: #selector(self.handleLogin), name: .googleSignInSucceeded, object: nil)
-    }
+        channelActivityIndicator.tintColor = .white
+        channelActivityIndicator.hidesWhenStopped = true
+        view.addSubview(channelActivityIndicator)
+        channelActivityIndicator.snp.makeConstraints { make in
+            make.center.equalTo(channelListView)
+        }
 
-    @objc func handleLogin() {
-        subscriptionListViewController.setNeedsNewData()
-        SubscriptionFeedAPI.shared.subscribedChannels().startWithResult { result in
+        channelActivityIndicator.startAnimating()
+        subscriptionListViewController.setNeedsNewData(clearingPreviousData: true)
+        feedAPI.subscribedChannels().startWithResult { result in
             if let channels = result.value {
                 self.channelListView.channels = channels
+                self.channelActivityIndicator.stopAnimating()
             }
         }
     }

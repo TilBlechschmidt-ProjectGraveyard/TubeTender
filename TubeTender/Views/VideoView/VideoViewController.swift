@@ -10,8 +10,6 @@ import ReactiveSwift
 import UIKit
 
 public class VideoViewController: UIViewController {
-    private let emptyStateView = EmptyStateView(image: #imageLiteral(resourceName: "camera"), text: "No video selected")
-    private let videoView = UIView()
     let playerViewController: PlayerViewController
     let videoDetailViewController = VideoMetadataViewController()
 
@@ -39,17 +37,6 @@ public class VideoViewController: UIViewController {
         // PlayerViewController setup
         playerViewController.delegate = self
 
-        // Logo view setup
-        emptyStateView.alpha = 1
-        view.addSubview(emptyStateView)
-        emptyStateView.snp.makeEdgesEqualToSuperview()
-
-        // Video view setup
-        videoView.alpha = 0
-        videoView.backgroundColor = Constants.backgroundColor
-        view.addSubview(videoView)
-        videoView.snp.makeEdgesEqualToSuperview()
-
         playerViewController.willMove(toParent: self)
         videoDetailViewController.willMove(toParent: self)
 
@@ -64,54 +51,57 @@ public class VideoViewController: UIViewController {
             stackView.distribution = .fill
 
             let swipeGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(userDidSwipeVideo(gestureRecognizer:)))
+            let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(userDidTapVideo(gestureRecognizer:)))
             playerView.addGestureRecognizer(swipeGestureRecognizer)
+            playerView.addGestureRecognizer(tapGestureRecognizer)
             playerView.isUserInteractionEnabled = true
 
-            videoView.addSubview(stackView)
+            view.addSubview(stackView)
             stackView.sendSubviewToBack(videoDetailView)
-//            stackView.snp.makeEdgesEqualToSuperview()
             stackView.snp.makeConstraints { make in
-                make.edges.equalTo(videoView.safeAreaLayoutGuide)
-//                make.top.equalTo(videoView.safeAreaLayoutGuide.snp.top)
-//                make.left.equalTo(videoView.safeAreaLayoutGuide.snp.left)
-//                make.left.equalTo(videoView.safeAreaLayoutGuide.snp.right)
-//                make.bottom.equalTo(videoView.safeAreaLayoutGuide.snp.bottom)
+                make.left.equalTo(view.snp.left)
+                make.right.equalTo(view.snp.right)
+                make.top.equalTo(view.safeAreaLayoutGuide.snp.top)
+                make.bottom.equalTo(view.snp.bottom)
             }
         }
 
         playerViewController.didMove(toParent: self)
         videoDetailViewController.didMove(toParent: self)
 
-        exitFullscreen()
+        orientationDidChange()
 
-//        t blackBar = UIView()
-//        blackBar.backgroundColor = UIColor.black
-//        blackBar.translatesAutoresizingMaskIntoConstraints = false
-//        videoView.addSubview(blackBar)
-//        videoView.addConstraints([
-//            blackBar.topAnchor.constraint(equalTo: videoView.topAnchor),
-//            blackBar.bottomAnchor.constraint(equalTo: playerView.topAnchor),
-//            blackBar.leftAnchor.constraint(equalTo: videoView.safeAreaLayoutGuide.leftAnchor),
-//            blackBar.rightAnchor.constraint(equalTo: videoView.safeAreaLayoutGuide.rightAnchor)
-//            ])
+        let blackBar = UIView()
+        blackBar.backgroundColor = UIColor.black
+        view.addSubview(blackBar)
+        blackBar.snp.makeConstraints { make in
+            make.top.equalToSuperview()
+            make.bottom.equalTo(view.safeAreaLayoutGuide.snp.top)
+            make.left.equalToSuperview()
+            make.right.equalToSuperview()
+        }
 
         videoPlayer.currentItem.producer.take(duringLifetimeOf: self).startWithValues { [unowned self] video in
             if let video = video {
                 self.videoDetailViewController.video = video
-                UIView.animate(withDuration: 0.5) {
-                    self.videoView.alpha = 1
-                    self.emptyStateView.alpha = 0
-                }
-            } else {
-                UIView.animate(withDuration: 0.5) {
-                    self.videoView.alpha = 0
-                    self.emptyStateView.alpha = 1
-                }
             }
         }
     }
 
+    override public func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        orientationDidChange()
+    }
+
+    func orientationDidChange() {
+        if UIDevice.current.orientation.isLandscape {
+            enterFullscreen()
+        } else {
+            exitFullscreen()
+        }
+    }
+
     @objc func userDidSwipeVideo(gestureRecognizer: UIPanGestureRecognizer) {
+        // TODO Don't use y component but diagonal instead.
         switch gestureRecognizer.state {
         case .changed:
             let translation = gestureRecognizer.translation(in: playerViewController.view)
@@ -125,15 +115,27 @@ public class VideoViewController: UIViewController {
         }
     }
 
-    func enterFullscreen() {
+    @objc func userDidTapVideo(gestureRecognizer: UITapGestureRecognizer) {
+        if gestureRecognizer.state == .ended {
+            delegate?.videoViewControllerUserDidTapVideo(self)
+        }
+    }
+
+    func enterFullscreen(tellPlayerViewController: Bool = true) {
+        if tellPlayerViewController {
+            playerViewController.isFullscreenActive = true
+        }
         playerViewController.view.snp.remakeConstraints { make in
             make.bottom.equalToSuperview()
         }
     }
 
-    func exitFullscreen() {
+    func exitFullscreen(tellPlayerViewController: Bool = true) {
+        if tellPlayerViewController {
+            playerViewController.isFullscreenActive = false
+        }
         playerViewController.view.snp.remakeConstraints { make in
-            make.height.equalTo(videoView.safeAreaLayoutGuide.snp.width).multipliedBy(Constants.defaultAspectRatio)
+            make.height.equalTo(view.safeAreaLayoutGuide.snp.width).multipliedBy(Constants.defaultAspectRatio)
         }
     }
 }
@@ -141,10 +143,11 @@ public class VideoViewController: UIViewController {
 extension VideoViewController: PlayerViewControllerDelegate {
     public func playerViewController(_ playerViewController: PlayerViewController, didChangeFullscreenStatus isFullscreenActive: Bool) {
         if isFullscreenActive {
-            enterFullscreen()
+            enterFullscreen(tellPlayerViewController: false)
         } else {
-            exitFullscreen()
+            exitFullscreen(tellPlayerViewController: false)
         }
+
         UIView.animate(withDuration: 0.25) {
             self.view.layoutIfNeeded()
         }
@@ -160,4 +163,5 @@ extension VideoViewController: VideoMetadataViewControllerDelegate {
 public protocol VideoViewControllerDelegate: class {
     func videoViewController(_ videoViewController: VideoViewController, userDidMoveVideoVertical deltaY: CGFloat)
     func videoViewController(_ videoViewController: VideoViewController, userDidReleaseVideo velocityY: CGFloat)
+    func videoViewControllerUserDidTapVideo(_ videoViewController: VideoViewController)
 }

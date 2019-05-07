@@ -10,6 +10,16 @@ import GoogleSignIn
 import UIKit
 
 class SignInViewController: UIViewController, GIDSignInUIDelegate {
+    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+        self.title = "Settings"
+        self.tabBarItem = UITabBarItem(title: self.title, image: #imageLiteral(resourceName: "settings"), tag: 0)
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
 

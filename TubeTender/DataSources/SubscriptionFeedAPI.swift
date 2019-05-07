@@ -11,9 +11,11 @@ import ReactiveSwift
 import YoutubeKit
 
 class SubscriptionFeedAPI {
-    static let shared = SubscriptionFeedAPI()
+    private let authHandler: AuthenticationHandler
 
-    private init() {}
+    init(authHandler: AuthenticationHandler) {
+        self.authHandler = authHandler
+    }
 
     private func fetchSubscribedChannels(pageToken: String? = nil) -> SignalProducer<[Channel.ID], Error> {
         let subscriptionRequest = SubscriptionsListRequest(part: [.snippet],
@@ -40,16 +42,19 @@ class SubscriptionFeedAPI {
     }
 
     func subscribedChannels() -> SignalProducer<[Channel], Error> {
-        return fetchSubscribedChannels(pageToken: nil)
+        return authHandler.awaitGoogleSDKSignIn()
+            .then(fetchSubscribedChannels(pageToken: nil))
             .flatten()
             .map(YoutubeClient.shared.channel(withID:))
             .collect()
     }
 
     func fetchSubscriptionFeed(publishedBefore: Date? = nil) -> SignalProducer<(videos: [Video], endDate: Date), Error> {
-        return fetchSubscribedChannels().flatMap(.latest) {
-            self.fetchSubscriptionFeed(forChannels: $0, publishedBefore: publishedBefore)
-        }
+        return authHandler.awaitGoogleSDKSignIn()
+            .then(fetchSubscribedChannels())
+            .flatMap(.latest) {
+                self.fetchSubscriptionFeed(forChannels: $0, publishedBefore: publishedBefore)
+            }
     }
 
     private func fetchSubscriptionFeed(forChannels channelIDs: [Channel.ID], publishedBefore: Date?) -> SignalProducer<(videos: [Video], endDate: Date), Error> {

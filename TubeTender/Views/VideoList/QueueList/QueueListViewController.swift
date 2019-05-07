@@ -17,6 +17,9 @@ class QueueListViewController: GenericVideoListViewController {
         self.videoPlayer = videoPlayer
         super.init(nibName: nil, bundle: nil)
 
+        self.title = "Queue"
+        self.tabBarItem = UITabBarItem(title: self.title, image: #imageLiteral(resourceName: "queue"), tag: 0)
+
         self.dataSource = self
         setupPlayerBindings()
     }

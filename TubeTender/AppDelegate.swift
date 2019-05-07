@@ -19,6 +19,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     let commandCenter: CommandCenter
     let incomingVideoReceiver: IncomingVideoReceiver
+    let authHandler: AuthenticationHandler
+    let subscriptionFeedAPI: SubscriptionFeedAPI
     let videoPlayer: VideoPlayer
     let hlsServer: HLSServer?
 
@@ -26,6 +28,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         commandCenter = CommandCenter()
         videoPlayer = VideoPlayer(commandCenter: commandCenter)
         incomingVideoReceiver = IncomingVideoReceiver(videoPlayer: videoPlayer)
+        authHandler = AuthenticationHandler(googleSignIn: GIDSignIn.sharedInstance())
+        subscriptionFeedAPI = SubscriptionFeedAPI(authHandler: authHandler)
         hlsServer = try? HLSServer(port: Constants.hlsServerPort)
         super.init()
     }
@@ -42,7 +46,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Override point for customization after application launch.
         YoutubeKit.shared.setAPIKey("AIzaSyDEN6U1W9vvrV5CDgRizZRfd6nHnZZDydU")
 
-        googleSignIn()
         NotificationCenter.default.addObserver(incomingVideoReceiver,
                                                selector: #selector(incomingVideoReceiver.scanPasteboardForURL),
                                                name: UIPasteboard.changedNotification,
@@ -58,7 +61,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         let window = UIWindow()
         self.window = window
-        window.rootViewController = RootViewController(videoPlayer: videoPlayer, incomingVideoReceiver: incomingVideoReceiver)
+        window.rootViewController = RootViewController(videoPlayer: videoPlayer, incomingVideoReceiver: incomingVideoReceiver, subscriptionFeedAPI: subscriptionFeedAPI)
         window.makeKeyAndVisible()
 
         return true
@@ -91,18 +94,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
 
-    private func googleSignIn() {
-        // Initialize sign-in
-        GIDSignIn.sharedInstance().clientID = "1075139575942-l15imga5cglnbvjeir5aoclf9jkf07cf.apps.googleusercontent.com"
-        GIDSignIn.sharedInstance().delegate = self
-
-        var scopes = GIDSignIn.sharedInstance()?.scopes
-        scopes?.append("https://www.googleapis.com/auth/youtube")
-        GIDSignIn.sharedInstance()?.scopes = scopes
-
-        GIDSignIn.sharedInstance()?.signInSilently()
-    }
-
     private func setupNetworkMonitoring() {
         do {
             Network.reachability = try Reachability(hostname: "www.youtube.com")
@@ -129,24 +120,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                    Network.reachability?.isReachableViaWiFi.description ?? "nil",
                    Network.reachability?.isWWAN.description ?? "nil")
         }
-    }
-}
-
-extension AppDelegate: GIDSignInDelegate {
-    func sign(_ signIn: GIDSignIn!, didSignInFor user: GIDGoogleUser!, withError error: Error?) {
-        if let error = error {
-            os_log("Failed to login: %@", log: .googleSignIn, type: .error, error.localizedDescription)
-        } else {
-            os_log("Logged in as %@", log: .googleSignIn, type: .info, user.profile.name)
-            if let accessToken = user.authentication.accessToken {
-                YoutubeKit.shared.setAccessToken(accessToken)
-                NotificationCenter.default.post(name: .googleSignInSucceeded, object: nil, userInfo: nil)
-            }
-        }
-    }
-
-    func sign(_ signIn: GIDSignIn!, didDisconnectWith user: GIDGoogleUser!, withError error: Error?) {
-        os_log("Logged out from user %@ with error: %@", log: .googleSignIn, type: .info, user.profile.name, error?.localizedDescription ?? "nil")
     }
 }
 

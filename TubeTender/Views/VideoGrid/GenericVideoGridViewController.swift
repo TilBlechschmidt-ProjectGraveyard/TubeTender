@@ -64,6 +64,7 @@ class GenericVideoGridViewController: UICollectionViewController {
         collectionView.delegate = self
 
         collectionView.refreshControl = UIRefreshControl()
+        collectionView.refreshControl?.tintColor = .white
         collectionView.refreshControl?.addTarget(self, action: #selector(handlePullToRefresh), for: .valueChanged)
         collectionView.refreshControl?.layoutMargins = collectionView.safeAreaInsets
 
@@ -82,6 +83,14 @@ class GenericVideoGridViewController: UICollectionViewController {
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+
+        DispatchQueue.main.async {
+            self.layout.invalidateLayout()
+        }
     }
 
     override func viewDidLayoutSubviews() {
@@ -104,11 +113,15 @@ class GenericVideoGridViewController: UICollectionViewController {
     }
 
     override func viewWillAppear(_ animated: Bool) {
-        navigationController?.setNavigationBarHidden(true, animated: true)
+        if sectionBased {
+            navigationController?.setNavigationBarHidden(true, animated: true)
+        }
     }
 
     override func viewWillDisappear(_ animated: Bool) {
-        navigationController?.setNavigationBarHidden(false, animated: true)
+        if sectionBased {
+            navigationController?.setNavigationBarHidden(false, animated: true)
+        }
     }
 
     func fetchNextData() -> SignalProducer<[GenericVideoGridViewSection], Error> {

@@ -10,7 +10,10 @@ import ReactiveSwift
 import UIKit
 
 class SubscriptionFeedGridViewController: GenericVideoGridViewController {
-    init(videoPlayer: VideoPlayer, incomingVideoReceiver: IncomingVideoReceiver) {
+    private let feedAPI: SubscriptionFeedAPI
+
+    init(videoPlayer: VideoPlayer, incomingVideoReceiver: IncomingVideoReceiver, subscriptionFeedAPI: SubscriptionFeedAPI) {
+        feedAPI = subscriptionFeedAPI
         super.init(videoPlayer: videoPlayer, incomingVideoReceiver: incomingVideoReceiver, fetchInitialData: false, sectionBased: false)
     }
 
@@ -19,7 +22,7 @@ class SubscriptionFeedGridViewController: GenericVideoGridViewController {
     }
 
     override func fetchNextData() -> SignalProducer<[GenericVideoGridViewSection], Error> {
-        return SubscriptionFeedAPI.shared.fetchSubscriptionFeed()
+        return feedAPI.fetchSubscriptionFeed()
             .map { GenericVideoGridViewSection(title: "", subtitle: nil, icon: nil, items: $0.videos) }
             .collect()
     }

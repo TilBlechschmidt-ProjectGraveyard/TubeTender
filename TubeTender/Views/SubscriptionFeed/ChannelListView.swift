@@ -11,6 +11,7 @@ import UIKit
 
 class ChannelListView: UIView {
     private let compact: Bool
+
     var channels: [Channel] = [] {
         didSet {
             reloadData()
@@ -20,6 +21,14 @@ class ChannelListView: UIView {
     init(compact: Bool = true) {
         self.compact = compact
         super.init(frame: .zero)
+
+        if compact {
+            backgroundColor = UIColor.white.withAlphaComponent(0.5)
+        } else {
+            backgroundColor = Constants.backgroundColor
+        }
+
+        blur(style: .regular)
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -34,7 +43,6 @@ class ChannelListView: UIView {
         let scrollView = UIScrollView()
 
         stackView.spacing = Constants.uiPadding
-        scrollView.backgroundColor = Constants.backgroundColor
 
         if !compact {
             stackView.axis = .vertical
@@ -59,6 +67,10 @@ class ChannelListView: UIView {
             make.size.equalToSuperview()
             make.center.equalToSuperview()
         }
+
+        scrollView.contentInsetAdjustmentBehavior = .always
+
+        blur(style: .regular)
     }
 }
 
@@ -69,7 +81,7 @@ class ChannelListEntryView: UIStackView {
 
         iconView.reactive.setImage(options: [.transition(.fade(0.5))]) <~ channel.thumbnailURL.map { $0.value }
 
-//        iconView.backgroundColor = Constants.selectedBackgroundColor
+        iconView.backgroundColor = Constants.selectedBackgroundColor
         iconView.layer.cornerRadius = Constants.channelIconSize / 2
         iconView.layer.masksToBounds = false
         iconView.clipsToBounds = true

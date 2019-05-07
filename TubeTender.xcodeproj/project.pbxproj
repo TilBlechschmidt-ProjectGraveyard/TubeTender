@@ -28,6 +28,8 @@
 		30370F59217735FB00B35ACF /* YoutubeKit.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 30370F56217735A200B35ACF /* YoutubeKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		30370F612177769800B35ACF /* String+FancyFormatting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30370F602177769800B35ACF /* String+FancyFormatting.swift */; };
 		3066682821E7D057001B01C7 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 3066682721E7D057001B01C7 /* Settings.bundle */; };
+		3073F3152281B16100DCABD3 /* AuthenticationHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3073F3142281B16100DCABD3 /* AuthenticationHandler.swift */; };
+		3073F3172281DA0200DCABD3 /* UIView+DropShadow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3073F3162281DA0200DCABD3 /* UIView+DropShadow.swift */; };
 		30935A5E227B296000652B86 /* HomeFeedAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30935A5D227B296000652B86 /* HomeFeedAPI.swift */; };
 		30935A60227B45A500652B86 /* HomeFeedAPI+Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30935A5F227B45A500652B86 /* HomeFeedAPI+Persistence.swift */; };
 		3094780A227F8875002E1A63 /* GenericVideoGridHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30947809227F8875002E1A63 /* GenericVideoGridHeaderView.swift */; };
@@ -52,7 +54,6 @@
 		30BAB76121787D1700B01953 /* GoogleSignIn.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 30BAB75F21787D0D00B01953 /* GoogleSignIn.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		30BAB76321787EB100B01953 /* SignInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30BAB76221787EB100B01953 /* SignInViewController.swift */; };
 		30BAB765217893E400B01953 /* SubscriptionFeedAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30BAB764217893E400B01953 /* SubscriptionFeedAPI.swift */; };
-		30BAB76B2178B47A00B01953 /* OldSubscriptionFeedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30BAB76A2178B47A00B01953 /* OldSubscriptionFeedViewController.swift */; };
 		30BAB7752178BBC500B01953 /* VideoListTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30BAB7742178BBC500B01953 /* VideoListTableCell.swift */; };
 		30BAB7772178C96300B01953 /* Kingfisher.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 30BAB7762178C96300B01953 /* Kingfisher.framework */; };
 		30BAB7782178C96C00B01953 /* Kingfisher.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 30BAB7762178C96300B01953 /* Kingfisher.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -151,6 +152,8 @@
 		30370F56217735A200B35ACF /* YoutubeKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = YoutubeKit.framework; path = Carthage/Build/iOS/YoutubeKit.framework; sourceTree = "<group>"; };
 		30370F602177769800B35ACF /* String+FancyFormatting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+FancyFormatting.swift"; sourceTree = "<group>"; };
 		3066682721E7D057001B01C7 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
+		3073F3142281B16100DCABD3 /* AuthenticationHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationHandler.swift; sourceTree = "<group>"; };
+		3073F3162281DA0200DCABD3 /* UIView+DropShadow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+DropShadow.swift"; sourceTree = "<group>"; };
 		30935A5D227B296000652B86 /* HomeFeedAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeFeedAPI.swift; sourceTree = "<group>"; };
 		30935A5F227B45A500652B86 /* HomeFeedAPI+Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HomeFeedAPI+Persistence.swift"; sourceTree = "<group>"; };
 		30947809227F8875002E1A63 /* GenericVideoGridHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericVideoGridHeaderView.swift; sourceTree = "<group>"; };
@@ -161,7 +164,6 @@
 		30A81A3D21D53E9500FBE8EE /* VideoMetadataView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoMetadataView.swift; sourceTree = "<group>"; };
 		30ABE213218F928A00E4FEA4 /* ArrayComparable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayComparable.swift; sourceTree = "<group>"; };
 		30ABE218218F965500E4FEA4 /* StreamMetadata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamMetadata.swift; sourceTree = "<group>"; };
-		30ABE21E21905F5800E4FEA4 /* Queue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Queue.swift; sourceTree = "<group>"; };
 		30ABE2202190B48E00E4FEA4 /* PlayerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerViewController.swift; sourceTree = "<group>"; };
 		30B03AC121E68A45007B3E38 /* UIRebindableTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIRebindableTableViewCell.swift; sourceTree = "<group>"; };
 		30B1EB4A21DC0E9800B16CA2 /* DownloadButton.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DownloadButton.framework; path = Carthage/Build/iOS/DownloadButton.framework; sourceTree = "<group>"; };
@@ -171,7 +173,6 @@
 		30BAB75F21787D0D00B01953 /* GoogleSignIn.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GoogleSignIn.framework; path = Carthage/Build/iOS/GoogleSignIn.framework; sourceTree = "<group>"; };
 		30BAB76221787EB100B01953 /* SignInViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInViewController.swift; sourceTree = "<group>"; };
 		30BAB764217893E400B01953 /* SubscriptionFeedAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionFeedAPI.swift; sourceTree = "<group>"; };
-		30BAB76A2178B47A00B01953 /* OldSubscriptionFeedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OldSubscriptionFeedViewController.swift; sourceTree = "<group>"; };
 		30BAB7742178BBC500B01953 /* VideoListTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoListTableCell.swift; sourceTree = "<group>"; };
 		30BAB7762178C96300B01953 /* Kingfisher.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Kingfisher.framework; path = Carthage/Build/iOS/Kingfisher.framework; sourceTree = "<group>"; };
 		30BAB7792178CDFF00B01953 /* Date+Since.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Since.swift"; sourceTree = "<group>"; };
@@ -319,6 +320,7 @@
 				40822CBA21E4FE8700903390 /* UIView+Blur.swift */,
 				30935A5F227B45A500652B86 /* HomeFeedAPI+Persistence.swift */,
 				30C9B7C2227E0E6300B8C20F /* NavigationController+Orientation.swift */,
+				3073F3162281DA0200DCABD3 /* UIView+DropShadow.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -343,12 +345,12 @@
 			isa = PBXGroup;
 			children = (
 				30C21126226BA56900892173 /* DataReader.swift */,
-				30ABE21E21905F5800E4FEA4 /* Queue.swift */,
 				30E3063421E7E13A008C6ECB /* Settings.swift */,
 				30E3063621E8C2C3008C6ECB /* Reachability.swift */,
 				30E3063A21E90AAF008C6ECB /* RadialGradientLayer.swift */,
 				40491175226F9B9B005A6454 /* Logger.swift */,
 				407A7D632280D2790028A60C /* SNP+Frame.swift */,
+				3073F3142281B16100DCABD3 /* AuthenticationHandler.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -430,14 +432,6 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
-		30BAB7732178BB7400B01953 /* SubscriptionFeed */ = {
-			isa = PBXGroup;
-			children = (
-				30BAB76A2178B47A00B01953 /* OldSubscriptionFeedViewController.swift */,
-			);
-			path = SubscriptionFeed;
-			sourceTree = "<group>";
-		};
 		30C21119226BA51000892173 /* HLS */ = {
 			isa = PBXGroup;
 			children = (
@@ -470,7 +464,6 @@
 			isa = PBXGroup;
 			children = (
 				4021444521E625CC00AAC670 /* GenericList */,
-				30BAB7732178BB7400B01953 /* SubscriptionFeed */,
 				4021444821E631A200AAC670 /* SearchList */,
 				4021444F21E6AE0800AAC670 /* QueueList */,
 				301BB504227B5C2B004EA7E7 /* VideoCellView.swift */,
@@ -669,7 +662,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				30BAB76B2178B47A00B01953 /* OldSubscriptionFeedViewController.swift in Sources */,
 				30C2112E226BA57B00892173 /* SegmentInformation.swift in Sources */,
 				40B019322280DB1600EE46E1 /* RootViewController.swift in Sources */,
 				30E3063B21E90AAF008C6ECB /* RadialGradientLayer.swift in Sources */,
@@ -726,6 +718,7 @@
 				40E2E1F321E292D5007EA359 /* YoutubeClient.swift in Sources */,
 				40E2E1F921E3E7AE007EA359 /* Optional+Error.swift in Sources */,
 				407A7D602280BFA40028A60C /* BorderView.swift in Sources */,
+				3073F3152281B16100DCABD3 /* AuthenticationHandler.swift in Sources */,
 				30DD6A5D227F87D300C158BE /* SubscriptionFeedGridViewController.swift in Sources */,
 				302D03FF216E197A009FC2E5 /* AppDelegate.swift in Sources */,
 				30BAB76321787EB100B01953 /* SignInViewController.swift in Sources */,
@@ -737,6 +730,7 @@
 				3014040B2275D570006AEE37 /* WebSignInViewController.swift in Sources */,
 				301BB505227B5C2B004EA7E7 /* VideoCellView.swift in Sources */,
 				4021444321E5F7FB00AAC670 /* UIAlertController+Reactive.swift in Sources */,
+				3073F3172281DA0200DCABD3 /* UIView+DropShadow.swift in Sources */,
 				30BE79BB216FF73F00E6B281 /* AnimatablePlayButton.swift in Sources */,
 				40E2E1EF21E28D21007EA359 /* ApiSession+Reactive.swift in Sources */,
 				3034ACC321E529C7000F06A9 /* YoutubeURLParser.swift in Sources */,
