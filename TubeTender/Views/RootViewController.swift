@@ -9,24 +9,39 @@
 import UIKit
 
 class RootViewController: UITabBarController {
-    let videoViewController: VideoViewController
+    private let videoViewController: VideoViewController
+
+    private let homeFeedController: HomeFeedViewController
+    private let subscriptionFeedController: SubscriptionFeedViewController
+    private let searchListController: SearchListViewController
+    private let queueListController: QueueListViewController
+    private let signInController: SignInViewController
+
+    private let videoPlayer: VideoPlayer
 
     init(videoPlayer: VideoPlayer, incomingVideoReceiver: IncomingVideoReceiver) {
-        videoViewController = VideoViewController(videoPlayer: videoPlayer, incomingVideoReceiver: incomingVideoReceiver)
+        self.videoViewController = VideoViewController(videoPlayer: videoPlayer, incomingVideoReceiver: incomingVideoReceiver)
+        self.homeFeedController = HomeFeedViewController(videoPlayer: videoPlayer, incomingVideoReceiver: incomingVideoReceiver)
+        self.subscriptionFeedController = SubscriptionFeedViewController(videoPlayer: videoPlayer, incomingVideoReceiver: incomingVideoReceiver)
+        self.searchListController = SearchListViewController(videoPlayer: videoPlayer)
+        self.queueListController = QueueListViewController(videoPlayer: videoPlayer)
+        self.signInController = SignInViewController()
+        self.videoPlayer = videoPlayer
+
         super.init(nibName: nil, bundle: nil)
 
         viewControllers = [
-            createNavigationController(rootViewController: HomeFeedViewController(videoPlayer: videoPlayer, incomingVideoReceiver: incomingVideoReceiver)),
-            createNavigationController(rootViewController: SubscriptionFeedViewController(videoPlayer: videoPlayer, incomingVideoReceiver: incomingVideoReceiver)),
-            createNavigationController(rootViewController: SearchListViewController(videoPlayer: videoPlayer)),
-            createNavigationController(rootViewController: QueueListViewController(videoPlayer: videoPlayer)),
-            createNavigationController(rootViewController: SignInViewController())
+            createNavigationController(rootViewController: homeFeedController),
+            createNavigationController(rootViewController: subscriptionFeedController),
+            createNavigationController(rootViewController: searchListController),
+            createNavigationController(rootViewController: queueListController),
+            createNavigationController(rootViewController: signInController)
         ]
 
         videoViewController.delegate = self
-        videoViewController.viewWillAppear(false)
+        addChild(videoViewController)
         view.addSubview(videoViewController.view)
-        videoViewController.viewDidAppear(false)
+        videoViewController.didMove(toParent: self)
 
         view.addInteraction(UIDropInteraction(delegate: incomingVideoReceiver))
         tabBar.barStyle = .black
@@ -38,7 +53,7 @@ class RootViewController: UITabBarController {
 
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
-        updateVideoPosition()
+        updateVideoPosition(animated: true)
     }
 
     private func createNavigationController(rootViewController: UIViewController) -> UINavigationController {
@@ -49,7 +64,14 @@ class RootViewController: UITabBarController {
 
     private var videoPosition: CGFloat = 0
 
-    private func updateVideoPosition() {
+    private func updateVideoPosition(animated: Bool) {
+        guard !animated else {
+            UIView.animate(withDuration: 0.2, delay: 0, options: [.layoutSubviews], animations: {
+                self.updateVideoPosition(animated: false)
+            }, completion: nil)
+            return
+        }
+
         videoViewController.videoDetailViewController.view.alpha = CGFloat(videoPosition)
 
         let videoWidth = view.frame.width * (0.5 + videoPosition / 2)
@@ -65,11 +87,127 @@ class RootViewController: UITabBarController {
     }
 }
 
+extension RootViewController {
+    private var enableSimpleCommands: Bool {
+        return !searchListController.searchBarIsActive
+    }
+
+    override public var keyCommands: [UIKeyCommand]? {
+        // TODO: bug apple about this!
+        guard !Thread.callStackSymbols.joined().contains("__NSFireTimer") else {
+            return nil
+        }
+
+        let simpleCommands = [
+            UIKeyCommand(input: "p", modifierFlags: [], action: #selector(togglePlay)),
+            UIKeyCommand(input: " ", modifierFlags: [], action: #selector(togglePlay), discoverabilityTitle: "Toggle Play"),
+            UIKeyCommand(input: "f", modifierFlags: [], action: #selector(toggleFullscreen), discoverabilityTitle: "Toggle Fullscreen"),
+
+            UIKeyCommand(input: UIKeyCommand.inputUpArrow, modifierFlags: [], action: #selector(enterFullscreen), discoverabilityTitle: "Enter Fullscreen"),
+            UIKeyCommand(input: UIKeyCommand.inputDownArrow, modifierFlags: [], action: #selector(exitFullscreen), discoverabilityTitle: "Exit Fullscreen"),
+            UIKeyCommand(input: UIKeyCommand.inputRightArrow, modifierFlags: [], action: #selector(seekForward), discoverabilityTitle: "Seek forward"),
+            UIKeyCommand(input: UIKeyCommand.inputLeftArrow, modifierFlags: [], action: #selector(seekBackward), discoverabilityTitle: "Seek backward"),
+            UIKeyCommand(input: UIKeyCommand.inputEscape, modifierFlags: [], action: #selector(exitFullscreen))
+        ]
+
+        let complexCommands = [
+            UIKeyCommand(input: "f", modifierFlags: .command, action: #selector(openSearch), discoverabilityTitle: "Search"),
+            UIKeyCommand(input: "1", modifierFlags: .command, action: #selector(goToHomeFeedTab), discoverabilityTitle: "Home Tab"),
+            UIKeyCommand(input: "2", modifierFlags: .command, action: #selector(goToSubscriptionsFeedTab), discoverabilityTitle: "Subscription Tab"),
+            UIKeyCommand(input: "3", modifierFlags: .command, action: #selector(goToSearchTab), discoverabilityTitle: "Search Tab"),
+            UIKeyCommand(input: "4", modifierFlags: .command, action: #selector(goToQueueTab), discoverabilityTitle: "Queue Tab"),
+            UIKeyCommand(input: "5", modifierFlags: .command, action: #selector(goToSignInTab), discoverabilityTitle: "SignIn Tab"),
+
+            UIKeyCommand(input: UIKeyCommand.inputRightArrow, modifierFlags: .shift, action: #selector(seekForwardFast), discoverabilityTitle: "Seek forward fast"),
+            UIKeyCommand(input: UIKeyCommand.inputLeftArrow, modifierFlags: .shift, action: #selector(seekBackwardFast), discoverabilityTitle: "Seek backward fast"),
+            UIKeyCommand(input: UIKeyCommand.inputRightArrow, modifierFlags: .command, action: #selector(nextVideo), discoverabilityTitle: "Next Video"),
+            UIKeyCommand(input: UIKeyCommand.inputLeftArrow, modifierFlags: .command, action: #selector(previousVideo), discoverabilityTitle: "Previous Video")
+        ]
+
+        return complexCommands + (enableSimpleCommands ? simpleCommands : [])
+    }
+
+    @objc func togglePlay() {
+        videoPlayer.togglePlay()
+    }
+
+    @objc private func toggleFullscreen() {
+        videoPosition = videoPosition == 0 ? 1 : 0
+        updateVideoPosition(animated: true)
+    }
+
+    @objc private func enterFullscreen() {
+        videoPosition = 1
+        updateVideoPosition(animated: true)
+    }
+
+    @objc private func exitFullscreen() {
+        videoPosition = 0
+        updateVideoPosition(animated: true)
+    }
+
+    private func goToTab(withIndex index: Int) {
+        exitFullscreen()
+        self.selectedIndex = index
+    }
+
+    @objc private func goToHomeFeedTab() {
+        goToTab(withIndex: 0)
+    }
+
+    @objc private func goToSubscriptionsFeedTab() {
+        goToTab(withIndex: 1)
+    }
+
+    @objc private func goToSearchTab() {
+        goToTab(withIndex: 2)
+    }
+
+    @objc private func goToQueueTab() {
+        goToTab(withIndex: 3)
+    }
+
+    @objc private func goToSignInTab() {
+        goToTab(withIndex: 4)
+    }
+
+    @objc private func openSearch() {
+        goToSearchTab()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            self.searchListController.enterSearchBar()
+        }
+    }
+
+    @objc private func seekForward() {
+        videoPlayer.seek(by: 10)
+    }
+
+    @objc private func seekForwardFast() {
+        videoPlayer.seek(by: 30)
+    }
+
+    @objc private func seekBackward() {
+        videoPlayer.seek(by: -10)
+    }
+
+    @objc private func seekBackwardFast() {
+        videoPlayer.seek(by: -30)
+    }
+
+    @objc private func nextVideo() {
+        videoPlayer.next()
+    }
+
+    @objc private func previousVideo() {
+        videoPlayer.previous()
+    }
+}
+
 extension RootViewController: VideoViewControllerDelegate {
     func videoViewController(_ videoViewController: VideoViewController, userDidMoveVideoVertical deltaY: CGFloat) {
         videoPosition -= deltaY / (view.frame.height / 2)
         videoPosition = min(max(videoPosition, 0), 1)
-        self.updateVideoPosition()
+        self.updateVideoPosition(animated: false)
     }
 
     func videoViewController(_ videoViewController: VideoViewController, userDidReleaseVideo velocityY: CGFloat) {
@@ -81,8 +219,6 @@ extension RootViewController: VideoViewControllerDelegate {
             videoPosition = 0
         }
 
-        UIView.animate(withDuration: 0.2) {
-            self.updateVideoPosition()
-        }
+        updateVideoPosition(animated: true)
     }
 }
