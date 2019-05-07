@@ -9,7 +9,7 @@
 import UIKit
 
 class SearchListViewController: SimpleVideoListViewController {
-    let searchController = UISearchController(searchResultsController: nil)
+    private let searchController = UISearchController(searchResultsController: nil)
     private var nextPageToken: String?
     private var currentSearchString: String?
 
@@ -59,6 +59,14 @@ class SearchListViewController: SimpleVideoListViewController {
 
     override func createEmptyStateView() -> UIView {
         return EmptyStateView(image: #imageLiteral(resourceName: "search"), text: "No videos found")
+    }
+
+    public func enterSearchBar() {
+        self.searchController.searchBar.becomeFirstResponder()
+    }
+
+    public var searchBarIsActive: Bool {
+        return self.searchController.searchBar.isFirstResponder
     }
 }
 

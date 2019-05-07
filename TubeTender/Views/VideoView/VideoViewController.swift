@@ -37,9 +37,6 @@ public class VideoViewController: UIViewController {
         // PlayerViewController setup
         playerViewController.delegate = self
 
-        playerViewController.willMove(toParent: self)
-        videoDetailViewController.willMove(toParent: self)
-
         self.addChild(playerViewController)
         self.addChild(videoDetailViewController)
 
@@ -59,10 +56,10 @@ public class VideoViewController: UIViewController {
             view.addSubview(stackView)
             stackView.sendSubviewToBack(videoDetailView)
             stackView.snp.makeConstraints { make in
-                make.left.equalTo(view.snp.left)
-                make.right.equalTo(view.snp.right)
+                make.left.equalToSuperview()
+                make.right.equalToSuperview()
                 make.top.equalTo(view.safeAreaLayoutGuide.snp.top)
-                make.bottom.equalTo(view.snp.bottom)
+                make.bottom.equalToSuperview()
             }
         }
 

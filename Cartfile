@@ -10,3 +10,6 @@ github "https://github.com/fabio914/GoogleSignIn-iOS" ~> 4.2
 github "onevcat/Kingfisher" ~> 5.0
 github "LeonardoCardoso/NFDownloadButton" ~> 0.0.6
 github "JohnEstropia/CoreStore" ~> 6.0
+
+github "Quick/Nimble" ~> 8.0
+github "Quick/Quick" ~> 2.1

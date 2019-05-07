@@ -101,12 +101,27 @@
 		408C524C21E54554007B2DD2 /* IncomingVideoReceiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 408C524B21E54554007B2DD2 /* IncomingVideoReceiver.swift */; };
 		408C524E21E55903007B2DD2 /* DurationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 408C524D21E55903007B2DD2 /* DurationView.swift */; };
 		40B019322280DB1600EE46E1 /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40B019312280DB1600EE46E1 /* RootViewController.swift */; };
+		40B019442281B50200EE46E1 /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 40B019432281B50200EE46E1 /* Nimble.framework */; };
+		40B019462281B51000EE46E1 /* Quick.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 40B019452281B51000EE46E1 /* Quick.framework */; };
+		40B019482281B52100EE46E1 /* Quick.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 40B019452281B51000EE46E1 /* Quick.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		40B019492281B52100EE46E1 /* Nimble.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 40B019432281B50200EE46E1 /* Nimble.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		40B0194B2281B54E00EE46E1 /* DataReaderSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40B0194A2281B54E00EE46E1 /* DataReaderSpec.swift */; };
 		40E2E1EF21E28D21007EA359 /* ApiSession+Reactive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40E2E1EE21E28D21007EA359 /* ApiSession+Reactive.swift */; };
 		40E2E1F321E292D5007EA359 /* YoutubeClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40E2E1F221E292D5007EA359 /* YoutubeClient.swift */; };
 		40E2E1F521E29383007EA359 /* ChannelAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40E2E1F421E29383007EA359 /* ChannelAPI.swift */; };
 		40E2E1F721E3E2FA007EA359 /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40E2E1F621E3E2FA007EA359 /* Result.swift */; };
 		40E2E1F921E3E7AE007EA359 /* Optional+Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40E2E1F821E3E7AE007EA359 /* Optional+Error.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		40B0193E2281B3ED00EE46E1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 302D03F3216E197A009FC2E5 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 302D03FA216E197A009FC2E5;
+			remoteInfo = TubeTender;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		30370F58217735EF00B35ACF /* CopyFiles */ = {
@@ -124,6 +139,17 @@
 				30BAB7782178C96C00B01953 /* Kingfisher.framework in CopyFiles */,
 				30BAB76121787D1700B01953 /* GoogleSignIn.framework in CopyFiles */,
 				30370F59217735FB00B35ACF /* YoutubeKit.framework in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		40B019472281B51400EE46E1 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				40B019482281B52100EE46E1 /* Quick.framework in CopyFiles */,
+				40B019492281B52100EE46E1 /* Nimble.framework in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -217,6 +243,11 @@
 		408C524B21E54554007B2DD2 /* IncomingVideoReceiver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncomingVideoReceiver.swift; sourceTree = "<group>"; };
 		408C524D21E55903007B2DD2 /* DurationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DurationView.swift; sourceTree = "<group>"; };
 		40B019312280DB1600EE46E1 /* RootViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
+		40B019392281B3ED00EE46E1 /* TubeTenderUnitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TubeTenderUnitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		40B0193D2281B3ED00EE46E1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		40B019432281B50200EE46E1 /* Nimble.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Nimble.framework; path = Carthage/Build/iOS/Nimble.framework; sourceTree = "<group>"; };
+		40B019452281B51000EE46E1 /* Quick.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quick.framework; path = Carthage/Build/iOS/Quick.framework; sourceTree = "<group>"; };
+		40B0194A2281B54E00EE46E1 /* DataReaderSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataReaderSpec.swift; sourceTree = "<group>"; };
 		40E2E1EE21E28D21007EA359 /* ApiSession+Reactive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ApiSession+Reactive.swift"; sourceTree = "<group>"; };
 		40E2E1F221E292D5007EA359 /* YoutubeClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YoutubeClient.swift; sourceTree = "<group>"; };
 		40E2E1F421E29383007EA359 /* ChannelAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChannelAPI.swift; sourceTree = "<group>"; };
@@ -238,6 +269,15 @@
 				30BAB7772178C96300B01953 /* Kingfisher.framework in Frameworks */,
 				30BAB76021787D0D00B01953 /* GoogleSignIn.framework in Frameworks */,
 				30370F57217735A200B35ACF /* YoutubeKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		40B019362281B3ED00EE46E1 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				40B019462281B51000EE46E1 /* Quick.framework in Frameworks */,
+				40B019442281B50200EE46E1 /* Nimble.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -267,6 +307,7 @@
 			isa = PBXGroup;
 			children = (
 				302D03FD216E197A009FC2E5 /* TubeTender */,
+				40B0193A2281B3ED00EE46E1 /* TubeTenderUnitTests */,
 				302D03FC216E197A009FC2E5 /* Products */,
 				302D0423216F3D98009FC2E5 /* Frameworks */,
 			);
@@ -276,6 +317,7 @@
 			isa = PBXGroup;
 			children = (
 				302D03FB216E197A009FC2E5 /* TubeTender.app */,
+				40B019392281B3ED00EE46E1 /* TubeTenderUnitTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -328,14 +370,16 @@
 		302D0423216F3D98009FC2E5 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				30B338B421E27F65001FC825 /* ReactiveCocoa.framework */,
-				30B338B721E28021001FC825 /* SnapKit.framework */,
-				30988C2021DEC0BC0070D14A /* CoreStore.framework */,
 				30F2E38821DD059D005EFCA9 /* Alamofire.framework */,
+				30988C2021DEC0BC0070D14A /* CoreStore.framework */,
 				30B1EB4A21DC0E9800B16CA2 /* DownloadButton.framework */,
-				30D91B6E218F6C810020C814 /* ReactiveSwift.framework */,
-				30BAB7762178C96300B01953 /* Kingfisher.framework */,
 				30BAB75F21787D0D00B01953 /* GoogleSignIn.framework */,
+				30BAB7762178C96300B01953 /* Kingfisher.framework */,
+				40B019432281B50200EE46E1 /* Nimble.framework */,
+				40B019452281B51000EE46E1 /* Quick.framework */,
+				30B338B421E27F65001FC825 /* ReactiveCocoa.framework */,
+				30D91B6E218F6C810020C814 /* ReactiveSwift.framework */,
+				30B338B721E28021001FC825 /* SnapKit.framework */,
 				30370F56217735A200B35ACF /* YoutubeKit.framework */,
 			);
 			name = Frameworks;
@@ -542,6 +586,15 @@
 			path = SignIn;
 			sourceTree = "<group>";
 		};
+		40B0193A2281B3ED00EE46E1 /* TubeTenderUnitTests */ = {
+			isa = PBXGroup;
+			children = (
+				40B0194A2281B54E00EE46E1 /* DataReaderSpec.swift */,
+				40B0193D2281B3ED00EE46E1 /* Info.plist */,
+			);
+			path = TubeTenderUnitTests;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -565,13 +618,32 @@
 			productReference = 302D03FB216E197A009FC2E5 /* TubeTender.app */;
 			productType = "com.apple.product-type.application";
 		};
+		40B019382281B3ED00EE46E1 /* TubeTenderUnitTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 40B019422281B3ED00EE46E1 /* Build configuration list for PBXNativeTarget "TubeTenderUnitTests" */;
+			buildPhases = (
+				40B019352281B3ED00EE46E1 /* Sources */,
+				40B019362281B3ED00EE46E1 /* Frameworks */,
+				40B019372281B3ED00EE46E1 /* Resources */,
+				40B019472281B51400EE46E1 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				40B0193F2281B3ED00EE46E1 /* PBXTargetDependency */,
+			);
+			name = TubeTenderUnitTests;
+			productName = TubeTenderUnitTests;
+			productReference = 40B019392281B3ED00EE46E1 /* TubeTenderUnitTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
 		302D03F3216E197A009FC2E5 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1000;
+				LastSwiftUpdateCheck = 1020;
 				LastUpgradeCheck = 1000;
 				ORGANIZATIONNAME = "Til Blechschmidt";
 				TargetAttributes = {
@@ -583,6 +655,10 @@
 								enabled = 1;
 							};
 						};
+					};
+					40B019382281B3ED00EE46E1 = {
+						CreatedOnToolsVersion = 10.2.1;
+						TestTargetID = 302D03FA216E197A009FC2E5;
 					};
 				};
 			};
@@ -600,6 +676,7 @@
 			projectRoot = "";
 			targets = (
 				302D03FA216E197A009FC2E5 /* TubeTender */,
+				40B019382281B3ED00EE46E1 /* TubeTenderUnitTests */,
 			);
 		};
 /* End PBXProject section */
@@ -613,6 +690,13 @@
 				300F296921D6C80600C9B0B0 /* Default-568h@2x.png in Resources */,
 				3066682821E7D057001B01C7 /* Settings.bundle in Resources */,
 				302D0406216E197C009FC2E5 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		40B019372281B3ED00EE46E1 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -742,7 +826,23 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		40B019352281B3ED00EE46E1 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				40B0194B2281B54E00EE46E1 /* DataReaderSpec.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		40B0193F2281B3ED00EE46E1 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 302D03FA216E197A009FC2E5 /* TubeTender */;
+			targetProxy = 40B0193E2281B3ED00EE46E1 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		302D0407216E197C009FC2E5 /* LaunchScreen.storyboard */ = {
@@ -885,7 +985,7 @@
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/TubeTender/Support Files/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -913,7 +1013,7 @@
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/TubeTender/Support Files/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -924,6 +1024,54 @@
 				PROVISIONING_PROFILE_SPECIFIER = "TubeTender Release";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		40B019402281B3ED00EE46E1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
+				INFOPLIST_FILE = TubeTenderUnitTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = de.blechschmidt.TubeTenderUnitTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TubeTender.app/TubeTender";
+			};
+			name = Debug;
+		};
+		40B019412281B3ED00EE46E1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
+				INFOPLIST_FILE = TubeTenderUnitTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = de.blechschmidt.TubeTenderUnitTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TubeTender.app/TubeTender";
 			};
 			name = Release;
 		};
@@ -944,6 +1092,15 @@
 			buildConfigurations = (
 				302D040E216E197C009FC2E5 /* Debug */,
 				302D040F216E197C009FC2E5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		40B019422281B3ED00EE46E1 /* Build configuration list for PBXNativeTarget "TubeTenderUnitTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				40B019402281B3ED00EE46E1 /* Debug */,
+				40B019412281B3ED00EE46E1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

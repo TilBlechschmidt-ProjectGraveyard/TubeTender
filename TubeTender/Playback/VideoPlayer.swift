@@ -369,6 +369,14 @@ class VideoPlayer: NSObject {
         player.pause()
     }
 
+    func togglePlay() {
+        if status.value == .playing {
+            player.pause()
+        } else {
+            player.play()
+        }
+    }
+
     func seek(toPercentage percentage: Double) {
         let target = duration.value * percentage
         seek(to: target)

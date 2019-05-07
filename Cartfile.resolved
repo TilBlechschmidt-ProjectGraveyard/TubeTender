@@ -1,6 +1,8 @@
 github "Alamofire/Alamofire" "4.8.2"
 github "JohnEstropia/CoreStore" "6.3.1"
 github "LeonardoCardoso/NFDownloadButton" "0.0.6"
+github "Quick/Nimble" "v8.0.1"
+github "Quick/Quick" "v2.1.0"
 github "ReactiveCocoa/ReactiveCocoa" "45d19e1920083c8b5a966b0a3dfe68c0d584e59b"
 github "ReactiveCocoa/ReactiveSwift" "6.0.0"
 github "SnapKit/SnapKit" "5.0.0"
